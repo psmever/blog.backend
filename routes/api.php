@@ -19,5 +19,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::group(['prefix' => 'util', 'as' => 'util.'], function () {
-    Route::post('deploy', 'UtilController@deploy')->name('deploy'); // 서버 상태 확인.
+    Route::post('deploy', 'UtilController@deploy')->name('deploy'); // 임시 배포 컨트롤러.
 });
