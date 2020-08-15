@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 
 class ApiAfterMiddleware
 {
@@ -14,19 +15,6 @@ class ApiAfterMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    // public function handle($request, Closure $next)
-    // {
-    //     echo ":: ApiAfterMiddleware :: ";
-    //     return $next($request);
-    // }
-
-    // public function terminate($request, $response)
-	// {
-    //     // TODO:: ApiAfterMiddleware 응답 끝났을떄.
-    //     echo ":: terminate ::";
-    //     return  ":: terminate ::";
-    // }
-
     public function handle($request, Closure $next)
     {
 	    $response = $next($request);
@@ -36,7 +24,25 @@ class ApiAfterMiddleware
 
     public function terminate($request, $response)
     {
-        // Store the session data...
-        Log::debug('ApiAfterMiddleware terminate.');
+        // ANCHOR Teminate Log
+        $logid = date('Ymdhis');
+
+        $logRoutename = Route::currentRouteName();
+        $logRouteAction = Route::currentRouteAction();
+
+        $current_url = url()->current();
+        $logHeaderInfo = json_encode($request->header());
+        $logBodyInfo = json_encode($request->all());
+
+        $logMessage = <<<EOF
+ID:${logid}
+Current_url:${current_url}
+RouteName:${logRoutename}
+RouteAction:${logRouteAction}
+Header: {$logHeaderInfo}
+Body: ${logBodyInfo}
+
+EOF;
+        Log::channel('ApiTerminatelog')->debug($logMessage);
     }
 }

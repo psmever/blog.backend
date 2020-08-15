@@ -99,6 +99,21 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        // ANCHOR Coustom Log
+        'ApiTerminatelog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'apiterminatelog.log'),
+		    'level' => 'debug',
+		    'days' => 31,
+        ],
+
+        'requestlog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'requestlog.log'),
+		    'level' => 'debug',
+		    'days' => 31,
+	    ],
     ],
 
 ];
