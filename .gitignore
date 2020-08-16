@@ -22,3 +22,6 @@ yarn-error.log
 
 # deploy
 deploy.sh
+
+# test controller
+app/Http/Controllers/Api/TestController.php
