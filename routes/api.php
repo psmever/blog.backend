@@ -22,7 +22,14 @@ use Illuminate\Support\Facades\Route;
 //     Route::post('deploy', 'UtilController@deploy')->name('deploy'); // 임시 배포 컨트롤러.
 // });
 
+/**
+ * Api Test 용 컨트롤러.
+ */
+Route::post('test', 'TestController@test')->name('api.test');
+
+/**
+ * Api V1 Route Group.
+ */
 Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'api.v1.'], function () {
-    Route::post('test', 'TestController@test')->name('test');
 
 });
