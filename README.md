@@ -52,7 +52,7 @@ throw new \App\Exceptions\CustomException('Something Went Wrong.');
 
 ## etc message
 
-github webhook test.
+github webhook test..
 ```
 
 ## Contributing
