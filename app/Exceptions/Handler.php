@@ -36,6 +36,26 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
+        // ANCHOR mysql Exception report
+        if ($exception instanceof \PDOException) {
+            echo "PDOException report";
+        }
+
+        // ANCHOR AuthenticationException report
+        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            echo "AuthenticationException report";
+        }
+
+        // ANCHOR NotFoundHttpException report
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            echo "NotFoundHttpException report";
+        }
+
+        // ANCHOR mysql Exception report
+        if ($exception instanceof \App\Exceptions\CustomException) {
+            echo "CustomException report";
+        }
+
         parent::report($exception);
     }
 
@@ -50,6 +70,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // REVIEW Exception 화면에 어떻게 표시 할건지.
+
+        // ANCHOR Custom Exception Render
+        if ($exception instanceof \App\Exceptions\CustomException)  {
+            return $exception->render($request);
+        }
+
         return parent::render($request, $exception);
     }
 }
