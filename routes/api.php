@@ -25,11 +25,24 @@ use Illuminate\Support\Facades\Route;
 /**
  * Api Test 용 컨트롤러.
  */
-Route::post('test', 'TestController@test')->name('api.test');
 
-/**
- * Api V1 Route Group.
- */
-Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'api.v1.'], function () {
+Route::group(['as' => 'api.'], function () {
+    Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+        Route::post('index', 'TestController@index')->name('index');
+    });
 
+    Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
+        Route::post('deploy', 'SystemController@deploy')->name('deploy');
+    });
+
+    /**
+     * Api V1 Route Group.
+     */
+    Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'api.v1.'], function () {
+
+    });
 });
+
+
+
+
