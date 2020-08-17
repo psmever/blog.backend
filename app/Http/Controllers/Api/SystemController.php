@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\ApiRootController;
 use Symfony\Component\Process\Process;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\App;
 class SystemController extends ApiRootController
 {
     /**
@@ -16,9 +16,7 @@ class SystemController extends ApiRootController
      */
     public function deploy(Request $request)
     {
-        $appEnv = env('APP_ENV');
-
-        if($appEnv == 'production') {
+        if(app()->environment('production')) {
 
             echo ":: Production Start ::".PHP_EOL;
 
@@ -39,7 +37,7 @@ class SystemController extends ApiRootController
 
         } else {
 
-            echo $appEnv." Not Deploy ".PHP_EOL;
+            echo " app environment : ".App::environment()." Not Deploy ".PHP_EOL;
 
         }
     }
