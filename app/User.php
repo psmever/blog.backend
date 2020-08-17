@@ -37,4 +37,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Specify Slack Webhook URL to route notifications to
+     *
+     * @return void
+     */
+    public function routeNotificationForSlack()
+    {
+        return env('SLACK_WEBHOOK_URL');
+    }
 }

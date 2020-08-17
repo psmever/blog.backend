@@ -52,6 +52,10 @@ throw new \App\Exceptions\CustomException('Something Went Wrong.');
 
 ## etc message
 ```
+
+SlackMessage notifications
+https://medium.com/@olayinka.omole/sending-slack-notifications-from-your-laravel-app-1bdb6e4e4127
+https://www.lesstif.com/php-and-laravel/sending-slack-notifications-from-laravel-36209045.html
 ```
 
 ## Contributing
