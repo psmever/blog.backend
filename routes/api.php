@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['as' => 'api.'], function () {
     Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
         Route::post('index', 'TestController@index')->name('index');
+        Route::post('slack', 'TestController@slack')->name('slack');
     });
 
     Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
