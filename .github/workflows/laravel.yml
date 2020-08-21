@@ -1,13 +1,11 @@
-name: Laravel
+name: Blog.backend
 
 on:
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    branches: [ develop, master ]
 
 jobs:
-  laravel-tests:
+  blog.backend-tests:
 
     runs-on: ubuntu-latest
 
