@@ -5,7 +5,7 @@ on:
     branches: [ develop, master ]
 
 jobs:
-  blog.backend-tests:
+  blog-backend-tests:
 
     runs-on: ubuntu-latest
 
