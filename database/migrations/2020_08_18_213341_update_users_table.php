@@ -15,7 +15,7 @@ class UpdateUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('user_uuid', 50)->after('id')->unique()->comment('사용자 uuid');
+            $table->string('user_uuid', 50)->after('id')->unique()->default('')->comment('사용자 uuid');
 	        $table->string('user_type', 6)->after('user_uuid')->default('S01010')->comment('사용자 타입');
 	        $table->string('user_level', 6)->after('user_type')->default('S02000')->comment('사용자 레벨');
             $table->enum('active', ['Y', 'N'])->after('remember_token')->default('Y')->comment('사용자 상태');
