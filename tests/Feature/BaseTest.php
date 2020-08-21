@@ -31,4 +31,11 @@ class BaseTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_server_migrate()
+    {
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@gmail.com',
+        ]);
+    }
 }
