@@ -93,7 +93,7 @@ class Handler extends ExceptionHandler
             $code = 404;
             $error = [
                 "error_message" => "Not Found",
-                "detail" => "존재 하지 않은 요청 입니다.",
+                "detail" => __('default.exception.notfound'),
             ];
         }
 
