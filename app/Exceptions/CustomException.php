@@ -11,10 +11,7 @@ class CustomException extends Exception
      *
      * @return void
      */
-    public function report()
-    {
-        echo "CustomException Report";
-    }
+    public function report() {}
 
     /**
      * Render the exception into an HTTP response.
@@ -22,13 +19,5 @@ class CustomException extends Exception
      * @param  \Illuminate\Http\Request
      * @return \Illuminate\Http\Response
      */
-    public function render($request)
-    {
-        return response()->view(
-                'errors.custom',
-                array(
-                    'exception' => $this
-                )
-        );
-    }
+    public function render($request) {}
 }

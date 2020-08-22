@@ -46,9 +46,11 @@ class Handler extends ExceptionHandler
         $logHeaderInfo = json_encode(request()->header());
         $logBodyInfo = json_encode(request()->all());
 
+        $exceptionMessage = $exception->getMessage();
         $logBaseMessage = <<<EOF
 
         ID:${logid}
+        Message: ${exceptionMessage}
         Current_url:${current_url}
         RouteName:${logRoutename}
         RouteAction:${logRouteAction}
@@ -59,15 +61,16 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof \PDOException) { // ANCHOR mysql Exception report
             echo "PDOException report";
-            dd($exception);
+            // dd($exception);
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // ANCHOR AuthenticationException report
             echo "AuthenticationException report";
-            dd($exception);
+            // dd($exception);
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
             Log::channel('NotFoundHttpLog')->error($logBaseMessage);
         } if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
-            echo "CustomException report";
-            dd($exception);
+            Log::channel('CustomExceptionLog')->error($logBaseMessage);
+        } if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
+            Log::channel('ClientExceptionLog')->error($logBaseMessage);
         }
 
         parent::report($exception);
@@ -84,16 +87,24 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // dd($exception);
         // REVIEW Exception 화면에 어떻게 표시 할건지.
-
-        // ANCHOR Custom Exception Render
-        if ($exception instanceof \App\Exceptions\CustomException)  {
-            // return $exception->render($request);
+        if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR Custom Exception Render
+            $code = 403;
+            $error = [
+                "error_message" => "Not Found",
+                "detail" => __('default.exception.notfound'),
+            ];
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
             $code = 404;
             $error = [
                 "error_message" => "Not Found",
                 "detail" => __('default.exception.notfound'),
+            ];
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR NotFoundHttpException report
+            $code = 403;
+            $error = [
+                "error_message" => "Client Error",
             ];
         }
 
@@ -105,7 +116,7 @@ class Handler extends ExceptionHandler
                 "error" => $error
             ], $code);
         } else { // 일 반 웹 요청 일떄.
-            // echo "request http";
+
         }
 
         return parent::render($request, $exception);

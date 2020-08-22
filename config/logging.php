@@ -129,9 +129,16 @@ return [
 		    'days' => 31,
         ],
 
-        'customexceptionlog' => [
+        'CustomExceptionLog' => [
 		    'driver' => 'daily',
 		    'path' => storage_path('logs/'.date('Y/m/').'customexception.log'),
+		    'level' => 'debug',
+		    'days' => 31,
+        ],
+
+        'ClientExceptionLog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'clientexception.log'),
 		    'level' => 'debug',
 		    'days' => 31,
 	    ],
