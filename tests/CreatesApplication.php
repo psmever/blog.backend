@@ -20,4 +20,28 @@ trait CreatesApplication
 
         return $app;
     }
+
+    public static function getTestApiHeaders()
+    {
+        return [
+            'Request-Client-Type' => env('FRONT_CLIENT_CODE'),
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ];
+    }
+
+    public static function getDefaultErrorJsonType()
+    {
+        return [
+            'error_message'
+        ];
+    }
+
+    public static function getDefaultSuccessJsonType()
+    {
+        return [
+            "message" ,
+            "result"
+        ];
+    }
 }
