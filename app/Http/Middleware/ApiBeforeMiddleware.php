@@ -20,8 +20,10 @@ class ApiBeforeMiddleware
         // NOTE 헤더 클라이언트 체크.
         $clientType = $request->header('request-client-type');
 
-        if(empty($clientType) || !($clientType == env('FRONT_CLIENT_CODE') || $clientType == env('IOS_CLIENT_CODE') || $clientType == env('ANDROID_CLIENT_CODE'))) {
-            throw new \App\Exceptions\ClientErrorException(__('default.exception.clienttype'));
+        if(Route::currentRouteName() != "api.system.deploy") {
+            if(empty($clientType) || !($clientType == env('FRONT_CLIENT_CODE') || $clientType == env('IOS_CLIENT_CODE') || $clientType == env('ANDROID_CLIENT_CODE'))) {
+                throw new \App\Exceptions\ClientErrorException(__('default.exception.clienttype'));
+            }
         }
         return $next($request);
     }
