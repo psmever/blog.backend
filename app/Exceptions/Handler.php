@@ -100,7 +100,7 @@ class Handler extends ExceptionHandler
             $error_message = __('default.exception.notfound');
         } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR NotFoundHttpException report
             $error_code = 403;
-            $error_message = "Client Error";
+            $error_message = $exception->getMessage();
         }
 
         if($request->isJson()) { // ajax 요청 일떄.
