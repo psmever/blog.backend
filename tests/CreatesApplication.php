@@ -24,7 +24,7 @@ trait CreatesApplication
     public static function getTestApiHeaders()
     {
         return [
-            'Request-Client-Type' => env('FRONT_CLIENT_CODE'),
+            'Request-Client-Type' => 'S01010',
             'Accept' => 'application/json',
             'Content-Type' => 'application/json'
         ];
