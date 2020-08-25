@@ -14,19 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-// Route::group(['prefix' => 'util', 'as' => 'util.'], function () {
-//     Route::post('deploy', 'UtilController@deploy')->name('deploy'); // 임시 배포 컨트롤러.
-// });
-
-/**
- * Api Test 용 컨트롤러.
- */
-
 Route::group(['as' => 'api.'], function () {
+    /**
+     * Api Test 용 컨트롤러.
+     */
     Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
         Route::post('index', 'TestController@index')->name('index');
         Route::post('slack', 'TestController@slack')->name('slack');
@@ -34,6 +25,9 @@ Route::group(['as' => 'api.'], function () {
 
     Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
         Route::post('deploy', 'SystemController@deploy')->name('deploy');
+        Route::get('check/status', 'SystemController@check_status')->name('check_status');
+        Route::get('check/notice', 'SystemController@check_notice')->name('check_notice');
+        Route::get('base_data', 'SystemController@base_data')->name('base_data');
     });
 
     /**
