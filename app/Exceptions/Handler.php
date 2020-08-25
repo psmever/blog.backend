@@ -6,6 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -87,36 +88,31 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        // dd($exception);
+        $error_message = "";
+        $error_code = null;
+
         // REVIEW Exception 화면에 어떻게 표시 할건지.
         if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR Custom Exception Render
-            $code = 403;
-            $error = [
-                "error_message" => "Not Found",
-                "detail" => __('default.exception.notfound'),
-            ];
+            $error_code = 403;
+            $error_message = __('default.exception.notfound');
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
-            $code = 404;
-            $error = [
-                "error_message" => "Not Found",
-                "detail" => __('default.exception.notfound'),
-            ];
+            $error_code = 404;
+            $error_message = __('default.exception.notfound');
         } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR NotFoundHttpException report
-            $code = 403;
-            $error = [
-                "error_message" => "Client Error",
-            ];
+            $error_code = 403;
+            $error_message = "Client Error";
         }
 
         if($request->isJson()) { // ajax 요청 일떄.
-            return response()->json([
-                "server" => env('APP_ENV'),
-                "server_time" => date("YmdHis"),
-                "path" => url()->current(),
-                "error" => $error
-            ], $code);
-        } else { // 일 반 웹 요청 일떄.
 
+            if(app()->isDownForMaintenance()) {
+                return Response::error(503, $exception->getMessage() ? $exception->getMessage() : __('default.server.down'));
+            } else {
+                return Response::error(
+                    $error_code ? $error_code : 503,
+                    $error_message ? $error_message : __('default.server.error')
+                );
+            }
         }
 
         return parent::render($request, $exception);
