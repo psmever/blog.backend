@@ -25,7 +25,7 @@ class SystemController extends ApiRootController
      */
     public function check_status(Request $request)
     {
-        return true;
+        return Response::success_no_content();
     }
 
     /**
