@@ -2,7 +2,8 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
+use Illuminate\Support\Facades\Storage;
 
 class SystemControllerTest extends TestCase
 {
@@ -22,4 +23,41 @@ class SystemControllerTest extends TestCase
     }
 
     // api SystemControllerTest
+    public function test_server_check_status()
+    {
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/status');
+        $response->assertStatus(200);
+    }
+
+    // 시스템 공지 사항 테스트 Start
+
+    public function test_server_notice_not_exists()
+    {
+        Storage::disk('sitedata')->delete('notice.txt');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
+        $response->assertStatus(204);
+    }
+
+    public function test_server_notice_not_exists_contents()
+    {
+        Storage::disk('sitedata')->put('notice.txt', '');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
+        $response->assertStatus(204);
+    }
+
+    public function test_server_notice_exists_contents()
+    {
+        $tmpNoticeMessage = '긴급 공지 사항 테스트입니다.';
+        Storage::disk('sitedata')->put('notice.txt', $tmpNoticeMessage);
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
+        $response->assertOk();
+        $response->assertJsonStructure(
+            $this->getDefaultSuccessJsonType()
+        )->assertJsonFragment([
+            "notice_message" => $tmpNoticeMessage
+        ]);
+    }
+    // 시스템 공지 사항 테스트 End
+
+    // public function test_server_check_base_data() { }
 }

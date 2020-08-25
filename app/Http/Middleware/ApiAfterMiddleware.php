@@ -24,25 +24,28 @@ class ApiAfterMiddleware
 
     public function terminate($request, $response)
     {
-        // ANCHOR Teminate Log
         $logid = date('Ymdhis');
 
-        $logRoutename = Route::currentRouteName();
-        $logRouteAction = Route::currentRouteAction();
+        // ANCHOR Teminate Log
+        if(env('APP_ENV') == "local") {
+            $logRoutename = Route::currentRouteName();
+            $logRouteAction = Route::currentRouteAction();
 
-        $current_url = url()->current();
-        $logHeaderInfo = json_encode($request->header());
-        $logBodyInfo = json_encode($request->all());
+            $current_url = url()->current();
+            $logHeaderInfo = json_encode($request->header());
+            $logBodyInfo = json_encode($request->all());
 
-        $logMessage = <<<EOF
-ID:${logid}
-Current_url:${current_url}
-RouteName:${logRoutename}
-RouteAction:${logRouteAction}
-Header: {$logHeaderInfo}
-Body: ${logBodyInfo}
+            $logMessage = <<<EOF
 
-EOF;
-        Log::channel('ApiTerminatelog')->debug($logMessage);
+            ID:${logid}
+            Current_url:${current_url}
+            RouteName:${logRoutename}
+            RouteAction:${logRouteAction}
+            Header: {$logHeaderInfo}
+            Body: ${logBodyInfo}
+
+            EOF;
+            Log::channel('ApiTerminatelog')->debug($logMessage);
+        }
     }
 }

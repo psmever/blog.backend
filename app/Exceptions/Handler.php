@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -36,24 +39,39 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        // ANCHOR mysql Exception report
-        if ($exception instanceof \PDOException) {
+        $logid = date('Ymdhis');
+
+        $logRoutename = Route::currentRouteName();
+        $logRouteAction = Route::currentRouteAction();
+        $current_url = url()->current();
+        $logHeaderInfo = json_encode(request()->header());
+        $logBodyInfo = json_encode(request()->all());
+
+        $exceptionMessage = $exception->getMessage();
+        $logBaseMessage = <<<EOF
+
+        ID:${logid}
+        Message: ${exceptionMessage}
+        Current_url:${current_url}
+        RouteName:${logRoutename}
+        RouteAction:${logRouteAction}
+        Header: {$logHeaderInfo}
+        Body: ${logBodyInfo}
+
+        EOF;
+
+        if ($exception instanceof \PDOException) { // ANCHOR mysql Exception report
             echo "PDOException report";
-        }
-
-        // ANCHOR AuthenticationException report
-        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            // dd($exception);
+        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // ANCHOR AuthenticationException report
             echo "AuthenticationException report";
-        }
-
-        // ANCHOR NotFoundHttpException report
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            echo "NotFoundHttpException report";
-        }
-
-        // ANCHOR mysql Exception report
-        if ($exception instanceof \App\Exceptions\CustomException) {
-            echo "CustomException report";
+            // dd($exception);
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
+            Log::channel('NotFoundHttpLog')->error($logBaseMessage);
+        } if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
+            Log::channel('CustomExceptionLog')->error($logBaseMessage);
+        } if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
+            Log::channel('ClientExceptionLog')->error($logBaseMessage);
         }
 
         parent::report($exception);
@@ -70,11 +88,31 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        // REVIEW Exception 화면에 어떻게 표시 할건지.
+        $error_message = "";
+        $error_code = null;
 
-        // ANCHOR Custom Exception Render
-        if ($exception instanceof \App\Exceptions\CustomException)  {
-            return $exception->render($request);
+        // REVIEW Exception 화면에 어떻게 표시 할건지.
+        if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR Custom Exception Render
+            $error_code = 403;
+            $error_message = __('default.exception.notfound');
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
+            $error_code = 404;
+            $error_message = __('default.exception.notfound');
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR NotFoundHttpException report
+            $error_code = 403;
+            $error_message = "Client Error";
+        }
+
+        if($request->isJson()) { // ajax 요청 일떄.
+
+            if(app()->isDownForMaintenance()) {
+                return Response::error(503, $exception->getMessage() ? $exception->getMessage() : __('default.server.down'));
+            } else {
+                return Response::error(
+                    $error_code ? $error_code : 503,
+                    $error_message ? $error_message : __('default.server.error')
+                );
+            }
         }
 
         return parent::render($request, $exception);

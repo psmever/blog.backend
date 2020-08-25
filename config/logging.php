@@ -113,6 +113,34 @@ return [
 		    'path' => storage_path('logs/'.date('Y/m/').'requestlog.log'),
 		    'level' => 'debug',
 		    'days' => 31,
+        ],
+
+        'authenticationlog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'authentication.log'),
+		    'level' => 'debug',
+		    'days' => 31,
+        ],
+
+        'NotFoundHttpLog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'notfound.log'),
+		    'level' => 'debug',
+		    'days' => 31,
+        ],
+
+        'CustomExceptionLog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'customexception.log'),
+		    'level' => 'debug',
+		    'days' => 31,
+        ],
+
+        'ClientExceptionLog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'clientexception.log'),
+		    'level' => 'debug',
+		    'days' => 31,
 	    ],
     ],
 
