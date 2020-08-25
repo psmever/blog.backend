@@ -66,7 +66,7 @@ class BaseTest extends TestCase
         $response->assertJsonStructure([
             'error_message'
         ])->assertJsonFragment([
-            "error_message" => "Client Error"
+            "error_message" => __('default.exception.clienttype')
         ]);
     }
 }

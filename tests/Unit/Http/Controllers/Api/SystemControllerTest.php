@@ -26,7 +26,7 @@ class SystemControllerTest extends TestCase
     public function test_server_check_status()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/status');
-        $response->dump();
+        // $response->dump();
         $response->assertStatus(204);
     }
 
@@ -36,7 +36,7 @@ class SystemControllerTest extends TestCase
     {
         Storage::disk('sitedata')->delete('notice.txt');
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
-        $response->dump();
+        // $response->dump();
         $response->assertStatus(204);
     }
 
@@ -44,7 +44,7 @@ class SystemControllerTest extends TestCase
     {
         Storage::disk('sitedata')->put('notice.txt', '');
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
-        $response->dump();
+        // $response->dump();
         $response->assertStatus(204);
     }
 
@@ -53,7 +53,7 @@ class SystemControllerTest extends TestCase
         $tmpNoticeMessage = '긴급 공지 사항 테스트입니다.';
         Storage::disk('sitedata')->put('notice.txt', $tmpNoticeMessage);
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
-        $response->dump();
+        // $response->dump();
         $response->assertOk();
         $response->assertJsonStructure(
             $this->getDefaultSuccessJsonType()
