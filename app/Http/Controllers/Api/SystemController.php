@@ -9,11 +9,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Response;
 
-use App\Traits\v1\SystemTrait;
+use App\Services\v1\SystemsServices;
+
 
 class SystemController extends ApiRootController
 {
-    use SystemTrait;
+    protected $SystemService;
+
+    public function __construct(SystemsServices $systemService)
+    {
+        $this->SystemService = $systemService;
+    }
 
     /**
      * ANCHOR 서버 상태 체크용.
@@ -23,7 +29,7 @@ class SystemController extends ApiRootController
      * @param Request $request
      * @return void
      */
-    public function check_status(Request $request)
+    public function checkStatus(Request $request)
     {
         return Response::success_no_content();
     }
@@ -34,9 +40,9 @@ class SystemController extends ApiRootController
      * @param Request $request
      * @return void
      */
-    public function check_notice(Request $request)
+    public function checkNotice(Request $request)
     {
-        $task = SystemTrait::checkSystemNotice();
+        $task = $this->SystemService->checkSystemNotice();
 
         if($task['data']) {
             return Response::success([
@@ -47,7 +53,16 @@ class SystemController extends ApiRootController
         }
     }
 
-    public function base_data(Request $request) {}
+    /**
+     * 기본 베이스 데이터.
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function baseData(Request $request)
+    {
+        return Response::success($this->SystemService->getSiteData());
+    }
 
 
     /**
@@ -80,7 +95,6 @@ class SystemController extends ApiRootController
         } else {
 
             echo " app environment : ".App::environment()." Not Deploy ".PHP_EOL;
-
         }
     }
 }
