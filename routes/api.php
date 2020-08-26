@@ -25,9 +25,9 @@ Route::group(['as' => 'api.'], function () {
 
     Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
         Route::post('deploy', 'SystemController@deploy')->name('deploy');
-        Route::get('check/status', 'SystemController@check_status')->name('check_status');
-        Route::get('check/notice', 'SystemController@check_notice')->name('check_notice');
-        Route::get('base_data', 'SystemController@base_data')->name('base_data');
+        Route::get('check/status', 'SystemController@checkStatus')->name('check.status');
+        Route::get('check/notice', 'SystemController@checkNotice')->name('check.notice');
+        Route::get('base/data', 'SystemController@baseData')->name('base.data');
     });
 
     /**
