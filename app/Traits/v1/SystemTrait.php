@@ -41,7 +41,5 @@ trait SystemTrait
                 'data' => null
             ];
         }
-
     }
-
 }
