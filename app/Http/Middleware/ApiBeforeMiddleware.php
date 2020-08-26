@@ -17,10 +17,13 @@ class ApiBeforeMiddleware
      */
     public function handle($request, Closure $next)
     {
+        // TODO 클라이언트 체크 예외 라우터.
+        $exceptionRouteName = ["api.system.deploy", "api.system.check.status"];
+
         // NOTE 헤더 클라이언트 체크.
         $clientType = $request->header('request-client-type');
 
-        if(Route::currentRouteName() != "api.system.deploy") {
+        if (!in_array(Route::currentRouteName(), $exceptionRouteName)) {
             if(empty($clientType) || !($clientType == env('FRONT_CLIENT_CODE') || $clientType == env('IOS_CLIENT_CODE') || $clientType == env('ANDROID_CLIENT_CODE'))) {
                 throw new \App\Exceptions\ClientErrorException(__('default.exception.clienttype'));
             }
