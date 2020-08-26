@@ -61,7 +61,7 @@ class BaseTest extends TestCase
             'Content-Type' => 'application/json'
         ];
 
-        $response = $this->withHeaders($testHeader)->json('GET', '/api/system/check/status');
+        $response = $this->withHeaders($testHeader)->json('GET', '/api/system/check/notice');
         $response->assertForbidden();
         $response->assertJsonStructure([
             'error_message'
