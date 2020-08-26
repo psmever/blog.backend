@@ -33,26 +33,28 @@ class SystemsServices
     {
         $noticeFileName = 'notice.txt';
         $niticeExists = Storage::disk('sitedata')->exists($noticeFileName);
-        if ($niticeExists == true) { // 있을때.
 
-            $noticeContents = Storage::disk('sitedata')->get($noticeFileName);
-            if ($noticeContents) {
-                return [
-                    'status' => true,
-                    'data' => $noticeContents
-                ];
-            } else {
-                return [
-                    'status' => false,
-                    'data' => null
-                ];
-            }
-        } else { // 없을때.
+        // 없을때.
+        if($niticeExists == false) {
             return [
                 'status' => false,
                 'data' => null
             ];
         }
+
+        // 있을때.
+        $noticeContents = Storage::disk('sitedata')->get($noticeFileName);
+        if ($noticeContents) {
+            return [
+                'status' => true,
+                'data' => $noticeContents
+            ];
+        }
+
+        return [
+            'status' => false,
+            'data' => null
+        ];
     }
 
     /**
