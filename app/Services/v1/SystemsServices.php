@@ -3,6 +3,7 @@
 namespace App\Services\v1;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 
 use App\Repositories\v1\CodeRepository;
 
@@ -64,9 +65,19 @@ class SystemsServices
      */
     public function getSiteData() : array
     {
-
+        // FIXME 2020-08-27 22:32  라라벨 Collection 으로 변경 요망.
         return [
-            'code' => $this->codeRepository->getAll()
+            'codes' => [
+                'code_name' => array_values(array_map(function($e) {
+                    $code_id = $e['code_id'];
+                    $code_name = $e['code_name'];
+                    return [
+                        $code_id => $code_name
+                    ];
+                }, array_filter($this->codeRepository->getAllData()->toArray(), function($e) {
+                    return $e['code_id'];
+                })))
+            ]
         ];
     }
 
