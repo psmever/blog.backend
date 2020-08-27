@@ -6,19 +6,26 @@ use App\Model\Codes;
 
 class CodeRepository implements CodeRepositoryInterface
 {
-    protected $codes;
+    protected $Codes;
 
-    public function __construct(Codes $codes)
+    public function __construct(Codes $Codes)
     {
-        $this->codes = $codes;
+        $this->Codes = $Codes;
     }
 
     public function getAll()
     {
-        return $this->codes->all();
+        return $this->Codes::All();
     }
     public function find() {}
     public function create() {}
     public function update() {}
     public function delete() {}
+
+    public function getAllData()
+    {
+        return $this->Codes::where('active', 'Y')
+            ->orderBy('id', 'asc')
+            ->get();
+    }
 }
