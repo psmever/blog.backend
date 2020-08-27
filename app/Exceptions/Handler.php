@@ -40,6 +40,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         $logid = date('Ymdhis');
+        $request_ip = request()->ip();
 
         $logRoutename = Route::currentRouteName();
         $logRouteAction = Route::currentRouteAction();
@@ -51,6 +52,7 @@ class Handler extends ExceptionHandler
         $logBaseMessage = <<<EOF
 
         ID:${logid}
+        RequestIP:${request_ip}
         Message: ${exceptionMessage}
         Current_url:${current_url}
         RouteName:${logRoutename}
@@ -94,7 +96,7 @@ class Handler extends ExceptionHandler
         // REVIEW Exception 화면에 어떻게 표시 할건지.
         if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR Custom Exception Render
             $error_code = 403;
-            $error_message = __('default.exception.notfound');
+            $error_message = $exception->getMessage();
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
             $error_code = 404;
             $error_message = __('default.exception.notfound');

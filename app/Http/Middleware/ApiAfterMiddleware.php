@@ -25,6 +25,7 @@ class ApiAfterMiddleware
     public function terminate($request, $response)
     {
         $logid = date('Ymdhis');
+        $request_ip = request()->ip();
 
         // ANCHOR Teminate Log
         if(env('APP_ENV') == "local") {
@@ -38,6 +39,7 @@ class ApiAfterMiddleware
             $logMessage = <<<EOF
 
             ID:${logid}
+            RequestIP:${request_ip}
             Current_url:${current_url}
             RouteName:${logRoutename}
             RouteAction:${logRouteAction}
