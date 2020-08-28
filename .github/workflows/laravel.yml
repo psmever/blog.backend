@@ -2,7 +2,7 @@ name: Blog.backend
 
 on:
   push:
-    branches: [ develop, master ]
+    branches: [ master ]
 
 jobs:
   blog-backend-tests:
