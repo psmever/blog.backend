@@ -63,5 +63,20 @@ class SystemControllerTest extends TestCase
     }
     // 시스템 공지 사항 테스트 End
 
-    // public function test_server_check_base_data() { }
+    // 베이스 데이터.
+    public function test_server_check_base_data() {
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/base/data');
+        $response->assertOk();
+        $response->assertJsonStructure(
+            $this->getDefaultSuccessJsonType()
+        );
+        $response->assertJsonStructure([
+            'message',
+            'result' => [
+                "codes" => [
+                    "code_name"
+                ]
+            ]
+        ]);
+    }
 }
