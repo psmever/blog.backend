@@ -9,6 +9,7 @@ return [
     'exception' => [
         'notfound' => '존재 하지 않은 요청 입니다.',
         'clienttype' => '클라이언트 정보가 존재 하지 않습니다.',
+        'loginFail' => '로그인에 실패 했습니다.',
     ],
 
     'server' => [

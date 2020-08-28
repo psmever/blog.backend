@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'user_uuid' => Str::random(50),
             'name' => Str::random(10),
+            'nickname' => Str::random(10),
             'email' => 'test@gmail.com',
             'password' => Hash::make('1212'),
             'email_verified_at' => \Carbon\Carbon::now(),
