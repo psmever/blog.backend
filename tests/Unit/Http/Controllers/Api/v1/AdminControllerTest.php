@@ -20,12 +20,5 @@ class AdminControllerTest extends TestCase
     {
         $this->assertTrue(true);
     }
-
-    // TODO 2020-08-27 23:49 로그인 유닛 테스트.
-    public function test_admin_login()
-    {
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/v1/admin/login');
-        $response->assertOk();
-    }
 }
 

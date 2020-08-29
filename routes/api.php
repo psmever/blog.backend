@@ -35,8 +35,6 @@ Route::group(['as' => 'api.'], function () {
      */
     Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'v1.'], function () {
         Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-            Route::post('login', 'AdminController@client_login')->name('login');
-            Route::post('logout', 'AdminController@client_logout')->name('logout');
         });
 
         Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {

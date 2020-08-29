@@ -19,11 +19,11 @@ class AuthController extends ApiRootController
 
     // TODO 2020-08-27 22:54  관리자 기능
 
-    public function client_login(Request $request)
+    public function client_login()
     {
-        $task = $this->AuthServices->attemptLogin($request);
+        $task = $this->AuthServices->attemptLogin();
 
-        return Response::success();
+        return Response::success_only_data($task);
     }
 
     public function client_logout()
