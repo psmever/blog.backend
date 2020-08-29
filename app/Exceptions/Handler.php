@@ -105,8 +105,8 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) { // MethodNotAllowedHttpException report
             $error_code = 405;
             $error_message = __('default.exception.notallowedmethod');
-        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // NotFoundHttpException report
-            $error_code = 403;
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ClientErrorException report
+            $error_code = 412;
             $error_message = $exception->getMessage();
         } else {
             $error_code = 503;
