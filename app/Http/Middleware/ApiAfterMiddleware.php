@@ -27,7 +27,7 @@ class ApiAfterMiddleware
         $logid = date('Ymdhis');
         $request_ip = request()->ip();
 
-        // ANCHOR Teminate Log
+        // TODO response 끝났을때 로그를 어떻게?
         if(env('APP_ENV') == "local") {
             $logRoutename = Route::currentRouteName();
             $logRouteAction = Route::currentRouteAction();
@@ -35,15 +35,17 @@ class ApiAfterMiddleware
             $current_url = url()->current();
             $logHeaderInfo = json_encode($request->header());
             $logBodyInfo = json_encode($request->all());
+            $method = $request->method();
 
             $logMessage = <<<EOF
 
-            ID:${logid}
-            RequestIP:${request_ip}
-            Current_url:${current_url}
-            RouteName:${logRoutename}
-            RouteAction:${logRouteAction}
-            Header: {$logHeaderInfo}
+            ID: ${logid}
+            RequestIP: ${request_ip}
+            Current_url: ${current_url}
+            RouteName: ${logRoutename}
+            RouteAction: ${logRouteAction}
+            Header: ${logHeaderInfo}
+            Method: ${method}
             Body: ${logBodyInfo}
 
             EOF;
