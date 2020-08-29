@@ -38,6 +38,11 @@ Route::group(['as' => 'api.'], function () {
             Route::post('login', 'AdminController@client_login')->name('login');
             Route::post('logout', 'AdminController@client_logout')->name('logout');
         });
+
+        Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
+            Route::post('login', 'AuthController@client_login')->name('login');
+            Route::post('logout', 'AuthController@client_logout')->name('logout');
+        });
     });
 });
 
