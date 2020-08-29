@@ -20,4 +20,12 @@ return [
         'error' => '오류가 발생 했습니다.',
         'down' => '서버 점검 중입니다.',
     ],
+
+    'login' => [
+        'email_required' => '이메일을 입력해 주세요.',
+        'email_not_validate' => '이메일 형식을 입력해 주세요.',
+        'email_exists' => '존재하지 않는 사용자 입니다.',
+        'password_required' => '패스워드를 입력해 주세요.',
+        'password_fail' => '비밀번호를 확인해 주세요.',
+    ],
 ];
