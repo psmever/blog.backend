@@ -72,11 +72,14 @@ class Handler extends ExceptionHandler
             // dd($exception);
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
             Log::channel('NotFoundHttpLog')->error($logBaseMessage);
-        } if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
+        } else if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
             Log::channel('CustomExceptionLog')->error($logBaseMessage);
-        } if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
             Log::channel('ClientExceptionLog')->error($logBaseMessage);
+        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // 서버 에러 로그
+            Log::channel('ServerExceptionLog')->error($logBaseMessage);
         }
+
 
         parent::report($exception);
     }
@@ -97,7 +100,7 @@ class Handler extends ExceptionHandler
 
         // REVIEW Exception 화면에 어떻게 표시 할건지.
         if ($exception instanceof \App\Exceptions\CustomException) { // Custom Exception Render
-            $error_code = 403;
+            $error_code = 400;
             $error_message = $exception->getMessage();
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // NotFoundHttpException report
             $error_code = 404;
@@ -107,6 +110,9 @@ class Handler extends ExceptionHandler
             $error_message = __('default.exception.notallowedmethod');
         } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ClientErrorException report
             $error_code = 412;
+            $error_message = $exception->getMessage();
+        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // ClientErrorException report
+            $error_code = 500;
             $error_message = $exception->getMessage();
         } else {
             $error_code = 503;
