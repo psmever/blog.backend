@@ -22,37 +22,44 @@ class SystemControllerTest extends TestCase
         $this->assertTrue(true);
     }
 
-    // api SystemControllerTest
-    public function test_server_check_status()
-    {
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/status');
-        // $response->dump();
-        $response->assertStatus(204);
-    }
-
     // 시스템 공지 사항 테스트 Start
 
+    /**
+     * 공지사항 파일 없을때.
+     *
+     * @return void
+     */
     public function test_server_notice_not_exists()
     {
         Storage::disk('sitedata')->delete('notice.txt');
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-notice');
         // $response->dump();
         $response->assertStatus(204);
     }
 
+    /**
+     * 공지사항 파일은 있지만 내용은 없을때.
+     *
+     * @return void
+     */
     public function test_server_notice_not_exists_contents()
     {
         Storage::disk('sitedata')->put('notice.txt', '');
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-notice');
         // $response->dump();
         $response->assertStatus(204);
     }
 
+    /**
+     * 공지사항 있을때.
+     *
+     * @return void
+     */
     public function test_server_notice_exists_contents()
     {
         $tmpNoticeMessage = '긴급 공지 사항 테스트입니다.';
         Storage::disk('sitedata')->put('notice.txt', $tmpNoticeMessage);
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check/notice');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-notice');
         // $response->dump();
         $response->assertOk();
         $response->assertJsonStructure(
@@ -63,9 +70,13 @@ class SystemControllerTest extends TestCase
     }
     // 시스템 공지 사항 테스트 End
 
-    // 베이스 데이터.
+    /**
+     * 기본 데이터
+     *
+     * @return void
+     */
     public function test_server_check_base_data() {
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/base/data');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/base-data');
         $response->assertOk();
         $response->assertJsonStructure(
             $this->getDefaultSuccessJsonType()
