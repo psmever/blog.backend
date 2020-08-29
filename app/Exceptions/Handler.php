@@ -90,6 +90,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+
+        // TODO MethodNotAllowedHttpException 어떻게 할건지?
+        // MethodNotAllowedHttpException
+        dd($exception);
         $error_message = "";
         $error_code = null;
 
@@ -102,6 +106,9 @@ class Handler extends ExceptionHandler
             $error_message = __('default.exception.notfound');
         } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR NotFoundHttpException report
             $error_code = 403;
+            $error_message = $exception->getMessage();
+        } else {
+            $error_code = 503;
             $error_message = $exception->getMessage();
         }
 

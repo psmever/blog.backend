@@ -54,6 +54,11 @@ class ResponseMacroServiceProvider extends ServiceProvider
             return Response()->json($response);
         });
 
+        //
+        Response::macro('success_only_data', function ($response = null) {
+            return Response()->json($response);
+        });
+
         // 성공 Response 데이터 없을때.
         Response::macro('success_no_content', function () {
             $response = new \stdClass();
