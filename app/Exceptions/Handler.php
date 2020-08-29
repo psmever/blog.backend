@@ -47,6 +47,7 @@ class Handler extends ExceptionHandler
         $current_url = url()->current();
         $logHeaderInfo = json_encode(request()->header());
         $logBodyInfo = json_encode(request()->all());
+        $method = request()->method();
 
         $exceptionMessage = $exception->getMessage();
         $logBaseMessage = <<<EOF
@@ -58,6 +59,7 @@ class Handler extends ExceptionHandler
         RouteName:${logRoutename}
         RouteAction:${logRouteAction}
         Header: {$logHeaderInfo}
+        Method: ${method}
         Body: ${logBodyInfo}
 
         EOF;
@@ -94,14 +96,20 @@ class Handler extends ExceptionHandler
         $error_code = null;
 
         // REVIEW Exception 화면에 어떻게 표시 할건지.
-        if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR Custom Exception Render
+        if ($exception instanceof \App\Exceptions\CustomException) { // Custom Exception Render
             $error_code = 403;
             $error_message = $exception->getMessage();
-        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // NotFoundHttpException report
             $error_code = 404;
             $error_message = __('default.exception.notfound');
-        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR NotFoundHttpException report
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) { // MethodNotAllowedHttpException report
+            $error_code = 405;
+            $error_message = __('default.exception.notallowedmethod');
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // NotFoundHttpException report
             $error_code = 403;
+            $error_message = $exception->getMessage();
+        } else {
+            $error_code = 503;
             $error_message = $exception->getMessage();
         }
 
