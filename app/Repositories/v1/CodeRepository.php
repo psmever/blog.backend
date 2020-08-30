@@ -6,11 +6,19 @@ use App\Model\Codes;
 
 class CodeRepository implements CodeRepositoryInterface
 {
+    /**
+     * @var Codes
+     */
     protected $Codes;
 
-    public function __construct(Codes $Codes)
+    /**
+     * CodeRepository construct
+     *
+     * @param Codes $codes
+     */
+    public function __construct(Codes $codes)
     {
-        $this->Codes = $Codes;
+        $this->Codes = $codes;
     }
 
     public function getAll()
@@ -22,7 +30,7 @@ class CodeRepository implements CodeRepositoryInterface
     public function update() {}
     public function delete() {}
 
-    public function getAllData()
+    public function getAllData() : object
     {
         return $this->Codes::where('active', 'Y')
             ->orderBy('id', 'asc')

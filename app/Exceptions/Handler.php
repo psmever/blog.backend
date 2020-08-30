@@ -47,6 +47,7 @@ class Handler extends ExceptionHandler
         $current_url = url()->current();
         $logHeaderInfo = json_encode(request()->header());
         $logBodyInfo = json_encode(request()->all());
+        $method = request()->method();
 
         $exceptionMessage = $exception->getMessage();
         $logBaseMessage = <<<EOF
@@ -58,6 +59,7 @@ class Handler extends ExceptionHandler
         RouteName:${logRoutename}
         RouteAction:${logRouteAction}
         Header: {$logHeaderInfo}
+        Method: ${method}
         Body: ${logBodyInfo}
 
         EOF;
@@ -66,15 +68,17 @@ class Handler extends ExceptionHandler
             echo "PDOException report";
             // dd($exception);
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // ANCHOR AuthenticationException report
-            echo "AuthenticationException report";
-            // dd($exception);
+            Log::channel('AuthenticationExceptionLog')->error($logBaseMessage);
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
             Log::channel('NotFoundHttpLog')->error($logBaseMessage);
-        } if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
+        } else if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
             Log::channel('CustomExceptionLog')->error($logBaseMessage);
-        } if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
             Log::channel('ClientExceptionLog')->error($logBaseMessage);
+        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // 서버 에러 로그
+            Log::channel('ServerExceptionLog')->error($logBaseMessage);
         }
+
 
         parent::report($exception);
     }
@@ -94,14 +98,26 @@ class Handler extends ExceptionHandler
         $error_code = null;
 
         // REVIEW Exception 화면에 어떻게 표시 할건지.
-        if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR Custom Exception Render
-            $error_code = 403;
+        if ($exception instanceof \App\Exceptions\CustomException) { // Custom Exception Render
+            $error_code = 400;
             $error_message = $exception->getMessage();
-        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // NotFoundHttpException report
             $error_code = 404;
             $error_message = __('default.exception.notfound');
-        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR NotFoundHttpException report
-            $error_code = 403;
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) { // MethodNotAllowedHttpException report
+            $error_code = 405;
+            $error_message = __('default.exception.notallowedmethod');
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ClientErrorException report
+            $error_code = 412;
+            $error_message = $exception->getMessage();
+        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // ServerErrorException report
+            $error_code = 500;
+            $error_message = $exception->getMessage();
+        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // AuthenticationException report
+            $error_code = 401;
+            $error_message = __('default.login.unauthorized');
+        } else {
+            $error_code = 503;
             $error_message = $exception->getMessage();
         }
 

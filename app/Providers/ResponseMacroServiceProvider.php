@@ -28,7 +28,9 @@ class ResponseMacroServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // 실패 Response
+        /**
+         * 기본 Error Render Macro
+         */
         Response::macro('error', function($statusCode = 401, $error_message = NULL) {
             $request = app(\Illuminate\Http\Request::class);
             $response = [
@@ -42,7 +44,9 @@ class ResponseMacroServiceProvider extends ServiceProvider
             }
         });
 
-        // 기본 성공 Response
+        /**
+         * 기본 성공 Render Macro
+         */
         Response::macro('success', function ($result = null) {
             $response = new \stdClass();
             $response = [
@@ -54,7 +58,16 @@ class ResponseMacroServiceProvider extends ServiceProvider
             return Response()->json($response);
         });
 
-        // 성공 Response 데이터 없을때.
+        /**
+         * 데이터만 Render Macro
+         */
+        Response::macro('success_only_data', function ($response = null) {
+            return Response()->json($response);
+        });
+
+        /**
+         * 성공 No Contents Render Macro
+         */
         Response::macro('success_no_content', function () {
             $response = new \stdClass();
             return Response()->json($response, 204);

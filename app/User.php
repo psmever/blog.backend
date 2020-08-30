@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Model\Codes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -38,6 +39,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $with = ['userType', 'userLevel'];
+
     /**
      * Specify Slack Webhook URL to route notifications to
      *
@@ -46,5 +49,25 @@ class User extends Authenticatable
     public function routeNotificationForSlack()
     {
         return env('SLACK_WEBHOOK_URL');
+    }
+
+    /**
+     * 사용자 타입 코드 가지고 오기.
+     *
+     * @return void
+     */
+    public function userType()
+    {
+		return $this->hasOne(Codes::class, 'code_id', 'user_type');
+    }
+
+    /**
+     * 사용자 레벨 타입 코드 가지고 오기.
+     *
+     * @return void
+     */
+    public function userLevel()
+    {
+		return $this->hasOne(Codes::class, 'code_id', 'user_level');
     }
 }

@@ -141,6 +141,20 @@ return [
 		    'path' => storage_path('logs/'.date('Y/m/').'clientexception.log'),
 		    'level' => 'debug',
 		    'days' => 31,
+        ],
+
+        'ServerExceptionLog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'serverexceptionlog.log'),
+		    'level' => 'debug',
+		    'days' => 31,
+        ],
+
+        'AuthenticationExceptionLog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'authenticationexceptionlog.log'),
+		    'level' => 'debug',
+		    'days' => 31,
 	    ],
     ],
 
