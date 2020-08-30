@@ -23,19 +23,19 @@ class AuthServices
      *
      * @return void
      */
-    public function attemptLogin()
+    public function attemptLogin() : object
     {
         $request = $this->currentRequest;
 
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:users,email',
-			'password' => 'required',
-        ],
-        [
-            'email.required'=> __('default.login.email_required'),
-            'email.email'=> __('default.login.email_not_validate'),
-            'email.exists'=> __('default.login.email_exists'),
-            'password.required'=> __('default.login.password_required'),
+                'email' => 'required|email|exists:users,email',
+                'password' => 'required',
+            ],
+            [
+                'email.required'=> __('default.login.email_required'),
+                'email.email'=> __('default.login.email_not_validate'),
+                'email.exists'=> __('default.login.email_exists'),
+                'password.required'=> __('default.login.password_required'),
          ]);
 
 		if( $validator->fails() ) {
@@ -54,7 +54,7 @@ class AuthServices
      *
      * @return void
      */
-    public function publishNewToken()
+    public function publishNewToken() : object
     {
         $client = $this->passportRepository->clientInfo();
 
@@ -75,5 +75,29 @@ class AuthServices
         }
 
         return $tokenRequestResult;
+    }
+
+    /**
+     * 로그인 사용자 정보.
+     *
+     * @return object
+     */
+    public function attemptLoginCheck() : object
+    {
+        $user = Auth::user();
+
+        $returnObject = (object) [
+            'user_uuid' => $user->user_uuid,
+            'user_type' => [
+                'code' => $user->userType->code_id,
+                'code_name' =>  $user->userType->code_name,
+            ],
+            'user_level' => [
+                'code' => $user->userLevel->code_id,
+                'code_name' =>  $user->userLevel->code_name,
+            ]
+        ];
+
+        return $returnObject;
     }
 }
