@@ -21,17 +21,35 @@ abstract class TestCase extends BaseTestCase
         // $this->artisan('migrate',['-vvv' => true]);
         $this->artisan('passport:install',['-vvv' => true]);
         $this->artisan('db:seed',['-vvv' => true]);
+    }
 
-        // 로그인 테스트용
-        DB::table('users')->insert([
-            'user_uuid' => Str::random(50),
-            'name' => Str::random(10),
-            'nickname' => Str::random(10),
-            'email' => 'test_admin@gmail.com',
-            'password' => Hash::make('1212'),
-            'email_verified_at' => \Carbon\Carbon::now(),
-            'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now(),
-        ]);
+    protected function userCreate()
+    {
+        return factory('App\User')->create();
+    }
+
+    public static function getTestApiHeaders()
+    {
+        return [
+            'Request-Client-Type' => 'S01010',
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => ''
+        ];
+    }
+
+    public static function getDefaultErrorJsonType()
+    {
+        return [
+            'error_message'
+        ];
+    }
+
+    public static function getDefaultSuccessJsonType()
+    {
+        return [
+            "message" ,
+            "result"
+        ];
     }
 }
