@@ -16,3 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('landing');
 });
+
+Route::group(['namespace'=> 'Front', 'prefix' => 'front', 'as' => 'front.'], function () {
+
+    Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+        Route::get('index', 'TestController@index')->name('index');
+    });
+
+});
