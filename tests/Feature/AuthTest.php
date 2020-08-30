@@ -123,7 +123,7 @@ class AuthTest extends TestCase
         $header = $this->getTestApiHeaders();
         $header['Authorization'] = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9';
 
-        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/login-check', ['email' => $this->user_email, 'password' => $this->user_password]);
+        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/login-check');
         // $response->dump();
         $response->assertUnauthorized();
         $response->assertJsonStructure(
@@ -145,7 +145,7 @@ class AuthTest extends TestCase
         $header = $this->getTestApiHeaders();
         $header['Authorization'] = 'Bearer '.$access_token;
 
-        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/login-check', ['email' => $this->user_email, 'password' => $this->user_password]);
+        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/login-check');
         // $response->dump();
         $response->assertOk();
         $response->assertJsonStructure(
@@ -165,5 +165,22 @@ class AuthTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    // 로그아웃 - 성공
+    public function test_auth_logout()
+    {
+        $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
+            "email" => $this->user_email,
+            "password" => 'password'
+        ]);
+        $access_token = $response['access_token'];
+
+        $header = $this->getTestApiHeaders();
+        $header['Authorization'] = 'Bearer '.$access_token;
+
+        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/logout');
+        // $response->dump();
+        $response->assertStatus(204);
     }
 }
