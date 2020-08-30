@@ -37,9 +37,11 @@ class AuthController extends ApiRootController
      *
      * @return void
      */
-    public function client_logout()
+    public function client_logout(Request $request)
     {
-        return Response::success();
+        $request->user()->token()->revoke();
+
+        return Response::success_no_content();
     }
 
     /**

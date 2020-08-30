@@ -39,8 +39,8 @@ Route::group(['as' => 'api.'], function () {
     Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'v1.'], function () {
         Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
             Route::post('login', 'AuthController@client_login')->name('login');
-            Route::post('logout', 'AuthController@client_logout')->name('logout');
 
+            Route::post('logout', 'AuthController@client_logout')->name('logout')->middleware('auth:api');
             Route::post('login-check', 'AuthController@client_login_check')->name('logincheck')->middleware('auth:api');
         });
 
