@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Api\ApiRootController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Auth;
 
 use App\Services\v1\AuthServices;
 
@@ -39,5 +40,15 @@ class AuthController extends ApiRootController
     public function client_logout()
     {
         return Response::success();
+    }
+
+    /**
+     * 로그인 체크 및 로그인 사용자 정보.
+     *
+     * @return void
+     */
+    public function client_login_check()
+    {
+        return Response::success($this->AuthServices->attemptLoginCheck());
     }
 }
