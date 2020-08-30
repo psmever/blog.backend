@@ -68,8 +68,7 @@ class Handler extends ExceptionHandler
             echo "PDOException report";
             // dd($exception);
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // ANCHOR AuthenticationException report
-            echo "AuthenticationException report";
-            // dd($exception);
+            Log::channel('AuthenticationExceptionLog')->error($logBaseMessage);
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
             Log::channel('NotFoundHttpLog')->error($logBaseMessage);
         } else if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
@@ -111,9 +110,12 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ClientErrorException report
             $error_code = 412;
             $error_message = $exception->getMessage();
-        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // ClientErrorException report
+        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // ServerErrorException report
             $error_code = 500;
             $error_message = $exception->getMessage();
+        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // AuthenticationException report
+            $error_code = 401;
+            $error_message = __('default.login.unauthorized');
         } else {
             $error_code = 503;
             $error_message = $exception->getMessage();
