@@ -65,6 +65,11 @@
     </head>
     <body>
         <div class="flex-center position-ref full-height">
+                <div class="top-right links">
+                    <a href="javascript::">{{ env("APP_ENV") }}</a>
+                    <a href="{{ route('login') }}">Login</a>
+                </div>
+
             <div class="content">
                 <div class="title m-b-md">
                     {{ env('APP_NAME') }}
