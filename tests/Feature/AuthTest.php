@@ -167,6 +167,71 @@ class AuthTest extends TestCase
         ]);
     }
 
+    // 토큰 리프레쉬-
+    public function test_TokenRefresh_로그인정보없을때()
+    {
+        $header = $this->getTestApiHeaders();
+        $header['Authorization'] = 'Bearer ';
+
+        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/token-refresh');
+        // $response->dump();
+        $response->assertUnauthorized();
+        $response->assertJsonStructure(
+            $this->getDefaultErrorJsonType()
+        )->assertJsonFragment([
+            "error_message" => __('default.login.unauthorized')
+        ]);
+    }
+
+    public function test_TokenRefresh_리프레쉬토큰_에러()
+    {
+        $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
+            "email" => $this->user_email,
+            "password" => 'password'
+        ]);
+        $access_token = $response['access_token'];
+
+        $header = $this->getTestApiHeaders();
+        $header['Authorization'] = 'Bearer '.$access_token;
+
+        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/token-refresh', [
+            "refresh_token" => "asdasdasdasdasd"
+        ]);
+        // $response->dump();
+        $response->assertStatus(400);
+        $response->assertJsonStructure(
+            $this->getDefaultErrorJsonType()
+        )->assertJsonFragment([
+            "error_message" => __('default.login.refresh_token_fail')
+        ]);
+
+    }
+
+    public function test_TokenRefresh_성공_했을때()
+    {
+        $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
+            "email" => $this->user_email,
+            "password" => 'password'
+        ]);
+        $access_token = $response['access_token'];
+        $refresh_token = $response['refresh_token'];
+
+        $header = $this->getTestApiHeaders();
+        $header['Authorization'] = 'Bearer '.$access_token;
+
+        $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/token-refresh', [
+            "refresh_token" => $refresh_token
+        ]);
+        // $response->dump();
+        $response->assertOk();
+        $response->assertJsonStructure([
+            "token_type",
+            "expires_in",
+            "access_token",
+            "refresh_token"
+        ]);
+    }
+
     // 로그아웃 - 성공
     public function test_auth_logout()
     {
