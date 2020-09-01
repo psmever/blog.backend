@@ -50,6 +50,41 @@ class AuthServices
     }
 
     /**
+     * 사용자 로그인 토큰 새로고침.
+     *
+     * @return void
+     */
+    public function attemptLoginRefreshToken() : object
+    {
+        $request = $this->currentRequest;
+
+        $refresh_token = empty($request->input('refresh_token')) ? '' : $request->input('refresh_token');
+
+        if(empty($refresh_token)) {
+            throw new \App\Exceptions\ClientErrorException(__('default.login.refresh_token_not_fount'));
+        }
+
+        $client = $this->passportRepository->clientInfo();
+
+        $payloadObject = [
+            'grant_type' => 'refresh_token',
+            'client_id' => $client->client_id,
+            'client_secret' => $client->client_secret,
+            'refresh_token' => $refresh_token,
+            'scope' => '',
+        ];
+
+        $tokenRequest = Request::create('/oauth/token', 'POST', $payloadObject);
+        $tokenRequestResult = json_decode(app()->handle($tokenRequest)->getContent());
+
+        if(isset($tokenRequestResult->message) && $tokenRequestResult->message) {
+            throw new \App\Exceptions\CustomException(__('default.login.refresh_token_fail'));
+        }
+
+        return $tokenRequestResult;
+    }
+
+    /**
      * Passport New Token 발행.
      *
      * @return void
