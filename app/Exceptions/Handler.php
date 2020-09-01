@@ -94,6 +94,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // print_r(get_class($exception));
         $error_message = "";
         $error_code = null;
 
@@ -117,8 +118,13 @@ class Handler extends ExceptionHandler
             $error_code = 401;
             $error_message = __('default.login.unauthorized');
         } else {
+
+            // FIXME 2020-09-01 22:33 일반 Exception 문구 변경 해야함.
             $error_code = 503;
-            $error_message = $exception->getMessage();
+            $error_message = [
+                'message' => __('default.exception.error_exception'),
+                'error' => $exception->getMessage()
+            ];
         }
 
         if($request->isJson()) { // ajax 요청 일떄.
