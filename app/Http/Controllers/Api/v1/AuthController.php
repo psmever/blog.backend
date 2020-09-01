@@ -53,4 +53,14 @@ class AuthController extends ApiRootController
     {
         return Response::success($this->AuthServices->attemptLoginCheck());
     }
+
+    /**
+     * 로그인 사용자 토큰 새로고침.
+     *
+     * @return void
+     */
+    public function client_token_refresh()
+    {
+        return Response::success_only_data($this->AuthServices->attemptLoginRefreshToken());
+    }
 }
