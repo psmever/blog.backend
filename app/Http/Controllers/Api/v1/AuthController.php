@@ -35,6 +35,8 @@ class AuthController extends ApiRootController
     /**
      * 로그아웃
      *
+     * FIXME passport 를 이용 로그아웃 처리.
+     *
      * @return void
      */
     public function client_logout(Request $request)
