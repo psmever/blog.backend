@@ -36,13 +36,14 @@ Route::group(['as' => 'api.'], function () {
     /**
      * Api V1 Route Group.
      */
+    // FIXME 2020-09-02 21:05 auth:api middleware 정책 수립?
     Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'v1.'], function () {
         Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
             Route::post('login', 'AuthController@client_login')->name('login');
 
             Route::post('logout', 'AuthController@client_logout')->name('logout')->middleware('auth:api');
             Route::post('login-check', 'AuthController@client_login_check')->name('logincheck')->middleware('auth:api');
-            Route::post('token-refresh', 'AuthController@client_token_refresh')->name('token_refresh')->middleware('auth:api');
+            Route::post('token-refresh', 'AuthController@client_token_refresh')->name('token_refresh');
         });
 
         Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
