@@ -168,18 +168,18 @@ class AuthTest extends TestCase
     }
 
     // 토큰 리프레쉬-
+    // FIXME 토큰 없이 리프레쉬 시도시 에러코드, 메시지 수정??
     public function test_TokenRefresh_로그인정보없을때()
     {
         $header = $this->getTestApiHeaders();
-        $header['Authorization'] = 'Bearer ';
 
         $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/token-refresh');
         // $response->dump();
-        $response->assertUnauthorized();
+        $response->assertStatus(412);
         $response->assertJsonStructure(
             $this->getDefaultErrorJsonType()
         )->assertJsonFragment([
-            "error_message" => __('default.login.unauthorized')
+            "error_message" => __('default.login.refresh_token_not_fount')
         ]);
     }
 
