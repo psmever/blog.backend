@@ -54,6 +54,15 @@ throw new \App\Exceptions\CustomException('Something Went Wrong.');
 
 ```
 
+## Server Deploy
+```
+> composer global require laravel/envoy
+
+envoy run prod_deploy
+envoy run stage_deploy
+
+```
+
 ## etc message
 github actions test
 ```
