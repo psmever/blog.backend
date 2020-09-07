@@ -7,25 +7,18 @@
 @endsetup
 
 @story('prod_deploy')
-    prod_maintenance_mode
-    run_task_prod_deploy
-    stop_prod_maintenance_mode
+    task_prod_deploy
 @endstory
 
 @story('stage_deploy')
-    stage_maintenance_mode
-    run_task_prod_deploy
-    stop_stage_maintenance_mode
+    stage_deploy
 @endstory
 
-
-@task('prod_maintenance_mode')
+@task('task_prod_deploy')
     cd {{ $prod_root_directory }}
+    pwd
+
     php artisan down --message="Now deploy" --retry=60
-@endtask
-
-@task('run_task_prod_deploy')
-    cd {{ $prod_root_directory }}
 
     # update source code
     echo "update source code";
@@ -63,21 +56,14 @@
     echo "optimize clear";
     php artisan optimize:clear
 
-@endtask
-
-@task('stop_prod_maintenance_mode')
-    cd {{ $prod_root_directory }}
     php artisan up
 @endtask
 
-
-@task('stage_maintenance_mode')
+@task('stage_deploy')
     cd {{ $stage_root_directory }}
+    pwd
+
     php artisan down --message="Now deploy" --retry=60
-@endtask
-
-@task('run_task_prod_deploy')
-    cd {{ $stage_root_directory }}
 
     # update source code
     echo "update source code";
@@ -115,9 +101,5 @@
     echo "optimize clear";
     php artisan optimize:clear
 
-@endtask
-
-@task('stop_stage_maintenance_mode')
-    cd {{ $stage_root_directory }}
     php artisan up
 @endtask
