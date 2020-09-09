@@ -6,11 +6,15 @@
     $stage_root_directory = "/var/www/site/blog/stage.backend";
 @endsetup
 
-@story('deploy_prod')
+@story('deploy')
     task_prod_deploy
 @endstory
 
-@story('deploy_stage')
+@story('deploy:prod')
+    task_prod_deploy
+@endstory
+
+@story('deploy:stage')
     stage_deploy
 @endstory
 
