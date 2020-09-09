@@ -58,8 +58,8 @@ throw new \App\Exceptions\CustomException('Something Went Wrong.');
 ```
 > composer global require laravel/envoy
 
-envoy run prod_deploy
-envoy run stage_deploy
+envoy run deploy_prod
+envoy run deploy_stage
 
 ```
 
