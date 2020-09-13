@@ -6,8 +6,17 @@ use App\Http\Controllers\Api\ApiRootController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
+use App\Services\v1\PostServices;
+
 class PostController extends ApiRootController
 {
+    protected $PostServices;
+
+    public function __construct(PostServices $postServices)
+    {
+        $this->PostServices = $postServices;
+    }
+
     // 리스트
     public function index(Request $request) {
         return Response::success();
@@ -15,7 +24,10 @@ class PostController extends ApiRootController
 
     // 생성
     public function create(Request $request) {
-        return Response::success();
+
+        $task = $this->PostServices->createPosts();
+
+        return Response::success_only_data($task);
     }
 
     // 정보.
