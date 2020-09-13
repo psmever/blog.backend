@@ -48,6 +48,14 @@ Route::group(['as' => 'api.'], function () {
 
         Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         });
+
+        Route::group(['prefix' => 'post', 'as' => 'post.'], function () {
+            Route::get('/', 'PostController@index')->name('index');
+            Route::post('/', 'PostController@create')->name('create')->middleware('auth:api');
+            Route::get('/{post_uuid}/edit', 'PostController@edit')->name('edit');
+            Route::post('/{post_uuid}/update', 'PostController@update')->name('update')->middleware('auth:api');
+            Route::delete('/{post_uuid}/destroy', 'PostController@destroy')->name('destroy')->middleware('auth:api');
+        });
     });
 });
 
