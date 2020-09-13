@@ -33,4 +33,10 @@ return [
         'refresh_token_not_fount' => '토큰 정보가 없습니다.',
         'refresh_token_fail' => '로그인 정보를 다시 가지고 오는데 오류가 발생했습니다.',
     ],
+
+    'post' => [
+        'title_required' => '제목을 입력해 주세요.',
+        'tag_required' => '테그를 입력해 주세요.',
+        'contents_required' => '내용을 입력해 주세요.',
+    ],
 ];
