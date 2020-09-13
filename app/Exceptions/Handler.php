@@ -117,6 +117,9 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // AuthenticationException report
             $error_code = 401;
             $error_message = __('default.login.unauthorized');
+        } else if ($exception instanceof \Illuminate\Http\Exceptions\ThrottleRequestsException) { // throttle Exception
+            $error_code = 429;
+            $error_message = __('default.exception.throttle_exception');
         } else {
 
             // FIXME 2020-09-01 22:33 일반 Exception 문구 변경 해야함.

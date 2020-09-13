@@ -41,7 +41,9 @@ abstract class TestCase extends BaseTestCase
     public static function getDefaultErrorJsonType()
     {
         return [
-            'error_message'
+            'error' => [
+                'error_message'
+            ]
         ];
     }
 
