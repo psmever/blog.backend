@@ -64,9 +64,13 @@ class BaseTest extends TestCase
         // $response->dump();
         $response->assertStatus(412);
         $response->assertJsonStructure([
-            'error_message'
+            'error' => [
+                'error_message'
+            ]
         ])->assertJsonFragment([
-            "error_message" => __('default.exception.clienttype')
+            'error' => [
+                'error_message' => __('default.exception.clienttype')
+            ]
         ]);
     }
 
@@ -86,9 +90,13 @@ class BaseTest extends TestCase
         $response = $this->withHeaders($testHeader)->json('GET', '/api/system/server-check');
         $response->assertStatus(412);
         $response->assertJsonStructure([
-            'error_message'
+            'error' => [
+                'error_message'
+            ]
         ])->assertJsonFragment([
-            "error_message" => __('default.exception.clienttype')
+            'error' => [
+                'error_message' => __('default.exception.clienttype')
+            ]
         ]);
     }
 
@@ -115,9 +123,13 @@ class BaseTest extends TestCase
         // $response->dump();
         $response->assertNotFound();
         $response->assertJsonStructure([
-            'error_message'
+            'error' => [
+                'error_message'
+            ]
         ])->assertJsonFragment([
-            "error_message" => __('default.exception.notfound')
+            'error' => [
+                'error_message' => __('default.exception.notfound')
+            ]
         ]);
     }
 
@@ -132,12 +144,15 @@ class BaseTest extends TestCase
         // $response->dump();
         $response->assertStatus(405);
         $response->assertJsonStructure([
-            'error_message'
+            'error' => [
+                'error_message'
+            ]
         ])->assertJsonFragment([
-            "error_message" => __('default.exception.notallowedmethod')
+            'error' => [
+                'error_message' => __('default.exception.notallowedmethod')
+            ]
         ]);
     }
-
 
     /**
      * api 상태 체크 (Down).
@@ -151,9 +166,13 @@ class BaseTest extends TestCase
         // $response->dump();
         $response->assertStatus(503);
         $response->assertJsonStructure([
-            'error_message'
+            'error' => [
+                'error_message'
+            ]
         ])->assertJsonFragment([
-            "error_message" => __('default.server.down')
+            'error' => [
+                'error_message' => __('default.server.down')
+            ]
         ]);
         $this->artisan('up');
     }
