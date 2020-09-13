@@ -47,7 +47,9 @@ class AuthTest extends TestCase
         $response->assertJsonStructure(
             $this->getDefaultErrorJsonType()
         )->assertJsonFragment([
-            "error_message" => __('default.login.email_required')
+            "error" => [
+                'error_message' => __('default.login.email_required')
+            ]
         ]);
     }
 
@@ -60,7 +62,9 @@ class AuthTest extends TestCase
         $response->assertJsonStructure(
             $this->getDefaultErrorJsonType()
         )->assertJsonFragment([
-            "error_message" => __('default.login.email_not_validate')
+            "error" => [
+                'error_message' => __('default.login.email_not_validate')
+            ]
         ]);
     }
 
