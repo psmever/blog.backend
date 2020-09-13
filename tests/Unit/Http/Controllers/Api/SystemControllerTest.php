@@ -67,6 +67,7 @@ class SystemControllerTest extends TestCase
         )->assertJsonFragment([
             "notice_message" => $tmpNoticeMessage
         ]);
+        Storage::disk('sitedata')->delete('notice.txt');
     }
     // 시스템 공지 사항 테스트 End
 
