@@ -33,12 +33,18 @@ class ResponseMacroServiceProvider extends ServiceProvider
          */
         Response::macro('error', function($statusCode = 401, $error_message = NULL) {
             $request = app(\Illuminate\Http\Request::class);
-            $response = [
-                // 'error_message' => $error_message ? $error_message : __('default.server.error'),
-                'error' => [
-                    'error_message' => $error_message ? $error_message : __('default.server.error')
-                ],
-            ];
+
+            if(is_array($error_message)) {
+                $response = [
+                    'error' => $error_message
+                ];
+            } else {
+                $response = [
+                    'error' => [
+                        'error_message' => $error_message ? $error_message : __('default.server.error')
+                    ]
+                ];
+            }
 
             if(!empty($request->get('callback'))){
                 return Response()->json($response)->setCallback( $request->get('callback') );
