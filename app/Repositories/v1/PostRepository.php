@@ -25,6 +25,7 @@ class PostRepository implements PostRepositoryInterface
     {
         return $this->Posts::All();
     }
+
     public function find() {}
     public function create() {}
     public function update() {}

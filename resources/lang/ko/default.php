@@ -36,7 +36,7 @@ return [
 
     'post' => [
         'title_required' => '제목을 입력해 주세요.',
-        'tag_required' => '테그를 입력해 주세요.',
+        'tags_required' => '테그를 입력해 주세요.',
         'contents_required' => '내용을 입력해 주세요.',
     ],
 ];
