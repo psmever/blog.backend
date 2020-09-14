@@ -25,9 +25,9 @@ class PostController extends ApiRootController
     // 생성
     public function create(Request $request) {
 
-        $task = $this->PostServices->createPosts();
+        $this->PostServices->createPosts($request);
 
-        return Response::success_only_data($task);
+        return Response::success();
     }
 
     // 정보.

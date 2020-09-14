@@ -50,7 +50,7 @@ abstract class TestCase extends BaseTestCase
             'Request-Client-Type' => 'S01010',
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer'.$response['access_token']
+            'Authorization' => 'Bearer '.$response['access_token']
         ];
     }
 
@@ -68,6 +68,13 @@ abstract class TestCase extends BaseTestCase
         return [
             "message" ,
             "result"
+        ];
+    }
+
+    public static function getSuccessJsonType()
+    {
+        return [
+            "message" => __('default.server.success')
         ];
     }
 }

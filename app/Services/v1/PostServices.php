@@ -8,32 +8,34 @@ use Illuminate\Support\Facades\Validator;
 
 class PostServices
 {
-    protected $currentRequest;
     protected $postRepository;
 
-    function __construct(Request $request, PostRepository $postRepository) {
-        $this->currentRequest = $request;
+    function __construct(PostRepository $postRepository) {
         $this->postRepository = $postRepository;
     }
 
-    public function createPosts()
+    public function createPosts(Request $request)
     {
-        $request = $this->currentRequest;
+        // print_r($request->input('tags'));
         $validator = Validator::make($request->all(), [
-                'editorTitle' => 'required',
-                'editorContents' => 'required',
-                'editorTagContents' => 'required',
+                'title' => 'required',
+                'tags' => 'required|array|min:1',
+                'tags.*' => 'required|array|min:1',
+                'contents' => 'required|array|min:2',
+                'contents.*' => 'required|string|min:1',
             ],
             [
-                'editorTitle.required'=> __('default.post.email_required'),
-                'editorTagContents.required'=> __('default.post.tag_required'),
-                'editorContents.required'=> __('default.post.contents_required'),
+                'title.required'=> __('default.post.title_required'),
+                'tags.required'=> __('default.post.tags_required'),
+                'contents.required'=> __('default.post.contents_required'),
+                'contents.*.required'=> __('default.post.contents_required'),
         ]);
 
+        //$validator->passes()
         if( $validator->fails() ) {
             throw new \App\Exceptions\CustomException($validator->errors()->first());
         }
 
+        // TODO 2020-09-15 00:00  유효성 통과.
     }
-
 }
