@@ -122,7 +122,6 @@ class Handler extends ExceptionHandler
             $error_message = __('default.exception.throttle_exception');
         } else {
 
-            // FIXME 2020-09-01 22:33 일반 Exception 문구 변경 해야함.
             $error_code = 503;
             $error_message = [
                 'error_message' => __('default.exception.error_exception'),
@@ -130,7 +129,7 @@ class Handler extends ExceptionHandler
             ];
         }
 
-        if($request->isJson()) { // ajax 요청 일떄.
+        if($request->is('api/*')) { // api 요청 일떄.
 
             if(app()->isDownForMaintenance()) {
                 return Response::error(503, $exception->getMessage() ? $exception->getMessage() : __('default.server.down'));
