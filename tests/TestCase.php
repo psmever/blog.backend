@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Passport\Passport;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -35,6 +36,21 @@ abstract class TestCase extends BaseTestCase
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
             'Authorization' => ''
+        ];
+    }
+
+    protected function getTestAccessTokenHeader()
+    {
+        $user = factory('App\User')->create();
+        $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
+            "email" => $user->email,
+            "password" => 'password'
+        ]);
+        return [
+            'Request-Client-Type' => 'S01010',
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer'.$response['access_token']
         ];
     }
 
