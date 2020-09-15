@@ -6,15 +6,15 @@ use App\Http\Controllers\Api\ApiRootController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
-use App\Services\v1\PostServices;
+use App\Services\v1\PostsServices;
 
-class PostController extends ApiRootController
+class PostsController extends ApiRootController
 {
-    protected $PostServices;
+    protected $PostsServices;
 
-    public function __construct(PostServices $postServices)
+    public function __construct(PostsServices $postsServices)
     {
-        $this->PostServices = $postServices;
+        $this->PostsServices = $postsServices;
     }
 
     // 리스트
@@ -25,7 +25,7 @@ class PostController extends ApiRootController
     // 생성
     public function create(Request $request) {
 
-        $this->PostServices->createPosts($request);
+        $this->PostsServices->createPosts($request);
 
         return Response::success();
     }

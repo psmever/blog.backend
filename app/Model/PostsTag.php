@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PostTag extends Model
+class PostsTag extends Model
 {
-    protected $table = "post_tags";
+    protected $table = "posts_tags";
 }

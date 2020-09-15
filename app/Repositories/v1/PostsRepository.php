@@ -4,7 +4,7 @@ namespace App\Repositories\v1;
 
 use App\Model\Posts;
 
-class PostRepository implements PostRepositoryInterface
+class PostsRepository implements PostsRepositoryInterface
 {
     /**
      * @var Posts

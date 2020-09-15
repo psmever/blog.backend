@@ -2,7 +2,7 @@
 
 namespace App\Repositories\v1;
 
-interface PostRepositoryInterface
+interface PostsRepositoryInterface
 {
     public function getAll();
     public function find();
