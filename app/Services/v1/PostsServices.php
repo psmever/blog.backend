@@ -3,15 +3,15 @@
 namespace App\Services\v1;
 
 use Illuminate\Http\Request;
-use App\Repositories\v1\PostRepository;
+use App\Repositories\v1\PostsRepository;
 use Illuminate\Support\Facades\Validator;
 
-class PostServices
+class PostsServices
 {
-    protected $postRepository;
+    protected $postsRepository;
 
-    function __construct(PostRepository $postRepository) {
-        $this->postRepository = $postRepository;
+    function __construct(PostsRepository $postsRepository) {
+        $this->postsRepository = $postsRepository;
     }
 
     public function createPosts(Request $request)
