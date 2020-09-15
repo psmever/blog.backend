@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -14,6 +15,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use DatabaseMigrations;
+    use RefreshDatabase;
 
     protected function setUp() : void
     {

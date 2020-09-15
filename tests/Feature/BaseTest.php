@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
+use Illuminate\Support\Facades\DB;
 
 
 class BaseTest extends TestCase
@@ -13,6 +14,19 @@ class BaseTest extends TestCase
     {
         parent::setUp();
     }
+
+    // 테스트용.
+    // public function test전체테이블리스트()
+    // {
+    //     echo PHP_EOL.PHP_EOL;
+    //     $tables = DB::select("SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name NOT LIKE 'sqlite_%' UNION ALL SELECT name FROM sqlite_temp_master WHERE type IN ('table', 'view') ORDER BY 1");
+
+    //     foreach($tables as $table)
+    //     {
+    //         echo $table->name.PHP_EOL;
+    //     }
+    //     echo PHP_EOL;
+    // }
 
     /**
      * A basic unit test example.
