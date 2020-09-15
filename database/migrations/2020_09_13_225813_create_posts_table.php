@@ -17,11 +17,12 @@ class CreatePostsTable extends Migration
 
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable(false)->comment('사용자 id');
-            $table->string('uuid')->nullable(false)->unique();
+            $table->string('post_uuid')->nullable(false)->unique();
             $table->string('title')->nullable(false);
-            $table->string('title_query')->nullable(false)->unique();
+            $table->string('slug_title')->nullable(false)->unique();
             $table->longText('contents_html')->nullable(false);
             $table->longText('contents_text')->nullable(false);
+            $table->enum('markdown', ['Y', 'N'])->default('N')->comment('마크다운 유무.');
             $table->enum('post_active', ['Y', 'N'])->default('N')->comment('글 상태.');
 
             $table->timestamps();
