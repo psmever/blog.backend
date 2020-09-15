@@ -5,6 +5,8 @@ namespace App\Services\v1;
 use Illuminate\Http\Request;
 use App\Repositories\v1\PostsRepository;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PostsServices
 {
@@ -37,5 +39,18 @@ class PostsServices
         }
 
         // TODO 2020-09-15 00:00  유효성 통과.
+
+        $user = Auth::user();
+
+        $task = $this->postsRepository->createPosts([
+            'user_id' => $user->id,
+            'post_uuid' => Str::uuid(),
+            'title' => $request->input('title'),
+            'contents_html' => $request->input('contents.html'),
+            'contents_text' => $request->input('contents.text'),
+            'markdown' => 'Y'
+        ]);
+
+        print_r($task);
     }
 }

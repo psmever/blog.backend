@@ -145,7 +145,7 @@ class PostControllerTest extends TestCase
     public function test_post_create_정상_요청_할때()
     {
         $testBody = '{
-            "title":"blog.front Readme.MD",
+            "title":"테스트 포스트 입니다.",
             "tags":[
                 {
                     "id":"Html","text":"Html"
@@ -163,7 +163,7 @@ class PostControllerTest extends TestCase
             }
         }';
         $response = $this->withHeaders($this->testNormalHeader)->json('POST', '/api/v1/post', json_decode($testBody, true));
-        // $response->dump();
+        $response->dump();
         $response->assertStatus(200);
         $response->assertOk()->assertJsonFragment(
             $this->getSuccessJsonType()

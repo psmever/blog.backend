@@ -155,6 +155,13 @@ return [
 		    'path' => storage_path('logs/'.date('Y/m/').'authenticationexceptionlog.log'),
 		    'level' => 'debug',
 		    'days' => 31,
+        ],
+
+        'PDOExceptionLog' => [
+		    'driver' => 'daily',
+		    'path' => storage_path('logs/'.date('Y/m/').'pdoexceptionlog.log'),
+		    'level' => 'debug',
+		    'days' => 31,
 	    ],
     ],
 

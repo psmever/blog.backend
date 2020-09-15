@@ -65,8 +65,7 @@ class Handler extends ExceptionHandler
         EOF;
 
         if ($exception instanceof \PDOException) { // ANCHOR mysql Exception report
-            echo "PDOException report";
-            // dd($exception);
+            Log::channel('PDOExceptionLog')->error($logBaseMessage);
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // ANCHOR AuthenticationException report
             Log::channel('AuthenticationExceptionLog')->error($logBaseMessage);
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
