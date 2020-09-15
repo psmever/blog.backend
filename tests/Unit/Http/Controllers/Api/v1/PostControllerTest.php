@@ -28,7 +28,6 @@ class PostControllerTest extends TestCase
         $this->assertTrue(true);
     }
 
-    // TODO POST 글등록 api 테스트
     // 로그인이 되어 있지 않을떄.
     public function test_post_create_로그인_하지_않은_상태에서_요청할때()
     {

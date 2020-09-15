@@ -129,7 +129,8 @@ class Handler extends ExceptionHandler
             ];
         }
 
-        if($request->is('api/*')) { // api 요청 일떄.
+        // api 요청 일떄만 json 으로 Render.
+        if($request->is('api/*')) {
 
             if(app()->isDownForMaintenance()) {
                 return Response::error(503, $exception->getMessage() ? $exception->getMessage() : __('default.server.down'));
