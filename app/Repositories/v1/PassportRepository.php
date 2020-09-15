@@ -28,7 +28,7 @@ class PassportRepository implements PassportRepositoryInterface
         $returnObj = new \stdClass();
         // // Passport 클라이언트 오류.
         if($this->client == null) {
-            // FIXME 서버 에러 로그
+            // Passport 클라이언트 정보(id, secret)을 가지고 오지 못할떄
             throw new \App\Exceptions\ServerErrorException(__('default.exception.passport_client'));
         }
 

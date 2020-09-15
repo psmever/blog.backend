@@ -18,8 +18,6 @@ class AuthController extends ApiRootController
         $this->AuthServices = $authServices;
     }
 
-    // TODO 2020-08-27 22:54  관리자 기능
-
     /**
      * 로그인
      *

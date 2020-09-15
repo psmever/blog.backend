@@ -22,7 +22,7 @@ class ApiBeforeMiddleware
             throw new \App\Exceptions\ClientErrorException(__('정상적인 요청이 아닙니다.'));
         }
 
-        // TODO 클라이언트 체크 예외 라우터.
+        // 클라이언트 체크 예외 라우터.
         $exceptionRouteName = ["api.system.deploy", "api.system.check.status"];
 
         // NOTE 헤더 클라이언트 체크.

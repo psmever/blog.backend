@@ -27,7 +27,9 @@ class ApiAfterMiddleware
         $logid = date('Ymdhis');
         $request_ip = request()->ip();
 
-        // TODO response 끝났을때 로그를 어떻게?
+        // FIXME: Local 버전에서만 Response 관련 클라이언트 정보를 기록,
+        // Prod 버전에서는 어떻게 할것인지 생각해봐야.....
+        // Response Payload 에 대한 기록은 어떻게 할것인지 생각해봐야..
         if(env('APP_ENV') == "local") {
             $logRoutename = Route::currentRouteName();
             $logRouteAction = Route::currentRouteAction();
