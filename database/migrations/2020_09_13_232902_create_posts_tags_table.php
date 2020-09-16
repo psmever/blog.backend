@@ -15,7 +15,6 @@ class CreatePostsTagsTable extends Migration
     {
         Schema::create('posts_tags', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('uuid')->nullable(false)->unique();
             $table->unsignedBigInteger('post_id')->nullable(false)->index()->comment('post id.');
             $table->string('tag_id', 255)->nullable()->comment('테그 id.');
             $table->string('tag_text', 255)->nullable()->comment('테그 내용.');
