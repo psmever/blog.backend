@@ -25,6 +25,8 @@ class CreatePostsTable extends Migration
             $table->enum('markdown', ['Y', 'N'])->default('N')->comment('마크다운 유무.');
             $table->enum('post_active', ['Y', 'N'])->default('N')->comment('글 상태.');
 
+            $table->index(['slug_title', 'user_id']);
+
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
