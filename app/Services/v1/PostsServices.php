@@ -18,7 +18,6 @@ class PostsServices
 
     public function createPosts(Request $request)
     {
-        // print_r($request->input('tags'));
         $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'tags' => 'required|array|min:1',
@@ -38,19 +37,25 @@ class PostsServices
             throw new \App\Exceptions\CustomException($validator->errors()->first());
         }
 
-        // TODO 2020-09-15 00:00  유효성 통과.
-
         $user = Auth::user();
 
-        $task = $this->postsRepository->createPosts([
-            'user_id' => $user->id,
-            'post_uuid' => Str::uuid(),
-            'title' => $request->input('title'),
-            'contents_html' => $request->input('contents.html'),
-            'contents_text' => $request->input('contents.text'),
-            'markdown' => 'Y'
-        ]);
+        // $postTask = $this->postsRepository->createPosts([
+        //     'user_id' => $user->id,
+        //     'post_uuid' => Str::uuid(),
+        //     'title' => $request->input('title'),
+        //     'slug_title' => $this->postsRepository->getSlugTitle($request->input('title')),
+        //     'contents_html' => $request->input('contents.html'),
+        //     'contents_text' => $request->input('contents.text'),
+        //     'markdown' => 'Y'
+        // ]);
 
-        print_r($task);
+        // print_r($request->input('tags'));
+
+        $this->postsRepository->createPostsTags($request->input('tags'));
+
+        return [
+            // 'post_uuid' => $postTask->post_uuid,
+            // 'slug_title' => $postTask->slug_title,
+        ];
     }
 }
