@@ -66,7 +66,7 @@ class PostControllerTest extends TestCase
                 ,"text" : "# Blog.Frontend\n\n\n#### Git Clone.\n\n```\ngit clone https:\/\/github.com\/psmever\/blog.front.git blog.front\n```\n\n#### Config\n```\ncp config\/sample.environment.env config\/development.env\ncp config\/sample.environment.env config\/production.env\n```\n\n#### Node Module Install.\n```\nyarn install\n```\n\n### Local Develper\n\n```\nyarn start\nyarn start:prod\n```\n\n### Build\n```\nyarn build\nyarn build:prod\n```\n\n### Server Deploy:prod\n```\nyarn deploy:prod\n```\n\n\n## Contributing\nPull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.\n\nPlease make sure to update tests as appropriate.\n\n## License\n[MIT](https:\/\/choosealicense.com\/licenses\/mit\/)"
             }
         }';
-        $response = $this->withHeaders($this->testNormalHeader)->json('POST', '/api/v1/post', []);
+        $response = $this->withHeaders($this->testNormalHeader)->json('POST', '/api/v1/post', json_decode($testBody, true));
         // $response->dump();
         $response->assertStatus(400);
         $response->assertJsonStructure([
@@ -163,12 +163,11 @@ class PostControllerTest extends TestCase
             }
         }';
         $response = $this->withHeaders($this->testNormalHeader)->json('POST', '/api/v1/post', json_decode($testBody, true));
-        $response->dump();
+        // $response->dump();
         $response->assertStatus(200);
-        $response->assertOk()->assertJsonFragment(
-            $this->getSuccessJsonType()
+        // FIXME: result Structure 변경?
+        $response->assertJsonStructure(
+            $this->getDefaultSuccessJsonType()
         );
-
     }
-
 }
