@@ -54,6 +54,13 @@ throw new \App\Exceptions\CustomException('Something Went Wrong.');
 
 ```
 
+## App Clear Script
+```
+
+composer app:clear
+composer test:clear
+```
+
 ## Server Deploy
 ```
 > composer global require laravel/envoy
