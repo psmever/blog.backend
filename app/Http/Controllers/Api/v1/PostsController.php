@@ -18,6 +18,7 @@ class PostsController extends ApiRootController
     }
 
     // 리스트
+    // TODO: 2020-09-17 00:35 리스트.페이징 형식으로.
     public function index(Request $request) {
         return Response::success();
     }
