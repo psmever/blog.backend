@@ -177,6 +177,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
 
         App\Providers\RepositoryServiceProvider::class,
+        App\Providers\GuitarFacadesServiceProvider::class,
 
     ],
 
@@ -229,6 +230,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        // Site
+        'GuitarClass'   =>  App\Supports\Facades\GuitarClass::class
 
     ],
 
