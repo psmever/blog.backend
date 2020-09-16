@@ -20,6 +20,8 @@ class CreatePostsTagsTable extends Migration
             $table->string('tag_text', 255)->nullable()->comment('테그 내용.');
             $table->timestamps();
 
+            $table->index(['post_id', 'tag_id']);
+
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
     }
