@@ -52,13 +52,13 @@ class PostControllerTest extends TestCase
             "title":"",
             "tags":[
                 {
-                    "id":"Html","text":"Html"
+                    "tag_id":"Html","tag_text":"Html"
                 }
                 ,{
-                    "id":"Markdown","text":"Markdown"
+                    "tag_id":"Markdown","tag_text":"Markdown"
                 }
                 ,{
-                    "id":"Code","text":"Code"
+                    "tag_id":"Code","tag_text":"Code"
                 }
             ],
             "contents" : {
@@ -114,13 +114,13 @@ class PostControllerTest extends TestCase
             "title":"blog.front Readme.MD",
             "tags":[
                 {
-                    "id":"Html","text":"Html"
+                    "tag_id":"Html","tag_text":"Html"
                 }
                 ,{
-                    "id":"Markdown","text":"Markdown"
+                    "tag_id":"Markdown","tag_text":"Markdown"
                 }
                 ,{
-                    "id":"Code","text":"Code"
+                    "tag_id":"Code","tag_text":"Code"
                 }
             ],
             "contents" : {
@@ -148,13 +148,13 @@ class PostControllerTest extends TestCase
             "title":"테스트 포스트 입니다.",
             "tags":[
                 {
-                    "id":"Html","text":"Html"
+                    "tag_id":"Html","tag_text":"Html"
                 }
                 ,{
-                    "id":"Markdown","text":"Markdown"
+                    "tag_id":"Markdown","tag_text":"Markdown"
                 }
                 ,{
-                    "id":"Code","text":"Code"
+                    "tag_id":"Code","tag_text":"Code"
                 }
             ],
             "contents" : {

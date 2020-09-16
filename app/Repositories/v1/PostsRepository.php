@@ -19,7 +19,7 @@ class PostsRepository implements PostsRepositoryInterface
 
     /**
      * @param Posts $posts
-     * @param PostsTag $poststag
+     * @param PostsTags $poststag
      */
     public function __construct(Posts $posts, PostsTags $poststags)
     {
@@ -45,26 +45,30 @@ class PostsRepository implements PostsRepositoryInterface
     }
 
     /**
-     * 글등록
+     * 슬러그 타이틀 생성.
      *
-     * @param [type] $dataObject
+     * @param String $title
      * @return void
      */
-    public function createPosts($dataObject)
+    public function getSlugTitle(String $title)
     {
-        // print_r($dataObject);
-        $task = $this->Posts::create($dataObject);
+        return $this->Posts->slugify($title);
+    }
 
-        if(!$task) {
-            return false;
-        }
-
-        return $task->id;
+    /**
+     * 글등록
+     *
+     * @param Array $dataObject
+     * @return void
+     */
+    public function createPosts(Array $dataObject) : object
+    {
+        return $this->Posts::create($dataObject);
     }
 
     // 테그 등록.
-    public function createPostsTags($dataObject)
+    public function createPostsTags(Array $dataObject) : object
     {
-        $task = $this->PostsTags::create($dataObject);
+        return $this->PostsTags::insert($dataObject);
     }
 }
