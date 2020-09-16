@@ -13,15 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('landing');
-});
+// uses 에러 나서 변경.
+Route::get('/', [
+    'as' => 'home',
+    'uses' => 'Front\v1\HomeController@index'
+]);
 
-Route::get('login', function () {
-    return redirect('front/v1/home/login');
-})->name('login');
-
-
+Route::get('login', [
+    'as' => 'login',
+    'uses' => 'Front\v1\HomeController@login'
+]);
 
 Route::group(['namespace'=> 'Front', 'prefix' => 'front', 'as' => 'front.'], function () {
 

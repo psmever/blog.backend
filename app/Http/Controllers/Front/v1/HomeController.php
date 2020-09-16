@@ -14,7 +14,7 @@ class HomeController extends WebRootController
      */
     public function index()
     {
-        echo "home.index";
+        return view('landing');
     }
 
     /**
