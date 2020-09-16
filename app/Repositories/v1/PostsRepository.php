@@ -69,6 +69,6 @@ class PostsRepository implements PostsRepositoryInterface
     // 테그 등록.
     public function createPostsTags(Array $dataObject) : object
     {
-        return $this->PostsTags::insert($dataObject);
+        return $this->PostsTags::create($dataObject);
     }
 }

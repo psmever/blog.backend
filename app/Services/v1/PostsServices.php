@@ -18,6 +18,9 @@ class PostsServices
 
     public function createPosts(Request $request)
     {
+        $user_id = Auth::user()->id;
+
+
         $validator = Validator::make($request->all(), [
                 'title' => 'required',
                 'tags' => 'required|array|min:1',
@@ -37,25 +40,29 @@ class PostsServices
             throw new \App\Exceptions\CustomException($validator->errors()->first());
         }
 
-        $user = Auth::user();
+        // 글 등록.
+        $postTask = $this->postsRepository->createPosts([
+            'user_id' => $user_id,
+            'post_uuid' => Str::uuid(),
+            'title' => $request->input('title'),
+            'slug_title' => $this->postsRepository->getSlugTitle($request->input('title')),
+            'contents_html' => $request->input('contents.html'),
+            'contents_text' => $request->input('contents.text'),
+            'markdown' => 'Y'
+        ]);
 
-        // $postTask = $this->postsRepository->createPosts([
-        //     'user_id' => $user->id,
-        //     'post_uuid' => Str::uuid(),
-        //     'title' => $request->input('title'),
-        //     'slug_title' => $this->postsRepository->getSlugTitle($request->input('title')),
-        //     'contents_html' => $request->input('contents.html'),
-        //     'contents_text' => $request->input('contents.text'),
-        //     'markdown' => 'Y'
-        // ]);
-
-        // print_r($request->input('tags'));
-
-        $this->postsRepository->createPostsTags($request->input('tags'));
+        // 테그 등록.
+        foreach($request->input('tags') as $element) :
+            $this->postsRepository->createPostsTags([
+                'post_id' => $postTask->id,
+                'tag_id' => $element['tag_id'],
+                'tag_text' => $element['tag_text'],
+            ]);
+        endforeach;
 
         return [
-            // 'post_uuid' => $postTask->post_uuid,
-            // 'slug_title' => $postTask->slug_title,
+            'post_uuid' => $postTask->post_uuid,
+            'slug_title' => $postTask->slug_title,
         ];
     }
 }
