@@ -14,5 +14,18 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        //테스트 일떄만 생성.
+        if(env('APP_ENV') == "testing") {
+            DB::table('users')->insert([
+                'user_uuid' => Str::uuid()->toString(),
+                'name' => Str::random(10),
+                'nickname' => Str::random(10),
+                'email' => 'test@gmail.com',
+                'password' => Hash::make('1212'),
+                'email_verified_at' => \Carbon\Carbon::now(),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ]);
+        }
     }
 }
