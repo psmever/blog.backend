@@ -119,6 +119,9 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof \Illuminate\Http\Exceptions\ThrottleRequestsException) { // throttle Exception
             $error_code = 429;
             $error_message = __('default.exception.throttle_exception');
+        } else if ($exception instanceof \PDOException) {
+            $error_code = 500;
+            $error_message = __('default.exception.pdo_exception');
         } else {
 
             $error_code = 503;
