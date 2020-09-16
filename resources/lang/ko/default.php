@@ -14,6 +14,7 @@ return [
         'passport_client' => 'Passport 오류가 발생했습니다.',
         'error_exception' => '알수없는 내부 오류가 발생했습니다.',
         'throttle_exception' => '너무 많은 시도 입니다. 잠시후에 다시 시도해 주세요.',
+        'pdo_exception' => '데이터 처리중 문제가 발생했습니다.',
     ],
 
     'server' => [
