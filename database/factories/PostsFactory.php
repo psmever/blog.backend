@@ -3,20 +3,25 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Model\Posts;
+use App\User;
 use Faker\Generator as Faker;
+use App\Supports\Facades\GuitarClass;
 
 $factory->define(Posts::class, function (Faker $faker) {
+
+    $title = $faker->company;
+    $text = $faker->text();
+
     return [
-        'user_id' => 2,
-// 'user_id'
-// 'post_uuid
-// 'title
-// 'slug_title
-// 'contents_html
-// 'contents_text
-// 'markdown
-// 'post_active
-// 'created_at
-// 'updated_at
+        'user_id' => User::all()->random()->id,
+        'post_uuid' => $faker->uuid(),
+        'title' => $title,
+        'slug_title' => GuitarClass::convertSlugString($title),
+        'contents_html' => $text,
+        'contents_text' => $text,
+        'markdown' => 'Y',
+        'post_active' => 'Y',
+        'created_at' => \Carbon\Carbon::now(),
+        'updated_at' => \Carbon\Carbon::now(),
     ];
 });
