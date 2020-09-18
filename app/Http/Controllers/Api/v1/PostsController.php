@@ -20,7 +20,7 @@ class PostsController extends ApiRootController
     // 리스트
     // TODO: 2020-09-17 00:35 리스트.페이징 형식으로.
     public function index(Request $request) {
-        return Response::success();
+        return Response::success($this->PostsServices->posts($request));
     }
 
     // 생성
@@ -28,7 +28,12 @@ class PostsController extends ApiRootController
         return Response::success($this->PostsServices->createPosts($request));
     }
 
-    // 정보.
+    // 글 정보(뷰).
+    public function view($slug_title) {
+        return Response::success($this->PostsServices->viewPosts($slug_title));
+    }
+
+    // 글 정보(수정).
     public function edit(Request $request) {
         return Response::success();
     }

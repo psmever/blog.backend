@@ -71,4 +71,21 @@ class PostsRepository implements PostsRepositoryInterface
     {
         return $this->PostsTags::create($dataObject);
     }
+
+    // 글 목록.
+    public function posts_list(Int $pages)
+    {
+        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->get();
+    }
+
+    /**
+     * slug URL 로 글 내용 보기.
+     *
+     * @param String $slug_title
+     * @return object
+     */
+    public function posts_view(String $slug_title) : object
+    {
+        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->where('slug_title' , $slug_title)->firstOrFail();
+    }
 }

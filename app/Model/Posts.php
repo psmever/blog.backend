@@ -10,7 +10,9 @@ class Posts extends Model
 {
     protected $table = "posts";
 
-    protected $fillable = ['title', 'user_id', 'post_uuid', 'contents_html', 'contents_text', 'slug_title'];
+    // protected $primaryKey = 'slug_title';
+
+    protected $fillable = ['id', 'title', 'user_id', 'post_uuid', 'contents_html', 'contents_text', 'slug_title'];
 
     /**
      * Slug Title 처리.
@@ -42,5 +44,17 @@ class Posts extends Model
         }
 
         return $slug;
+    }
+
+    // 글등록자.
+    public function user()
+    {
+        return $this->hasOne(\App\User::class, 'id', 'user_id');
+    }
+
+    // 글 테그.
+    public function tag()
+    {
+        return $this->hasMany(PostsTags::class, 'post_id', 'id');
     }
 }

@@ -9,11 +9,11 @@ use App\Supports\Facades\GuitarClass;
 
 $factory->define(Posts::class, function (Faker $faker) {
 
-    $title = $faker->company;
-    $text = $faker->text();
+    $title = $faker->unique()->company;
+    $text = $faker->unique()->text();
 
     return [
-        'user_id' => User::all()->random()->id,
+        'user_id' => User::where('user_level', 'S02900')->first()->id,
         'post_uuid' => $faker->uuid(),
         'title' => $title,
         'slug_title' => GuitarClass::convertSlugString($title),

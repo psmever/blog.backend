@@ -8,7 +8,7 @@ use Faker\Generator as Faker;
 
 $factory->define(PostsTags::class, function (Faker $faker) {
 
-    $posts =  Posts::select("id")->orderBy("id", "desc")->first();
+    $posts =  Posts::select("id")->inRandomOrder()->first();
 
     $kakerString = $faker->word;
     return [

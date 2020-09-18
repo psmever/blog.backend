@@ -31,6 +31,13 @@ abstract class TestCase extends BaseTestCase
         return factory('App\User')->create();
     }
 
+    protected function postsCreate()
+    {
+        factory('App\Model\Posts', 100)->create();
+        factory('App\Model\PostsTags', 50)->create();
+        return;
+    }
+
     public static function getTestApiHeaders()
     {
         return [
