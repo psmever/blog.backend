@@ -14,6 +14,9 @@ class PostControllerTest extends TestCase
     {
         parent::setUp();
 
+        $this->userCreate();
+        $this->postsCreate();
+
         $this->testNormalHeader = $this->getTestAccessTokenHeader();
         $this->testAbnormalHeader = $this->getTestApiHeaders();
     }
@@ -169,5 +172,81 @@ class PostControllerTest extends TestCase
         $response->assertJsonStructure(
             $this->getDefaultSuccessJsonType()
         );
+    }
+
+    // TODO 글 리스트 페이징 에러 어떻게 할껀지?
+    // 글 리스트 정상 일때.
+    public function test_포스트_리스트_요청_테스트()
+    {
+        $response = $this->withHeaders($this->testNormalHeader)->json('GET', '/api/v1/post', []);
+        // $response->dump();
+        $response->assertStatus(200);
+        $response->assertJsonStructure(
+            [
+                "message" ,
+                "result"
+            ]
+        );
+    }
+
+    public function test_포스트_테스트_등록되어있지_않은_포스트_요청()
+    {
+        $response = $this->withHeaders($this->testNormalHeader)->json('GET', '/api/v1/post/sdafsdfasdf/view', []);
+        // $response->dump();
+        $response->assertStatus(406);
+        $response->assertJsonStructure([
+            'error' => [
+                'error_message'
+            ]
+        ])->assertJsonFragment([
+            'error' => [
+                'error_message' => __('default.exception.model_not_found_exception')
+            ]
+        ]);
+    }
+
+    public function test_포스트_테스트_정상_포스트_요청()
+    {
+        \App\Model\Posts::select("id")->inRandomOrder()->first();
+        $randPost = \App\Model\Posts::select("slug_title")->inRandomOrder()->first();
+        $testSlugTitle = $randPost->slug_title;
+        $response = $this->withHeaders($this->testNormalHeader)->json('GET', "/api/v1/post/${testSlugTitle}/view", []);
+        // $response->dump();
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            "message",
+            "result" => [
+                "post_uuid",
+                "user" => [
+                    "user_uuid",
+                    "user_type" => [
+                        "code_id",
+                        "code_name"
+                    ],
+                    "user_level" => [
+                        "code_id",
+                        "code_name"
+                    ],
+                    "name",
+                    "nickname",
+                    "email",
+                    "active"
+                ],
+                "post_title",
+                "slug_title",
+                "contents_html",
+                "contents_text",
+                "markdown",
+                "tags" => [
+                    '*' => [
+                        "tag_id",
+                        "tag_text"
+                    ],
+                ],
+                "post_active",
+                "created",
+                "updated"
+            ]
+        ]);
     }
 }

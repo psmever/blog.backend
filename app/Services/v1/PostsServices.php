@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Repositories\v1\PostsRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use PhpParser\Node\Expr\Cast\String_;
 
 class PostsServices
 {
@@ -16,10 +18,114 @@ class PostsServices
         $this->postsRepository = $postsRepository;
     }
 
+    // TODO 글리스트 페이징 형식 처리 필요.
+    public function posts(Request $request)
+    {
+        $result = $this->postsRepository->posts_list(1)->toArray();
+        return array_map(function($e){
+            $user = function($e) {
+                return [
+                    'user_uuid' => $e['user_uuid'],
+                    'user_type' => [
+                        'code_id' => $e['user_type']['code_id'],
+                        'code_name' => $e['user_type']['code_name'],
+                    ],
+                    'user_level' => [
+                        'code_id' => $e['user_level']['code_id'],
+                        'code_name' => $e['user_level']['code_name'],
+                    ],
+                    'name' => $e['name'],
+                    'nickname' => $e['nickname'],
+                    'email' => $e['email'],
+                    'active' => $e['active'],
+                ];
+            };
+
+            $tags = function($e) {
+                return array_map(function($e){
+                    return [
+                        'tag_id' => $e['tag_id'],
+                        'tag_text' => $e['tag_text'],
+                    ];
+                }, $e);
+            };
+
+            return [
+                'post_uuid' => $e['post_uuid'],
+                'user' => $user($e['user']),
+                'post_title' => $e['title'],
+                'slug_title' => $e['slug_title'],
+                'contents_html' => $e['contents_html'],
+                'contents_text' => $e['contents_text'],
+                'markdown' => $e['markdown'],
+                'tags' => $tags($e['tag']),
+                'post_active' => $e['post_active'],
+                'created' => \Carbon\Carbon::parse($e['created_at'])->format('Y-m-d H:s'),
+                'updated' => \Carbon\Carbon::parse($e['updated_at'])->format('Y-m-d H:s'),
+            ];
+        }, $result);
+    }
+
+    /**
+     * 글 내용.
+     *
+     * @param String $slug_title
+     * @return array
+     */
+    public function viewPosts(String $slug_title) : array
+    {
+        $result = $this->postsRepository->posts_view($slug_title);
+        $user = function($user) {
+            return [
+                'user_uuid' => $user->user_uuid,
+                'user_type' => [
+                    'code_id' => $user->userType->code_id,
+                    'code_name' => $user->userType->code_name,
+                ],
+                'user_level' => [
+                    'code_id' => $user->userLevel->code_id,
+                    'code_name' => $user->userLevel->code_name,
+                ],
+                'name' => $user->name,
+                'nickname' => $user->nickname,
+                'email' => $user->email,
+                'active' => $user->active,
+            ];
+        };
+
+        $tags = function($e) {
+            return array_map(function($e){
+                return [
+                    'tag_id' => $e['tag_id'],
+                    'tag_text' => $e['tag_text'],
+                ];
+            }, $e);
+        };
+
+        return [
+            'post_uuid' => $result->post_uuid,
+            'user' => $user($result->user),
+            'post_title' => $result->title,
+            'slug_title' => $result->slug_title,
+            'contents_html' => $result->contents_html,
+            'contents_text' => $result->contents_text,
+            'markdown' => $result->markdown,
+            'tags' => $tags($result->tag->toarray()),
+            'post_active' => $result->post_active,
+            'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
+            'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
+        ];
+    }
+
+    /**
+     * 글등록.
+     *
+     * @param Request $request
+     * @return void
+     */
     public function createPosts(Request $request)
     {
         $user_id = Auth::user()->id;
-
 
         $validator = Validator::make($request->all(), [
                 'title' => 'required',
