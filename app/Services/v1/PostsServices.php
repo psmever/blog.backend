@@ -233,4 +233,24 @@ class PostsServices
             'slug_title' => $slug_title,
         ];
     }
+
+    /**
+     * 글 삭제.
+     *
+     * @param String $post_uuid
+     * @return void
+     */
+    public function deletePosts(String $post_uuid) : void
+    {
+        $postsData = $this->postsRepository->postsExits($post_uuid);
+        $user = Auth::user();
+
+        if($postsData->user_id != $user->id) {
+            throw new \App\Exceptions\ForbiddenErrorException();
+        }
+
+        $this->postsRepository->deletePosts($postsData->id);
+
+        return;
+    }
 }
