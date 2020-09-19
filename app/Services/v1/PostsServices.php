@@ -17,6 +17,7 @@ class PostsServices
         $this->postsRepository = $postsRepository;
     }
 
+    // FIXME 2020-09-20 04:37 페이징 처리 Payload 업그레이드 필요. ( 현재 페이지등 )
     /**
      * 글 리스트 ( 페이징 처리 ).
      *
@@ -26,7 +27,7 @@ class PostsServices
     public function posts(Int $page = 1) : array
     {
         $result = collect($this->postsRepository->posts_list($page))->toArray();
-        return array_map(function($e){
+        $items = array_map(function($e){
             $user = function($e) {
                 return [
                     'user_uuid' => $e['user_uuid'],
@@ -68,6 +69,13 @@ class PostsServices
                 'updated' => \Carbon\Carbon::parse($e['updated_at'])->format('Y-m-d H:s'),
             ];
         }, $result['data']);
+
+        return [
+            // 'result' => $result,
+            'per_page' => $result['per_page'],
+            'current_page' => $result['current_page'],
+            'posts' => $items
+        ];
     }
 
     /**

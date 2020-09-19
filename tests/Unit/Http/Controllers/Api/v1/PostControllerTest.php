@@ -180,8 +180,9 @@ class PostControllerTest extends TestCase
         // $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'message',
-            'result' => [
+            'per_page',
+            'current_page',
+            'posts' => [
                 '*' => [
                     "post_uuid",
                     "user" => [
