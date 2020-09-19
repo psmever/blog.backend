@@ -166,8 +166,7 @@ class PostControllerTest extends TestCase
         ]);
     }
 
-    // TODO 글 리스트 페이징 에러 어떻게 할껀지?
-
+    // 글 리스트 테스트
     public function test_포스트_리스트_요청_테스트_없을떄()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/100000', []);

@@ -17,7 +17,12 @@ class PostsServices
         $this->postsRepository = $postsRepository;
     }
 
-    // TODO 글리스트 페이징 형식 처리 필요.
+    /**
+     * 글 리스트 ( 페이징 처리 ).
+     *
+     * @param Int $page
+     * @return array
+     */
     public function posts(Int $page = 1) : array
     {
         $result = collect($this->postsRepository->posts_list($page))->toArray();
