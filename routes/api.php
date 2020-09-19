@@ -22,6 +22,7 @@ Route::group(['as' => 'api.'], function () {
         Route::post('index', 'TestController@index')->name('index');
         Route::post('slack', 'TestController@slack')->name('slack');
         Route::post('factory', 'TestController@factory')->name('factory');
+        Route::post('base-user', 'TestController@base_user')->name('base.user');
     });
 
     Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
