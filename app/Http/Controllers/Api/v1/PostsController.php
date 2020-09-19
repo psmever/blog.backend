@@ -20,10 +20,10 @@ class PostsController extends ApiRootController
     // 리스트
     public function index(Int $page = 1) {
         $result = $this->PostsServices->posts($page);
-        if(empty($result)) {
+        if(empty($result['posts'])) {
             return Response::success_no_content();
         } else {
-            return Response::success($result);
+            return Response::success_only_data($result);
         }
     }
 
