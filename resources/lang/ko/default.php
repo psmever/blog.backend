@@ -16,6 +16,7 @@ return [
         'throttle_exception' => '너무 많은 시도 입니다. 잠시후에 다시 시도해 주세요.',
         'pdo_exception' => '데이터 처리중 문제가 발생했습니다.',
         'model_not_found_exception' => '데이터가 존재 하지 않습니다.',
+        'forbidden_error_exception' => '권한이 부족합니다.',
     ],
 
     'server' => [
@@ -40,5 +41,6 @@ return [
         'title_required' => '제목을 입력해 주세요.',
         'tags_required' => '테그를 입력해 주세요.',
         'contents_required' => '내용을 입력해 주세요.',
+        'auth_error' => '내용을 입력해 주세요.',
     ],
 ];

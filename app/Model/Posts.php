@@ -46,7 +46,7 @@ class Posts extends Model
         return $slug;
     }
 
-    // 글등록자.
+    // 글 등록자.
     public function user()
     {
         return $this->hasOne(\App\User::class, 'id', 'user_id');

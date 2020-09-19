@@ -26,18 +26,6 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('db:seed',['-vvv' => true]);
     }
 
-    protected function userCreate()
-    {
-        return factory('App\User')->create();
-    }
-
-    protected function postsCreate()
-    {
-        factory('App\Model\Posts', 100)->create();
-        factory('App\Model\PostsTags', 50)->create();
-        return;
-    }
-
     public static function getTestApiHeaders()
     {
         return [
@@ -50,9 +38,22 @@ abstract class TestCase extends BaseTestCase
 
     protected function getTestAccessTokenHeader()
     {
-        $user = factory('App\User')->create();
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
-            "email" => $user->email,
+            "email" => \App\User::where('user_level', 'S02900')->orderBy('id', 'ASC')->first()->email,
+            "password" => 'password'
+        ]);
+        return [
+            'Request-Client-Type' => 'S01010',
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer '.$response['access_token']
+        ];
+    }
+
+    protected function getTestGuestAccessTokenHeader()
+    {
+        $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
+            "email" => \App\User::where('user_level', 'S02010')->orderBy('id', 'ASC')->first()->email,
             "password" => 'password'
         ]);
         return [

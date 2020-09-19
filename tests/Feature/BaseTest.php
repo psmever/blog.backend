@@ -58,7 +58,7 @@ class BaseTest extends TestCase
     public function test_server_migrate()
     {
         $this->assertDatabaseHas('users', [
-            'email' => 'test@gmail.com',
+            'email' => 'root@gmail.com',
         ]);
     }
 

@@ -6,9 +6,8 @@ use Illuminate\Http\Request;
 use App\Repositories\v1\PostsRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
-use PhpParser\Node\Expr\Cast\String_;
+
 
 class PostsServices
 {
@@ -123,7 +122,7 @@ class PostsServices
      * @param Request $request
      * @return void
      */
-    public function createPosts(Request $request)
+    public function createPosts(Request $request) : array
     {
         $user_id = Auth::user()->id;
 
@@ -169,6 +168,69 @@ class PostsServices
         return [
             'post_uuid' => $postTask->post_uuid,
             'slug_title' => $postTask->slug_title,
+        ];
+    }
+
+    /**
+     * 글 업데이트
+     *
+     * @param Request $request
+     * @param String $post_uuid
+     * @return array
+     */
+    public function updatePosts(Request $request, String $post_uuid) : array
+    {
+        $postsData = $this->postsRepository->postsExits($post_uuid);
+        $user = Auth::user();
+
+        if($postsData->user_id != $user->id) {
+            throw new \App\Exceptions\ForbiddenErrorException();
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'tags' => 'required|array|min:1',
+            'tags.*' => 'required|array|min:1',
+            'contents' => 'required|array|min:2',
+            'contents.*' => 'required|string|min:1',
+        ],
+        [
+            'title.required'=> __('default.post.title_required'),
+            'tags.required'=> __('default.post.tags_required'),
+            'contents.required'=> __('default.post.contents_required'),
+            'contents.*.required'=> __('default.post.contents_required'),
+        ]);
+
+        //$validator->passes()
+        if( $validator->fails() ) {
+            throw new \App\Exceptions\CustomException($validator->errors()->first());
+        }
+
+        //내용 업데이트
+        $slug_title = $this->postsRepository->getSlugTitle($request->input('title'));
+        $this->postsRepository->updatePosts($postsData->id, [
+            'title' => $request->input('title'),
+            'slug_title' => $slug_title,
+            'contents_html' => $request->input('contents.html'),
+            'contents_text' => $request->input('contents.text'),
+            'markdown' => 'Y'
+        ]);
+
+        // 기존 테그 삭제.
+        $this->postsRepository->deletePostsTags($postsData->id);
+
+        // 테그 추가.
+        foreach($request->input('tags') as $element) :
+            $this->postsRepository->createPostsTags([
+                'post_id' => $postsData->id,
+                'tag_id' => $element['tag_id'],
+                'tag_text' => $element['tag_text'],
+            ]);
+        endforeach;
+
+        return [
+            'post_uuid' => $postsData->id,
+            'slug_title' => $slug_title,
         ];
     }
 }

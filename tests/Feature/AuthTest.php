@@ -11,7 +11,6 @@ class AuthTest extends TestCase
 {
 
     public $user_email;
-    public $user_password;
     public $access_token;
     public $refresh_token;
 
@@ -19,10 +18,7 @@ class AuthTest extends TestCase
     {
         parent::setUp();
 
-        $user = $this->userCreate();
-
-        $this->user_email = $user->email;
-        $this->user_password = $user->password;
+        $this->user_email = \App\User::where('user_level', 'S02900')->orderBy('id', 'ASC')->first()->email;
     }
 
     /**
