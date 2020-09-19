@@ -18,9 +18,9 @@ class PostsServices
     }
 
     // TODO 글리스트 페이징 형식 처리 필요.
-    public function posts(Request $request)
+    public function posts(Int $page = 1) : array
     {
-        $result = $this->postsRepository->posts_list(1)->toArray();
+        $result = collect($this->postsRepository->posts_list($page))->toArray();
         return array_map(function($e){
             $user = function($e) {
                 return [
@@ -62,7 +62,7 @@ class PostsServices
                 'created' => \Carbon\Carbon::parse($e['created_at'])->format('Y-m-d H:s'),
                 'updated' => \Carbon\Carbon::parse($e['updated_at'])->format('Y-m-d H:s'),
             ];
-        }, $result);
+        }, $result['data']);
     }
 
     /**

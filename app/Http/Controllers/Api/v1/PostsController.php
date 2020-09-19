@@ -18,9 +18,13 @@ class PostsController extends ApiRootController
     }
 
     // 리스트
-    // TODO: 2020-09-17 00:35 리스트.페이징 형식으로.
-    public function index(Request $request) {
-        return Response::success($this->PostsServices->posts($request));
+    public function index(Int $page = 1) {
+        $result = $this->PostsServices->posts($page);
+        if(empty($result)) {
+            return Response::success_no_content();
+        } else {
+            return Response::success($result);
+        }
     }
 
     // 생성
