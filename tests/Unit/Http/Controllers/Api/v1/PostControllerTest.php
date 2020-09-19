@@ -167,18 +167,50 @@ class PostControllerTest extends TestCase
     }
 
     // TODO 글 리스트 페이징 에러 어떻게 할껀지?
-    // 글 리스트 정상 일때.
-    public function test_포스트_리스트_요청_테스트()
+
+    public function test_포스트_리스트_요청_테스트_없을떄()
+    {
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/100000', []);
+        // $response->dump();
+        $response->assertStatus(204);
+    }
+
+    public function test_포스트_리스트_테스트()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post', []);
         // $response->dump();
         $response->assertStatus(200);
-        $response->assertJsonStructure(
-            [
-                "message" ,
-                "result"
+        $response->assertJsonStructure([
+            'message',
+            'result' => [
+                '*' => [
+                    "post_uuid",
+                    "user" => [
+                        "user_uuid",
+                        "user_type",
+                        "user_level",
+                        "name",
+                        "nickname",
+                        "email",
+                        "active"
+                    ],
+                    "post_title",
+                    "slug_title",
+                    "contents_html",
+                    "contents_text",
+                    "markdown",
+                    "tags" => [
+                        '*' => [
+                            "tag_id",
+                            "tag_text"
+                        ]
+                    ],
+                    "post_active",
+                    "created",
+                    "updated"
+                ],
             ]
-        );
+        ]);
     }
 
     public function test_포스트_테스트_등록되어있지_않은_포스트_요청()
@@ -241,7 +273,7 @@ class PostControllerTest extends TestCase
         ]);
     }
 
-    // TODO 글 업데이트 처리.
+    // 글 업데이트 테스트
     public function test_post_update_로그인_하지_않은_상태에서_요청할때()
     {
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
