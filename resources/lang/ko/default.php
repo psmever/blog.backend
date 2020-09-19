@@ -22,6 +22,7 @@ return [
     'server' => [
         'status' => '서버 점검 중입니다.',
         'success' => '정상 전송 하였습니다.',
+        'result_success' => '정상 처리 하였습니다.',
         'error' => '오류가 발생 했습니다.',
         'down' => '서버 점검 중입니다.',
     ],

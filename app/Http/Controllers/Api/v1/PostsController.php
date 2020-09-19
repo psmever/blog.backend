@@ -45,7 +45,10 @@ class PostsController extends ApiRootController
     }
 
     // 삭제.
-    public function destroy(Request $request) {
-        return Response::success();
+    public function destroy(String $post_uuid) {
+
+        $this->PostsServices->deletePosts($post_uuid);
+
+        return Response::success_only_message();
     }
 }

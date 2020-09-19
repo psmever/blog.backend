@@ -123,4 +123,15 @@ class PostsRepository implements PostsRepositoryInterface
     {
         return $this->PostsTags::where('post_id', $post_id)->delete();
     }
+
+    /**
+     * 글 삭제.
+     *
+     * @param Int $post_id
+     * @return boolean
+     */
+    public function deletePosts(Int $post_id) : bool
+    {
+        return $this->Posts::where('id', $post_id)->delete();
+    }
 }
