@@ -93,6 +93,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // TODO 2020-09-20 00:51  App/Exceptions Exceptions 파일 정리 ( 메시지, 코드)
         // print_r(get_class($exception));
         $error_message = "";
         $error_code = null;
@@ -113,6 +114,9 @@ class Handler extends ExceptionHandler
         } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // ServerErrorException report
             $error_code = 500;
             $error_message = $exception->getMessage();
+        } else if ($exception instanceof \App\Exceptions\ForbiddenErrorException) { // ServerErrorException report
+            $error_code = 403;
+            $error_message = ($exception->getMessage()) ? $exception->getMessage() : __('default.exception.forbidden_error_exception');
         } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // AuthenticationException report
             $error_code = 401;
             $error_message = __('default.login.unauthorized');

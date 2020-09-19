@@ -39,8 +39,9 @@ class PostsController extends ApiRootController
     }
 
     // 업데이트.
-    public function update(Request $request) {
-        return Response::success();
+    // TODO 2020-09-18 23:58 업데이트 처리.
+    public function update(Request $request, String $post_uuid) {
+        return Response::success($this->PostsServices->updatePosts($request, $post_uuid));
     }
 
     // 삭제.

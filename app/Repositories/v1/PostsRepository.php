@@ -4,6 +4,7 @@ namespace App\Repositories\v1;
 
 use App\Model\Posts;
 use App\Model\PostsTags;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class PostsRepository implements PostsRepositoryInterface
 {
@@ -56,7 +57,7 @@ class PostsRepository implements PostsRepositoryInterface
     }
 
     /**
-     * 글등록
+     * 글등록.
      *
      * @param Array $dataObject
      * @return void
@@ -87,5 +88,39 @@ class PostsRepository implements PostsRepositoryInterface
     public function posts_view(String $slug_title) : object
     {
         return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->where('slug_title' , $slug_title)->firstOrFail();
+    }
+
+    /**
+     * 글 유무 체크.
+     *
+     * @param String $post_uuid
+     * @return object
+     */
+    public function postsExits(String $post_uuid) : object
+    {
+        return $this->Posts::where('post_uuid', $post_uuid)->firstOrFail();
+    }
+
+    /**
+     * 글 내용 업데이트.
+     *
+     * @param Int $post_id
+     * @param Array $dataObject
+     * @return boolean
+     */
+    public function updatePosts(Int $post_id, Array $dataObject) : bool
+    {
+        return $this->Posts::where('id', $post_id)->update($dataObject);
+    }
+
+    /**
+     * 테그 삭제.
+     *
+     * @param Int $post_id
+     * @return boolean
+     */
+    public function deletePostsTags(Int $post_id) : bool
+    {
+        return $this->PostsTags::where('post_id', $post_id)->delete();
     }
 }
