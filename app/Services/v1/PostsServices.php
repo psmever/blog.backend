@@ -17,7 +17,6 @@ class PostsServices
         $this->postsRepository = $postsRepository;
     }
 
-    // FIXME 2020-09-20 04:37 페이징 처리 Payload 업그레이드 필요. ( 현재 페이지등 )
     /**
      * 글 리스트 ( 페이징 처리 ).
      *
@@ -265,5 +264,63 @@ class PostsServices
         $this->postsRepository->deletePosts($postsData->id);
 
         return;
+    }
+
+    /**
+     * 글 정보.
+     *
+     * @param String $post_uuid
+     * @return array
+     */
+    public function editPosts(String $post_uuid) : array
+    {
+        $postsData = $this->postsRepository->postsExits($post_uuid);
+        $user = Auth::user();
+
+        if ($postsData->user_id != $user->id) {
+            throw new \App\Exceptions\ForbiddenErrorException();
+        }
+
+        $result = $this->postsRepository->postsViewById($postsData->id);
+        $user = function($user) {
+            return [
+                'user_uuid' => $user->user_uuid,
+                'user_type' => [
+                    'code_id' => $user->userType->code_id,
+                    'code_name' => $user->userType->code_name,
+                ],
+                'user_level' => [
+                    'code_id' => $user->userLevel->code_id,
+                    'code_name' => $user->userLevel->code_name,
+                ],
+                'name' => $user->name,
+                'nickname' => $user->nickname,
+                'email' => $user->email,
+                'active' => $user->active,
+            ];
+        };
+
+        $tags = function($e) {
+            return array_map(function($e){
+                return [
+                    'tag_id' => $e['tag_id'],
+                    'tag_text' => $e['tag_text'],
+                ];
+            }, $e);
+        };
+
+        return [
+            'post_uuid' => $result->post_uuid,
+            'user' => $user($result->user),
+            'post_title' => $result->title,
+            'slug_title' => $result->slug_title,
+            'contents_html' => $result->contents_html,
+            'contents_text' => $result->contents_text,
+            'markdown' => $result->markdown,
+            'tags' => $tags($result->tag->toarray()),
+            'post_active' => $result->post_active,
+            'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
+            'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
+        ];
     }
 }
