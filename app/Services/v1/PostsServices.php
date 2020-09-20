@@ -274,14 +274,14 @@ class PostsServices
      */
     public function editPosts(String $post_uuid) : array
     {
-        $postsData = $this->postsRepository->postsExits($post_uuid);
+        $postsData = $this->postsRepository->editPostsExits($post_uuid);
         $user = Auth::user();
 
         if ($postsData->user_id != $user->id) {
             throw new \App\Exceptions\ForbiddenErrorException();
         }
 
-        $result = $this->postsRepository->postsViewById($postsData->id);
+        $result = $this->postsRepository->editPostsViewById($postsData->id);
         $user = function($user) {
             return [
                 'user_uuid' => $user->user_uuid,
@@ -319,6 +319,7 @@ class PostsServices
             'markdown' => $result->markdown,
             'tags' => $tags($result->tag->toarray()),
             'post_active' => $result->post_active,
+            'post_publish' => $result->post_publish,
             'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
             'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
         ];

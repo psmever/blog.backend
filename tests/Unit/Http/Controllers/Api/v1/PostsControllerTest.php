@@ -708,6 +708,7 @@ class PostsControllerTest extends TestCase
                 ],
             ],
             "post_active",
+            "post_publish",
             "created",
             "updated"
         ]);
