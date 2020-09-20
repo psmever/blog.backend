@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-class AddPostsTablePublishColumn extends Migration
+class AddPostsTablePostPublishColumn extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class AddPostsTablePublishColumn extends Migration
     public function up()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->enum('publish', ['Y', 'N'])->after('markdown')->default('Y')->comment('게시 유무.');
+            $table->enum('post_publish', ['Y', 'N'])->after('markdown')->default('N')->comment('게시 유무.');
         });
     }
 
@@ -27,7 +27,7 @@ class AddPostsTablePublishColumn extends Migration
     public function down()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->dropColumn('publish');
+            $table->dropColumn('post_publish');
         });
     }
 }

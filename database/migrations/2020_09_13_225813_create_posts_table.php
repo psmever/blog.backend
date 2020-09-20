@@ -23,7 +23,7 @@ class CreatePostsTable extends Migration
             $table->longText('contents_html')->nullable(false);
             $table->longText('contents_text')->nullable(false);
             $table->enum('markdown', ['Y', 'N'])->default('N')->comment('마크다운 유무.');
-            $table->enum('post_active', ['Y', 'N'])->default('N')->comment('글 상태.');
+            $table->enum('post_active', ['Y', 'N'])->default('Y')->comment('글 공개 여부.');
 
             $table->index(['slug_title', 'user_id']);
 
