@@ -98,6 +98,7 @@ class PostsRepository implements PostsRepositoryInterface
     }
 
     /**
+     * 일반 뷰.
      * 글 정보
      *
      * @param Int $id
@@ -113,12 +114,39 @@ class PostsRepository implements PostsRepositoryInterface
     }
 
     /**
+     * 일반 뷰.
      * 글 유무 체크.
      *
      * @param String $post_uuid
      * @return object
      */
     public function postsExits(String $post_uuid) : object
+    {
+        return $this->Posts::where('post_uuid', $post_uuid)->firstOrFail();
+    }
+
+    /**
+     * 에디트용.
+     * 글 정보.
+     *
+     * @param Int $id
+     * @return object
+     */
+    public function editPostsViewById(Int $id) : object
+    {
+        return $this->Posts::with(['user', 'tag'])
+            ->where('id' , $id)
+            ->firstOrFail();
+    }
+
+    /**
+     * 에디트용
+     * 글 유무 체크.
+     *
+     * @param String $post_uuid
+     * @return object
+     */
+    public function editPostsExits(String $post_uuid) : object
     {
         return $this->Posts::where('post_uuid', $post_uuid)->firstOrFail();
     }
