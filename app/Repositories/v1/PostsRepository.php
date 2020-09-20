@@ -67,6 +67,19 @@ class PostsRepository implements PostsRepositoryInterface
         return $this->Posts::create($dataObject);
     }
 
+    /**
+     * 글게시.
+     *
+     * @param Array $dataObject
+     * @return void
+     */
+    public function publishPosts(Int $post_id) : bool
+    {
+        return $this->Posts::where('id', $post_id)->update([
+            'post_publish' => 'Y'
+        ]);
+    }
+
     // 테그 등록.
     public function createPostsTags(Array $dataObject) : object
     {
