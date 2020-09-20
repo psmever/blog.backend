@@ -51,7 +51,7 @@ class PostsRepository implements PostsRepositoryInterface
      * @param String $title
      * @return void
      */
-    public function getSlugTitle(String $title)
+    public function getSlugTitle(String $title) : string
     {
         return $this->Posts->slugify($title);
     }
@@ -76,7 +76,10 @@ class PostsRepository implements PostsRepositoryInterface
     // 글 목록(페이징처리).
     public function posts_list(Int $pages)
     {
-        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->simplePaginate(5, ['*'], 'page', $pages);
+        return $this->Posts::with(['user', 'tag'])
+            ->where([
+                ['post_active', 'Y'], ['post_publish', 'Y']
+            ])->simplePaginate(5, ['*'], 'page', $pages);
     }
 
     /**
@@ -87,7 +90,11 @@ class PostsRepository implements PostsRepositoryInterface
      */
     public function posts_view(String $slug_title) : object
     {
-        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->where('slug_title' , $slug_title)->firstOrFail();
+        return $this->Posts::with(['user', 'tag'])
+            ->where([
+                ['post_active', 'Y'], ['post_publish', 'Y']
+            ])->where('slug_title' , $slug_title)
+            ->firstOrFail();
     }
 
     /**
@@ -98,7 +105,11 @@ class PostsRepository implements PostsRepositoryInterface
      */
     public function postsViewById(Int $id) : object
     {
-        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->where('id' , $id)->firstOrFail();
+        return $this->Posts::with(['user', 'tag'])
+            ->where([
+                ['post_active', 'Y'], ['post_publish', 'Y']
+            ])->where('id' , $id)
+            ->firstOrFail();
     }
 
     /**
