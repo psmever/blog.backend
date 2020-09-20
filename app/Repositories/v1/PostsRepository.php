@@ -91,6 +91,17 @@ class PostsRepository implements PostsRepositoryInterface
     }
 
     /**
+     * 글 정보
+     *
+     * @param Int $id
+     * @return object
+     */
+    public function postsViewById(Int $id) : object
+    {
+        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->where('id' , $id)->firstOrFail();
+    }
+
+    /**
      * 글 유무 체크.
      *
      * @param String $post_uuid
