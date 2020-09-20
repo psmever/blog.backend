@@ -79,6 +79,26 @@ class PostsServices
     }
 
     /**
+     * 글 게시.
+     *
+     * @param String $post_uuid
+     * @return void
+     */
+    public function publishPosts(String $post_uuid) : void
+    {
+        $postsData = $this->postsRepository->editPostsExits($post_uuid);
+        $user = Auth::user();
+
+        if($postsData->user_id != $user->id) {
+            throw new \App\Exceptions\ForbiddenErrorException();
+        }
+
+        $this->postsRepository->publishPosts($postsData->id);
+
+        return;
+    }
+
+    /**
      * 글 내용.
      *
      * @param String $slug_title

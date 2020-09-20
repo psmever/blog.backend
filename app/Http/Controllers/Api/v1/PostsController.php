@@ -32,8 +32,14 @@ class PostsController extends ApiRootController
         return Response::success($this->PostsServices->createPosts($request));
     }
 
+    // 글 게시.
+    public function publish(String $post_uuid) {
+        $this->PostsServices->publishPosts($post_uuid);
+        return Response::success_only_message();
+    }
+
     // 글 정보(뷰).
-    public function view($slug_title) {
+    public function view(String $slug_title) {
         return Response::success($this->PostsServices->viewPosts($slug_title));
     }
 
