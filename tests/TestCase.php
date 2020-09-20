@@ -14,14 +14,14 @@ use Laravel\Passport\Passport;
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
-    use DatabaseMigrations;
+    // use DatabaseMigrations;
     use RefreshDatabase;
 
     protected function setUp() : void
     {
         parent::setUp();
 
-        // $this->artisan('migrate',['-vvv' => true]);
+        $this->artisan('migrate',['-vvv' => true]);
         $this->artisan('passport:install',['-vvv' => true]);
         $this->artisan('db:seed',['-vvv' => true]);
     }

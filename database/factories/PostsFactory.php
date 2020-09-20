@@ -20,6 +20,7 @@ $factory->define(Posts::class, function (Faker $faker) {
         'contents_html' => $text,
         'contents_text' => $text,
         'markdown' => 'Y',
+        'post_publish' => 'Y',
         'post_active' => 'Y',
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),

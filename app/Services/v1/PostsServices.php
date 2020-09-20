@@ -64,6 +64,7 @@ class PostsServices
                 'markdown' => $e['markdown'],
                 'tags' => $tags($e['tag']),
                 'post_active' => $e['post_active'],
+                'post_publish' => $e['post_publish'],
                 'created' => \Carbon\Carbon::parse($e['created_at'])->format('Y-m-d H:s'),
                 'updated' => \Carbon\Carbon::parse($e['updated_at'])->format('Y-m-d H:s'),
             ];
@@ -75,6 +76,26 @@ class PostsServices
             'current_page' => $result['current_page'],
             'posts' => $items
         ];
+    }
+
+    /**
+     * 글 게시.
+     *
+     * @param String $post_uuid
+     * @return void
+     */
+    public function publishPosts(String $post_uuid) : void
+    {
+        $postsData = $this->postsRepository->editPostsExits($post_uuid);
+        $user = Auth::user();
+
+        if($postsData->user_id != $user->id) {
+            throw new \App\Exceptions\ForbiddenErrorException();
+        }
+
+        $this->postsRepository->publishPosts($postsData->id);
+
+        return;
     }
 
     /**
@@ -122,7 +143,6 @@ class PostsServices
             'contents_text' => $result->contents_text,
             'markdown' => $result->markdown,
             'tags' => $tags($result->tag->toarray()),
-            'post_active' => $result->post_active,
             'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
             'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
         ];
@@ -274,14 +294,14 @@ class PostsServices
      */
     public function editPosts(String $post_uuid) : array
     {
-        $postsData = $this->postsRepository->postsExits($post_uuid);
+        $postsData = $this->postsRepository->editPostsExits($post_uuid);
         $user = Auth::user();
 
         if ($postsData->user_id != $user->id) {
             throw new \App\Exceptions\ForbiddenErrorException();
         }
 
-        $result = $this->postsRepository->postsViewById($postsData->id);
+        $result = $this->postsRepository->editPostsViewById($postsData->id);
         $user = function($user) {
             return [
                 'user_uuid' => $user->user_uuid,
@@ -319,6 +339,7 @@ class PostsServices
             'markdown' => $result->markdown,
             'tags' => $tags($result->tag->toarray()),
             'post_active' => $result->post_active,
+            'post_publish' => $result->post_publish,
             'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
             'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
         ];
