@@ -51,7 +51,7 @@ class PostsRepository implements PostsRepositoryInterface
      * @param String $title
      * @return void
      */
-    public function getSlugTitle(String $title)
+    public function getSlugTitle(String $title) : string
     {
         return $this->Posts->slugify($title);
     }
@@ -67,6 +67,19 @@ class PostsRepository implements PostsRepositoryInterface
         return $this->Posts::create($dataObject);
     }
 
+    /**
+     * 글게시.
+     *
+     * @param Array $dataObject
+     * @return void
+     */
+    public function publishPosts(Int $post_id) : bool
+    {
+        return $this->Posts::where('id', $post_id)->update([
+            'post_publish' => 'Y'
+        ]);
+    }
+
     // 테그 등록.
     public function createPostsTags(Array $dataObject) : object
     {
@@ -76,7 +89,10 @@ class PostsRepository implements PostsRepositoryInterface
     // 글 목록(페이징처리).
     public function posts_list(Int $pages)
     {
-        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->simplePaginate(5, ['*'], 'page', $pages);
+        return $this->Posts::with(['user', 'tag'])
+            ->where([
+                ['post_active', 'Y'], ['post_publish', 'Y']
+            ])->orderBy('updated_at','DESC')->simplePaginate(5, ['*'], 'page', $pages);
     }
 
     /**
@@ -87,10 +103,15 @@ class PostsRepository implements PostsRepositoryInterface
      */
     public function posts_view(String $slug_title) : object
     {
-        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->where('slug_title' , $slug_title)->firstOrFail();
+        return $this->Posts::with(['user', 'tag'])
+            ->where([
+                ['post_active', 'Y'], ['post_publish', 'Y']
+            ])->where('slug_title' , $slug_title)
+            ->firstOrFail();
     }
 
     /**
+     * 일반 뷰.
      * 글 정보
      *
      * @param Int $id
@@ -98,16 +119,47 @@ class PostsRepository implements PostsRepositoryInterface
      */
     public function postsViewById(Int $id) : object
     {
-        return $this->Posts::with(['user', 'tag'])->where('post_active', 'Y')->where('id' , $id)->firstOrFail();
+        return $this->Posts::with(['user', 'tag'])
+            ->where([
+                ['post_active', 'Y'], ['post_publish', 'Y']
+            ])->where('id' , $id)
+            ->firstOrFail();
     }
 
     /**
+     * 일반 뷰.
      * 글 유무 체크.
      *
      * @param String $post_uuid
      * @return object
      */
     public function postsExits(String $post_uuid) : object
+    {
+        return $this->Posts::where('post_uuid', $post_uuid)->firstOrFail();
+    }
+
+    /**
+     * 에디트용.
+     * 글 정보.
+     *
+     * @param Int $id
+     * @return object
+     */
+    public function editPostsViewById(Int $id) : object
+    {
+        return $this->Posts::with(['user', 'tag'])
+            ->where('id' , $id)
+            ->firstOrFail();
+    }
+
+    /**
+     * 에디트용
+     * 글 유무 체크.
+     *
+     * @param String $post_uuid
+     * @return object
+     */
+    public function editPostsExits(String $post_uuid) : object
     {
         return $this->Posts::where('post_uuid', $post_uuid)->firstOrFail();
     }
