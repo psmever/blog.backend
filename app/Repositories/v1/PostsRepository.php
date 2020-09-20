@@ -79,7 +79,7 @@ class PostsRepository implements PostsRepositoryInterface
         return $this->Posts::with(['user', 'tag'])
             ->where([
                 ['post_active', 'Y'], ['post_publish', 'Y']
-            ])->simplePaginate(5, ['*'], 'page', $pages);
+            ])->orderBy('updated_at','DESC')->simplePaginate(5, ['*'], 'page', $pages);
     }
 
     /**
