@@ -64,6 +64,7 @@ class PostsServices
                 'markdown' => $e['markdown'],
                 'tags' => $tags($e['tag']),
                 'post_active' => $e['post_active'],
+                'post_publish' => $e['post_publish'],
                 'created' => \Carbon\Carbon::parse($e['created_at'])->format('Y-m-d H:s'),
                 'updated' => \Carbon\Carbon::parse($e['updated_at'])->format('Y-m-d H:s'),
             ];
@@ -122,7 +123,6 @@ class PostsServices
             'contents_text' => $result->contents_text,
             'markdown' => $result->markdown,
             'tags' => $tags($result->tag->toarray()),
-            'post_active' => $result->post_active,
             'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
             'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
         ];

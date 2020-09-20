@@ -20,8 +20,8 @@ $factory->define(Posts::class, function (Faker $faker) {
         'contents_html' => $text,
         'contents_text' => $text,
         'markdown' => 'Y',
-        'publish' => array('Y', 'N')[rand(0,1)],
-        'post_active' => array('Y', 'N')[rand(0,1)],
+        'post_publish' => 'Y',
+        'post_active' => 'Y',
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ];
