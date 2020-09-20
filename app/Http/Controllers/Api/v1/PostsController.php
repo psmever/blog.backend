@@ -38,8 +38,8 @@ class PostsController extends ApiRootController
     }
 
     // 글 정보(수정).
-    public function edit(Request $request) {
-        return Response::success();
+    public function edit(String $post_uuid) {
+        return Response::success_only_data($this->PostsServices->editPosts($post_uuid));
     }
 
     // 업데이트.
