@@ -1,9 +1,9 @@
-@servers(['prod' => 'local_server'])
+@servers(['prod' => 'oracle_api'])
 
 @setup
-    $prod_root_directory = "/var/www/site/blog/prod.backend";
+    $prod_root_directory = "/var/www/site/nicepage/blog-api";
 
-    $stage_root_directory = "/var/www/site/blog/stage.backend";
+    $stage_root_directory = "/var/www/site/blog/prod.backend";
 @endsetup
 
 @story('deploy')
