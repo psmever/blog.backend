@@ -58,6 +58,7 @@ class CodesSeeder extends Seeder
             [ 'group_id' => 'S02', 'group_name' => '사용자 레벨' ],
             [ 'group_id' => 'S03', 'group_name' => '사용자 상태' ],
             [ 'group_id' => 'S04', 'group_name' => '상태' ],
+            [ 'group_id' => 'S05', 'group_name' => '포스트 카테고리 이미지(리스트용)' ],
 	    ];
     }
 
@@ -87,6 +88,18 @@ class CodesSeeder extends Seeder
             'S04' => [
                 [ 'code_id' => '000', 'code_name' => '비사용' ],
                 [ 'code_id' => '010', 'code_name' => '사용' ],
+            ],
+            'S05' => [
+                [ 'code_id' => '000', 'code_name' => 'front-end' ],
+                [ 'code_id' => '010', 'code_name' => 'github' ],
+                [ 'code_id' => '020', 'code_name' => 'javascript01' ],
+                [ 'code_id' => '030', 'code_name' => 'javascript02' ],
+                [ 'code_id' => '040', 'code_name' => 'linux' ],
+                [ 'code_id' => '050', 'code_name' => 'mac' ],
+                [ 'code_id' => '060', 'code_name' => 'php' ],
+                [ 'code_id' => '070', 'code_name' => 'react' ],
+                [ 'code_id' => '080', 'code_name' => 'windows' ],
+                [ 'code_id' => '990', 'code_name' => 'runners' ],
             ],
 		];
 	}
