@@ -26,7 +26,6 @@ deploy.sh
 
 # bootstrap file
 boots.txt
-bootstrap.sh
 
 # test controller
 app/Http/Controllers/Api/TestController.php
