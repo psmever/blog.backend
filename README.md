@@ -9,6 +9,12 @@ Use the package manager [composer](https://getcomposer.org/) to install foobar.
 git clone https://github.com/psmever/blog.backend.git blog.backend
 ```
 
+## Git Clone (Single Branch).
+
+```bash
+git clone -b develop --single-branch https://github.com/psmever/blog.backend.git
+```
+
 ## Composer.
 ```bash
 composer install
