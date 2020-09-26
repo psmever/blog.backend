@@ -12,6 +12,11 @@ class CodesSeeder extends Seeder
      */
     public function run()
     {
+        if (env('APP_ENV') != "testing") {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            \App\Model\Codes::truncate();
+        }
+
         $arrayGroupCodesList = $this->initGroupCodesList();
 	    $arrayCodesList = $this->initCodesList();
 
@@ -44,7 +49,11 @@ class CodesSeeder extends Seeder
 			    ]);
 
 			endforeach;
-		endforeach;
+        endforeach;
+
+        if (env('APP_ENV') != "testing") {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
     }
 
     /**
@@ -90,15 +99,16 @@ class CodesSeeder extends Seeder
                 [ 'code_id' => '010', 'code_name' => '사용' ],
             ],
             'S05' => [
-                [ 'code_id' => '000', 'code_name' => 'front-end' ],
-                [ 'code_id' => '010', 'code_name' => 'github' ],
-                [ 'code_id' => '020', 'code_name' => 'javascript01' ],
-                [ 'code_id' => '030', 'code_name' => 'javascript02' ],
-                [ 'code_id' => '040', 'code_name' => 'linux' ],
-                [ 'code_id' => '050', 'code_name' => 'mac' ],
-                [ 'code_id' => '060', 'code_name' => 'php' ],
-                [ 'code_id' => '070', 'code_name' => 'react' ],
-                [ 'code_id' => '080', 'code_name' => 'windows' ],
+                [ 'code_id' => '000', 'code_name' => 'blog-default' ],
+                [ 'code_id' => '010', 'code_name' => 'front-end' ],
+                [ 'code_id' => '020', 'code_name' => 'github' ],
+                [ 'code_id' => '030', 'code_name' => 'javascript01' ],
+                [ 'code_id' => '040', 'code_name' => 'javascript02' ],
+                [ 'code_id' => '050', 'code_name' => 'linux' ],
+                [ 'code_id' => '060', 'code_name' => 'mac' ],
+                [ 'code_id' => '070', 'code_name' => 'php' ],
+                [ 'code_id' => '080', 'code_name' => 'react' ],
+                [ 'code_id' => '090', 'code_name' => 'windows' ],
                 [ 'code_id' => '990', 'code_name' => 'runners' ],
             ],
 		];
