@@ -1,24 +1,24 @@
-@servers(['prod' => 'oracle_api'])
+@servers(['prod' => 'oracle_api', 'stage' => 'local_server'])
 
 @setup
     $prod_root_directory = "/var/www/site/nicepage/blog-api";
 
-    $stage_root_directory = "/var/www/site/blog/prod.backend";
+    $stage_root_directory = "/var/www/site/blog/stage.backend";
 @endsetup
 
 @story('deploy')
     task_prod_deploy
 @endstory
 
-@story('deploy:prod')
-    task_prod_deploy
+@story('deploy:prod', ['on' => 'prod'])
+    prod_deploy
 @endstory
 
-@story('deploy:stage')
+@story('deploy:stage', ['on' => 'stage'])
     stage_deploy
 @endstory
 
-@task('task_prod_deploy')
+@task('prod_deploy')
     cd {{ $prod_root_directory }}
     pwd
 
