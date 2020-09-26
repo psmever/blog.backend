@@ -24,6 +24,10 @@ yarn-error.log
 # deploy
 deploy.sh
 
+# bootstrap file
+boots.txt
+bootstrap.sh
+
 # test controller
 app/Http/Controllers/Api/TestController.php
 app/Http/Controllers/Web/TestController.php
