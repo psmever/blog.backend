@@ -12,7 +12,7 @@ class Posts extends Model
 
     // protected $primaryKey = 'slug_title';
 
-    protected $fillable = ['id', 'title', 'user_id', 'post_uuid', 'contents_html', 'contents_text', 'slug_title'];
+    protected $fillable = ['id', 'title', 'user_id', 'post_uuid', 'category_thumb', 'contents_html', 'contents_text', 'slug_title'];
 
     /**
      * Slug Title 처리.
@@ -56,5 +56,11 @@ class Posts extends Model
     public function tag()
     {
         return $this->hasMany(PostsTags::class, 'post_id', 'id');
+    }
+
+    // 글 테그.
+    public function category_thumb()
+    {
+        return $this->hasOne(Codes::class, 'code_id', 'category_thumb');
     }
 }

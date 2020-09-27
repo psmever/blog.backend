@@ -12,8 +12,8 @@ class PostsSeeder extends Seeder
     public function run()
     {
         if (env('APP_ENV') == "testing") {
-            factory('App\Model\Posts', 15)->create();
-            factory('App\Model\PostsTags', 5)->create();
+            factory('App\Model\Posts', 1)->create();
+            factory('App\Model\PostsTags', 1)->create();
         }
     }
 }
