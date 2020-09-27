@@ -65,7 +65,24 @@ class SystemsServices
      */
     public function getSiteData() : array
     {
+        $codeGroupList = array();
+
         // FIXME 2020-08-27 22:32  라라벨 Collection 으로 변경 요망.
+        $codes = $this->codeRepository->getAllData()->toArray();
+
+        foreach($codes as $element):
+            $group_id = $element['group_id'];
+            $code_id = $element['code_id'];
+            $code_name = $element['code_name'];
+
+            if($code_id) {
+                $codeGroupList[$group_id][] = [
+                    'code_id' => $code_id,
+                    'code_name' => $code_name,
+                ];
+            }
+        endforeach;
+
         return [
             'codes' => [
                 'code_name' => array_values(array_map(function($e) {
@@ -74,9 +91,10 @@ class SystemsServices
                     return [
                         $code_id => $code_name
                     ];
-                }, array_filter($this->codeRepository->getAllData()->toArray(), function($e) {
+                }, array_filter($codes, function($e) {
                     return $e['code_id'];
-                })))
+                }))),
+                'code_group' => $codeGroupList
             ]
         ];
     }
