@@ -54,11 +54,20 @@ class PostsServices
                 }, $e);
             };
 
+            $category_thumb = function($e) {
+                return [
+                    'code_id' => $e['code_id'],
+                    'code_name' => $e['code_name'],
+                    'category_thumb_url' => env("MEDIA_URL") . "/blog/post-category/" . $e['code_name'] . ".jpg",
+                ];
+            };
+
             return [
                 'post_uuid' => $e['post_uuid'],
                 'user' => $user($e['user']),
                 'post_title' => $e['title'],
                 'slug_title' => $e['slug_title'],
+                'category_thumb' => $category_thumb($e['category_thumb']),
                 'contents_html' => $e['contents_html'],
                 'contents_text' => $e['contents_text'],
                 'markdown' => $e['markdown'],
@@ -160,6 +169,7 @@ class PostsServices
 
         $validator = Validator::make($request->all(), [
                 'title' => 'required',
+                'category_thumb' => 'required|exists:codes,code_id',
                 'tags' => 'required|array|min:1',
                 'tags.*' => 'required|array|min:1',
                 'contents' => 'required|array|min:2',
@@ -167,6 +177,8 @@ class PostsServices
             ],
             [
                 'title.required'=> __('default.post.title_required'),
+                'category_thumb.required'=> __('default.post.category_thumb_required'),
+                'category_thumb.exists'=> __('default.post.category_thumb_required'),
                 'tags.required'=> __('default.post.tags_required'),
                 'contents.required'=> __('default.post.contents_required'),
                 'contents.*.required'=> __('default.post.contents_required'),
@@ -221,6 +233,7 @@ class PostsServices
 
         $validator = Validator::make($request->all(), [
             'title' => 'required',
+            'category_thumb' => 'required|exists:codes,code_id',
             'tags' => 'required|array|min:1',
             'tags.*' => 'required|array|min:1',
             'contents' => 'required|array|min:2',
@@ -228,6 +241,7 @@ class PostsServices
         ],
         [
             'title.required'=> __('default.post.title_required'),
+            'category_thumb.required'=> __('default.post.category_thumb_required'),
             'tags.required'=> __('default.post.tags_required'),
             'contents.required'=> __('default.post.contents_required'),
             'contents.*.required'=> __('default.post.contents_required'),
@@ -334,6 +348,7 @@ class PostsServices
             'user' => $user($result->user),
             'post_title' => $result->title,
             'slug_title' => $result->slug_title,
+            'category_thumb' => $result->category_thumb,
             'contents_html' => $result->contents_html,
             'contents_text' => $result->contents_text,
             'markdown' => $result->markdown,
