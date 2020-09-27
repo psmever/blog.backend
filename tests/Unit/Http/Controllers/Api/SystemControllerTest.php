@@ -78,6 +78,7 @@ class SystemControllerTest extends TestCase
      */
     public function test_server_check_base_data() {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/base-data');
+        // $response->dump();
         $response->assertOk();
         $response->assertJsonStructure(
             $this->getDefaultSuccessJsonType()
@@ -86,7 +87,8 @@ class SystemControllerTest extends TestCase
             'message',
             'result' => [
                 "codes" => [
-                    "code_name"
+                    "code_name",
+                    "code_group"
                 ]
             ]
         ]);
