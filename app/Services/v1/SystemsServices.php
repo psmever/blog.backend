@@ -65,55 +65,34 @@ class SystemsServices
      */
     public function getSiteData() : array
     {
-        $codeGroupList = array();
-
-        // FIXME 2020-08-27 22:32  라라벨 Collection 으로 변경 요망.
-        $codes = $this->codeRepository->getAllData()->toArray();
-
-        foreach($codes as $element):
-            $group_id = $element['group_id'];
-            $code_id = $element['code_id'];
-            $code_name = $element['code_name'];
-
-            if($code_id) {
-                $codeGroupList[$group_id][] = [
-                    'code_id' => $code_id,
-                    'code_name' => $code_name,
+        $returnObject = function($codes) {
+            // 공통 코드 그룹 별로 구분.
+            $code_group = array();
+            array_map(function($element) use (&$code_group) {
+                $code_group[$element['group_id']][] = [
+                    'code_id' => $element['code_id'],
+                    'code_name' => $element['code_name'],
                 ];
-            }
-        endforeach;
+            }, array_filter($codes, function($e) {
+                return $e['code_id'];
+            }));
 
-        // TODO 2020-09-28 17:35 키값 조합.
-        // print_r(
-        //     array_map(function($element) {
-        //         $group_id = $element['group_id'];
-        //         $code_id = $element['code_id'];
-        //         $code_name = $element['code_name'];
+            // 코드 명으로 분리.
+            $code_name = array();
+            array_map(function($element) use (&$code_name) {
+                $code_name[$element['code_id']] = $element['code_name'];
+            }, array_filter($codes, function($e) {
+                return $e['code_id'];
+            }));
 
-        //         return [
-        //             $group_id =>[
-        //                 'code_id' => $code_id,
-        //                 'code_name' => $code_name,
-        //             ]
-        //         ];
-        //     }, array_filter($codes, function($e) {
-        //         return $e['code_id'];
-        //     }))
-        // );
+            return [
+                'code_name' => $code_name,
+                'code_group' => $code_group
+            ];
+        };
 
         return [
-            'codes' => [
-                'code_name' => array_values(array_map(function($e) {
-                    $code_id = $e['code_id'];
-                    $code_name = $e['code_name'];
-                    return [
-                        $code_id => $code_name
-                    ];
-                }, array_filter($codes, function($e) {
-                    return $e['code_id'];
-                }))),
-                'code_group' => $codeGroupList
-            ]
+            'codes' => $returnObject($this->codeRepository->getAllData()->toArray())
         ];
     }
 
