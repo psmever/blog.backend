@@ -83,6 +83,24 @@ class SystemsServices
             }
         endforeach;
 
+        // TODO 2020-09-28 17:35 키값 조합.
+        // print_r(
+        //     array_map(function($element) {
+        //         $group_id = $element['group_id'];
+        //         $code_id = $element['code_id'];
+        //         $code_name = $element['code_name'];
+
+        //         return [
+        //             $group_id =>[
+        //                 'code_id' => $code_id,
+        //                 'code_name' => $code_name,
+        //             ]
+        //         ];
+        //     }, array_filter($codes, function($e) {
+        //         return $e['code_id'];
+        //     }))
+        // );
+
         return [
             'codes' => [
                 'code_name' => array_values(array_map(function($e) {
