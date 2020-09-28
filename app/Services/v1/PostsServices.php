@@ -195,6 +195,7 @@ class PostsServices
             'post_uuid' => Str::uuid(),
             'title' => $request->input('title'),
             'slug_title' => $this->postsRepository->getSlugTitle($request->input('title')),
+            'category_thumb' => $request->input('category_thumb'),
             'contents_html' => $request->input('contents.html'),
             'contents_text' => $request->input('contents.text'),
             'markdown' => 'Y'
@@ -257,6 +258,7 @@ class PostsServices
         $this->postsRepository->updatePosts($postsData->id, [
             'title' => $request->input('title'),
             'slug_title' => $slug_title,
+            'category_thumb' => $request->input('category_thumb'),
             'contents_html' => $request->input('contents.html'),
             'contents_text' => $request->input('contents.text'),
             'markdown' => 'Y'
