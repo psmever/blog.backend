@@ -58,8 +58,8 @@ class Posts extends Model
         return $this->hasMany(PostsTags::class, 'post_id', 'id');
     }
 
-    // 글 테그.
-    public function category_thumb()
+    // 카테고리 썸네일 코드 관계.
+    public function categoryThumb()
     {
         return $this->hasOne(Codes::class, 'code_id', 'category_thumb');
     }
