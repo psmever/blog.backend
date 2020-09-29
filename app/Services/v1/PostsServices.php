@@ -345,12 +345,21 @@ class PostsServices
             }, $e);
         };
 
+        $categoryThumb = function($e) {
+            return [
+                'code_id' => $e->code_id,
+                'code_name' => $e->code_name,
+                'category_thumb_url' => env("MEDIA_URL") . "/blog/post-category/" . $e->code_id . ".jpg",
+
+            ];
+        };
+
         return [
             'post_uuid' => $result->post_uuid,
             'user' => $user($result->user),
             'post_title' => $result->title,
             'slug_title' => $result->slug_title,
-            'category_thumb' => $result->category_thumb,
+            'category_thumb' => $categoryThumb($result->categoryThumb),
             'contents_html' => $result->contents_html,
             'contents_text' => $result->contents_text,
             'markdown' => $result->markdown,

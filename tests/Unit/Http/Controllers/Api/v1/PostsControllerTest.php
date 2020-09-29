@@ -869,7 +869,11 @@ class PostsControllerTest extends TestCase
             ],
             "post_title",
             "slug_title",
-            "category_thumb",
+            "category_thumb" => [
+                "code_id",
+                "code_name",
+                "category_thumb_url"
+            ],
             "contents_html",
             "contents_text",
             "markdown",
