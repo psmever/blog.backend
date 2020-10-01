@@ -26,13 +26,9 @@ Route::group(['as' => 'api.'], function () {
     });
 
     Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
-
-        Route::get('server-check', 'SystemController@serverCheck')->name('server.check'); // 서버 체크용 API
-
-        Route::post('deploy', 'SystemController@deploy')->name('deploy');
-        Route::get('check-status', 'SystemController@checkStatus')->name('check.status');
-        Route::get('check-notice', 'SystemController@checkNotice')->name('check.notice');
-        Route::get('base-data', 'SystemController@baseData')->name('base.data');
+        Route::get('check-status', 'SystemController@checkStatus')->name('check.status'); // 서버 체크
+        Route::get('check-notice', 'SystemController@checkNotice')->name('check.notice'); // 서버 공지사항 체크
+        Route::get('base-data', 'SystemController@baseData')->name('base.data');  //
     });
 
     /**

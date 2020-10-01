@@ -22,16 +22,6 @@ class SystemController extends ApiRootController
     }
 
     /**
-     * 서버 상태 체크용 API
-     *
-     * @return void
-     */
-    public function serverCheck()
-    {
-        return Response::success_no_content();
-    }
-
-    /**
      * ANCHOR 서버 상태 체크용.
      *
      * php artisan up && php artisan down

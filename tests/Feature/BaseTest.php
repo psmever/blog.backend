@@ -74,7 +74,7 @@ class BaseTest extends TestCase
             'Content-Type' => 'application/json'
         ];
 
-        $response = $this->withHeaders($testHeader)->json('GET', '/api/system/server-check');
+        $response = $this->withHeaders($testHeader)->json('GET', '/api/system/check-status');
         // $response->dump();
         $response->assertStatus(412);
         $response->assertJsonStructure([
@@ -101,7 +101,7 @@ class BaseTest extends TestCase
             'Content-Type' => 'application/json'
         ];
 
-        $response = $this->withHeaders($testHeader)->json('GET', '/api/system/server-check');
+        $response = $this->withHeaders($testHeader)->json('GET', '/api/system/check-status');
         $response->assertStatus(412);
         $response->assertJsonStructure([
             'error' => [
@@ -121,7 +121,7 @@ class BaseTest extends TestCase
      */
     public function test_server_exception_client_type_check()
     {
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/server-check');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-status');
         // $response->dump();
         $response->assertStatus(204);
     }
@@ -133,7 +133,7 @@ class BaseTest extends TestCase
      */
     public function test_server_exception_not_found_check()
     {
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/server-check1');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-status1');
         // $response->dump();
         $response->assertNotFound();
         $response->assertJsonStructure([
@@ -154,7 +154,7 @@ class BaseTest extends TestCase
      */
     public function test_server_exception_not_allowd_check()
     {
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', '/api/system/server-check');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', '/api/system/check-status');
         // $response->dump();
         $response->assertStatus(405);
         $response->assertJsonStructure([
