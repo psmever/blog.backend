@@ -23,7 +23,7 @@ class ApiBeforeMiddleware
         }
 
         // 클라이언트 체크 예외 라우터.
-        $exceptionRouteName = ["api.system.deploy", "api.system.check.status"];
+        $exceptionRouteName = ["api.system.deploy"];
 
         // NOTE 헤더 클라이언트 체크.
         $clientType = $request->header('request-client-type');
