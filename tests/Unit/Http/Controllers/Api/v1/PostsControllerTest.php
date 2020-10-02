@@ -326,6 +326,7 @@ class PostsControllerTest extends TestCase
             'current_page',
             'posts' => [
                 '*' => [
+                    "post_id",
                     "post_uuid",
                     "category_thumb" => [
                         'code_id',
@@ -334,17 +335,13 @@ class PostsControllerTest extends TestCase
                     ],
                     "user" => [
                         "user_uuid",
-                        "user_type",
-                        "user_level",
                         "name",
                         "nickname",
                         "email",
-                        "active"
                     ],
                     "post_title",
                     "slug_title",
-                    "contents_html",
-                    "contents_text",
+                    "list_contents",
                     "markdown",
                     "tags" => [
                         '*' => [
@@ -354,8 +351,7 @@ class PostsControllerTest extends TestCase
                     ],
                     "post_active",
                     "post_publish",
-                    "created",
-                    "updated"
+                    "list_created"
                 ],
             ]
         ]);
@@ -851,6 +847,7 @@ class PostsControllerTest extends TestCase
         // $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
+            "post_id",
             "post_uuid",
             "user" => [
                 "user_uuid",

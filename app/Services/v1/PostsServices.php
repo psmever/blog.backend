@@ -7,7 +7,7 @@ use App\Repositories\v1\PostsRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-
+use App\Supports\Facades\GuitarClass;
 
 class PostsServices
 {
@@ -30,18 +30,9 @@ class PostsServices
             $user = function($e) {
                 return [
                     'user_uuid' => $e['user_uuid'],
-                    'user_type' => [
-                        'code_id' => $e['user_type']['code_id'],
-                        'code_name' => $e['user_type']['code_name'],
-                    ],
-                    'user_level' => [
-                        'code_id' => $e['user_level']['code_id'],
-                        'code_name' => $e['user_level']['code_name'],
-                    ],
                     'name' => $e['name'],
                     'nickname' => $e['nickname'],
                     'email' => $e['email'],
-                    'active' => $e['active'],
                 ];
             };
 
@@ -58,24 +49,31 @@ class PostsServices
                 return [
                     'code_id' => $e['code_id'],
                     'code_name' => $e['code_name'],
-                    'category_thumb_url' => env("MEDIA_URL") . "/blog/post-category/" . $e['code_name'] . ".jpg",
+                    'category_thumb_url' => env("MEDIA_URL") . "/blog/post-category/" . $e['code_id'] . ".jpg",
                 ];
             };
 
+            $list_contents = function($contents) {
+                return Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
+            };
+
+            $list_created = function($timestamp) {
+                return GuitarClass::convertTimeToString(strtotime($timestamp));
+            };
+
             return [
+                'post_id' => $e['id'],
                 'post_uuid' => $e['post_uuid'],
                 'user' => $user($e['user']),
                 'post_title' => $e['title'],
                 'slug_title' => $e['slug_title'],
                 'category_thumb' => $category_thumb($e['category_thumb']),
-                'contents_html' => $e['contents_html'],
-                'contents_text' => $e['contents_text'],
+                'list_contents' => $list_contents($e['contents_html']),
                 'markdown' => $e['markdown'],
                 'tags' => $tags($e['tag']),
                 'post_active' => $e['post_active'],
                 'post_publish' => $e['post_publish'],
-                'created' => \Carbon\Carbon::parse($e['created_at'])->format('Y-m-d H:s'),
-                'updated' => \Carbon\Carbon::parse($e['updated_at'])->format('Y-m-d H:s'),
+                'list_created' => $list_created($e['updated_at'])
             ];
         }, $result['data']);
 
@@ -355,6 +353,7 @@ class PostsServices
         };
 
         return [
+            'post_id' => $result->id,
             'post_uuid' => $result->post_uuid,
             'user' => $user($result->user),
             'post_title' => $result->title,
