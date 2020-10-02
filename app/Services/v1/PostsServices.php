@@ -111,9 +111,9 @@ class PostsServices
      * @param String $slug_title
      * @return array
      */
-    public function viewPosts(String $slug_title) : array
+    public function detailPosts(String $slug_title) : array
     {
-        $result = $this->postsRepository->posts_view($slug_title);
+        $result = $this->postsRepository->posts_detail($slug_title);
         $user = function($user) {
             return [
                 'user_uuid' => $user->user_uuid,

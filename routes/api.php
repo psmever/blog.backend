@@ -51,7 +51,7 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/{page?}', 'PostsController@index')->name('index.paging');
             Route::post('/', 'PostsController@create')->name('create')->middleware('auth:api');
             Route::post('/{post_uuid}/publish', 'PostsController@publish')->name('publish')->middleware('auth:api');
-            Route::get('/{slug_title}/view', 'PostsController@view')->name('view');
+            Route::get('/{slug_title}/detail', 'PostsController@detail')->name('detail');
             Route::get('/{post_uuid}/edit', 'PostsController@edit')->name('edit')->middleware('auth:api');
             Route::post('/{post_uuid}/update', 'PostsController@update')->name('update')->middleware('auth:api');
             Route::delete('/{post_uuid}/destroy', 'PostsController@destroy')->name('destroy')->middleware('auth:api');

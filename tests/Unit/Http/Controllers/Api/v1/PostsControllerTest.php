@@ -357,9 +357,9 @@ class PostsControllerTest extends TestCase
         ]);
     }
 
-    public function test_포스트_테스트_등록되어있지_않은_포스트_요청()
+    public function test_포스트_보기_등록되어있지_않은_포스트_요청()
     {
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/sdafsdfasdf/view', []);
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/sdafsdfasdf/detail', []);
         // $response->dump();
         $response->assertStatus(406);
         $response->assertJsonStructure([
@@ -373,7 +373,7 @@ class PostsControllerTest extends TestCase
         ]);
     }
 
-    public function test_post_view_비공개_포스트_요청()
+    public function test_포스트_보기_비공개_포스트_요청()
     {
         $testPost = \App\Model\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
 
@@ -388,7 +388,7 @@ class PostsControllerTest extends TestCase
 
         $testSlugTitle = $testPost->slug_title;
 
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/view", []);
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/detail", []);
         // $response->dump();
         $response->assertStatus(406);
         $response->assertJsonStructure([
@@ -402,7 +402,7 @@ class PostsControllerTest extends TestCase
         ]);
     }
 
-    public function test_post_view_개시전_포스트_요청()
+    public function test_포스트_보기_개시전_포스트_요청()
     {
         $testPost = \App\Model\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
 
@@ -417,7 +417,7 @@ class PostsControllerTest extends TestCase
 
         $testSlugTitle = $testPost->slug_title;
 
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/view", []);
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/detail", []);
         // $response->dump();
         $response->assertStatus(406);
         $response->assertJsonStructure([
@@ -431,11 +431,11 @@ class PostsControllerTest extends TestCase
         ]);
     }
 
-    public function test_포스트_테스트_정상_포스트_요청()
+    public function test_포스트_보기_정상_포스트_요청()
     {
         $randPost = \App\Model\Posts::select("slug_title")->where([['post_active', 'Y'], ['post_publish', 'Y']])->inRandomOrder()->first();
         $testSlugTitle = $randPost->slug_title;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/view", []);
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/detail", []);
         // $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
