@@ -40,7 +40,7 @@ class PostsController extends ApiRootController
 
     // 글 정보(보기용).
     public function detail(String $slug_title) {
-        return Response::success($this->PostsServices->detailPosts($slug_title));
+        return Response::success_only_data($this->PostsServices->detailPosts($slug_title));
     }
 
     // 글 정보(수정).
