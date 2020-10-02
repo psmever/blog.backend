@@ -141,6 +141,14 @@ class PostsServices
             }, $e);
         };
 
+        $detail_created = function($timestamp) {
+            return GuitarClass::convertTimeToString(strtotime($timestamp));
+        };
+
+        $detail_updated = function($timestamp) {
+            return GuitarClass::convertTimeToString(strtotime($timestamp));
+        };
+
         return [
             'post_uuid' => $result->post_uuid,
             'user' => $user($result->user),
@@ -150,8 +158,8 @@ class PostsServices
             'contents_text' => $result->contents_text,
             'markdown' => $result->markdown,
             'tags' => $tags($result->tag->toarray()),
-            'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
-            'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
+            'detail_created' => $detail_created($result->created_at),
+            'detail_updated' => $detail_updated($result->updated_at),
         ];
     }
 

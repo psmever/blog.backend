@@ -439,38 +439,35 @@ class PostsControllerTest extends TestCase
         // $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            "message",
-            "result" => [
-                "post_uuid",
-                "user" => [
-                    "user_uuid",
-                    "user_type" => [
-                        "code_id",
-                        "code_name"
-                    ],
-                    "user_level" => [
-                        "code_id",
-                        "code_name"
-                    ],
-                    "name",
-                    "nickname",
-                    "email",
-                    "active"
+            "post_uuid",
+            "user" => [
+                "user_uuid",
+                "user_type" => [
+                    "code_id",
+                    "code_name"
                 ],
-                "post_title",
-                "slug_title",
-                "contents_html",
-                "contents_text",
-                "markdown",
-                "tags" => [
-                    '*' => [
-                        "tag_id",
-                        "tag_text"
-                    ],
+                "user_level" => [
+                    "code_id",
+                    "code_name"
                 ],
-                "created",
-                "updated"
-            ]
+                "name",
+                "nickname",
+                "email",
+                "active"
+            ],
+            "post_title",
+            "slug_title",
+            "contents_html",
+            "contents_text",
+            "markdown",
+            "tags" => [
+                '*' => [
+                    "tag_id",
+                    "tag_text"
+                ],
+            ],
+            "detail_created",
+            "detail_updated"
         ]);
     }
 
