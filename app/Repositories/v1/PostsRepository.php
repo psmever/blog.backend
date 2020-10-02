@@ -101,7 +101,7 @@ class PostsRepository implements PostsRepositoryInterface
      * @param String $slug_title
      * @return object
      */
-    public function posts_view(String $slug_title) : object
+    public function posts_detail(String $slug_title) : object
     {
         return $this->Posts::with(['user', 'tag'])
             ->where([
