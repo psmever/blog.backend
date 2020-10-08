@@ -24,6 +24,8 @@ class BaseTest extends TestCase
     //     foreach($tables as $table)
     //     {
     //         echo $table->name.PHP_EOL;
+
+    //         print_r(DB::getSchemaBuilder()->getColumnListing($table->name));
     //     }
     //     echo PHP_EOL;
     // }

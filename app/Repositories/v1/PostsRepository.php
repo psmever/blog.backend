@@ -89,7 +89,7 @@ class PostsRepository implements PostsRepositoryInterface
     // 글 목록(페이징처리).
     public function posts_list(Int $pages)
     {
-        return $this->Posts::with(['user', 'tag', 'categoryThumb'])
+        return $this->Posts::with(['user', 'tag'])
             ->where([
                 ['post_active', 'Y'], ['post_publish', 'Y']
             ])->orderBy('updated_at','DESC')->simplePaginate(5, ['*'], 'page', $pages);
@@ -147,7 +147,7 @@ class PostsRepository implements PostsRepositoryInterface
      */
     public function editPostsViewById(Int $id) : object
     {
-        return $this->Posts::with(['user', 'tag', 'categoryThumb'])
+        return $this->Posts::with(['user', 'tag'])
             ->where('id' , $id)
             ->firstOrFail();
     }
