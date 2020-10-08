@@ -71,8 +71,8 @@ composer test:clear
 ```
 > composer global require laravel/envoy
 
-envoy run deploy_prod
-envoy run deploy_stage
+envoy run deploy:prod
+envoy run deploy:stage
 
 ```
 
