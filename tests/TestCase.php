@@ -26,6 +26,30 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('db:seed',['-vvv' => true]);
     }
 
+    public static function getTestTotalTablesList()
+    {
+        return DB::select("SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name NOT LIKE 'sqlite_%' UNION ALL SELECT name FROM sqlite_temp_master WHERE type IN ('table', 'view') ORDER BY 1");
+    }
+
+    public static function printrTotalTableList()
+    {
+        echo PHP_EOL.PHP_EOL;
+        $tables = DB::select("SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name NOT LIKE 'sqlite_%' UNION ALL SELECT name FROM sqlite_temp_master WHERE type IN ('table', 'view') ORDER BY 1");
+
+        foreach($tables as $table)
+        {
+            echo $table->name.PHP_EOL;
+            print_r(DB::getSchemaBuilder()->getColumnListing($table->name));
+        }
+        echo PHP_EOL;
+    }
+
+    public static function getTableColumnList($tableName = "")
+    {
+        return DB::getSchemaBuilder()->getColumnListing($tableName);
+    }
+
+
     public static function getTestApiHeaders()
     {
         return [

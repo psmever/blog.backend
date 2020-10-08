@@ -18,7 +18,6 @@ $factory->define(Posts::class, function (Faker $faker) {
         'post_uuid' => $faker->uuid(),
         'title' => $title,
         'slug_title' => GuitarClass::convertSlugString($title),
-        'category_thumb' => Codes::select("code_id")->where('group_id', 'S05')->whereNotNull('code_id')->inRandomOrder()->first()->code_id,
         'contents_html' => $text,
         'contents_text' => $text,
         'markdown' => 'Y',

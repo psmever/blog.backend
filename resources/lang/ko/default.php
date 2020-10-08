@@ -40,7 +40,6 @@ return [
 
     'post' => [
         'title_required' => '제목을 입력해 주세요.',
-        'category_thumb_required' => '리스트에서 사용할 카테고리 이미지를 선택해주세요.',
         'tags_required' => '테그를 입력해 주세요.',
         'contents_required' => '내용을 입력해 주세요.',
         'auth_error' => '내용을 입력해 주세요.',
