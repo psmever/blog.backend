@@ -39,45 +39,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        $logid = date('Ymdhis');
-        $request_ip = request()->ip();
-
-        $logRoutename = Route::currentRouteName();
-        $logRouteAction = Route::currentRouteAction();
-        $current_url = url()->current();
-        $logHeaderInfo = json_encode(request()->header());
-        $logBodyInfo = json_encode(request()->all());
-        $method = request()->method();
-
-        $exceptionMessage = $exception->getMessage();
-        $logBaseMessage = <<<EOF
-
-        ID:${logid}
-        RequestIP:${request_ip}
-        Message: ${exceptionMessage}
-        Current_url:${current_url}
-        RouteName:${logRoutename}
-        RouteAction:${logRouteAction}
-        Header: {$logHeaderInfo}
-        Method: ${method}
-        Body: ${logBodyInfo}
-
-        EOF;
-
-        if ($exception instanceof \PDOException) { // ANCHOR mysql Exception report
-            Log::channel('PDOExceptionLog')->error($logBaseMessage);
-        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // ANCHOR AuthenticationException report
-            Log::channel('AuthenticationExceptionLog')->error($logBaseMessage);
-        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
-            Log::channel('NotFoundHttpLog')->error($logBaseMessage);
-        } else if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
-            Log::channel('CustomExceptionLog')->error($logBaseMessage);
-        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
-            Log::channel('ClientExceptionLog')->error($logBaseMessage);
-        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // 서버 에러 로그
-            Log::channel('ServerExceptionLog')->error($logBaseMessage);
+        if(env('APP_ENV') != 'testing') {
+            $this->reportDetail($exception);
         }
-
 
         parent::report($exception);
     }
@@ -152,5 +116,53 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $exception);
+    }
+
+    /**
+     * 에러 로그 상세.
+     *
+     * @param Throwable $exception
+     * @return void
+     */
+    public function reportDetail(Throwable $exception) : void
+    {
+        $logid = date('Ymdhis');
+        $request_ip = request()->ip();
+
+        $logRoutename = Route::currentRouteName();
+        $logRouteAction = Route::currentRouteAction();
+        $current_url = url()->current();
+        $logHeaderInfo = json_encode(request()->header());
+        $logBodyInfo = json_encode(request()->all());
+        $method = request()->method();
+
+        $exceptionMessage = $exception->getMessage();
+        $logBaseMessage = <<<EOF
+
+        ID:${logid}
+        RequestIP:${request_ip}
+        Message: ${exceptionMessage}
+        Current_url:${current_url}
+        RouteName:${logRoutename}
+        RouteAction:${logRouteAction}
+        Header: {$logHeaderInfo}
+        Method: ${method}
+        Body: ${logBodyInfo}
+
+        EOF;
+
+        if ($exception instanceof \PDOException) { // ANCHOR mysql Exception report
+            Log::channel('PDOExceptionLog')->error($logBaseMessage);
+        } else if ($exception instanceof \Illuminate\Auth\AuthenticationException) { // ANCHOR AuthenticationException report
+            Log::channel('AuthenticationExceptionLog')->error($logBaseMessage);
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) { // ANCHOR NotFoundHttpException report
+            Log::channel('NotFoundHttpLog')->error($logBaseMessage);
+        } else if ($exception instanceof \App\Exceptions\CustomException) { // ANCHOR mysql Exception report
+            Log::channel('CustomExceptionLog')->error($logBaseMessage);
+        } else if ($exception instanceof \App\Exceptions\ClientErrorException) { // ANCHOR mysql Exception report
+            Log::channel('ClientExceptionLog')->error($logBaseMessage);
+        } else if ($exception instanceof \App\Exceptions\ServerErrorException) { // 서버 에러 로그
+            Log::channel('ServerExceptionLog')->error($logBaseMessage);
+        }
     }
 }
