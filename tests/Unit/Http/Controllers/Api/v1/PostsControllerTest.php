@@ -179,7 +179,7 @@ class PostsControllerTest extends TestCase
     {
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', "/api/v1/post/${testPostUuid}/publish");
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('PUT', "/api/v1/post/${testPostUuid}/publish");
         // $response->dump();
         $response->assertStatus(401);
         $response->assertJsonStructure([
@@ -196,7 +196,7 @@ class PostsControllerTest extends TestCase
     {
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', "/api/v1/post/1111111111111${testPostUuid}/publish");
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/1111111111111${testPostUuid}/publish");
         // $response->dump();
         $response->assertStatus(406);
         $response->assertJsonStructure([
@@ -213,7 +213,7 @@ class PostsControllerTest extends TestCase
     {
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('POST', "/api/v1/post/${testPostUuid}/publish", []);
+        $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/publish", []);
         // $response->dump();
         $response->assertStatus(403);
         $response->assertJsonStructure([
@@ -240,7 +240,7 @@ class PostsControllerTest extends TestCase
         ]);
 
         $testPostUuid = $testPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', "/api/v1/post/${testPostUuid}/publish", []);
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/publish", []);
         // $response->dump();
         $response->assertStatus(200);
         $response->assertJsonFragment([
@@ -416,7 +416,7 @@ class PostsControllerTest extends TestCase
     {
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', "/api/v1/post/${testPostUuid}/update");
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('PUT', "/api/v1/post/${testPostUuid}/update");
         // $response->dump();
         $response->assertStatus(401);
         $response->assertJsonStructure([
@@ -434,7 +434,7 @@ class PostsControllerTest extends TestCase
     {
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', "/api/v1/post/1111111111111${testPostUuid}/update");
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/1111111111111${testPostUuid}/update");
         // $response->dump();
         $response->assertStatus(406);
         $response->assertJsonStructure([
@@ -452,7 +452,7 @@ class PostsControllerTest extends TestCase
     {
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('POST', "/api/v1/post/${testPostUuid}/update", []);
+        $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", []);
         // $response->dump();
         $response->assertStatus(403);
         $response->assertJsonStructure([
@@ -489,7 +489,7 @@ class PostsControllerTest extends TestCase
 
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();
         $response->assertStatus(400);
         $response->assertJsonStructure([
@@ -516,7 +516,7 @@ class PostsControllerTest extends TestCase
         }';
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();
         $response->assertStatus(400);
         $response->assertJsonStructure([
@@ -552,7 +552,7 @@ class PostsControllerTest extends TestCase
         }';
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();
         $response->assertStatus(400);
         $response->assertJsonStructure([
@@ -588,7 +588,7 @@ class PostsControllerTest extends TestCase
         }';
         $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
