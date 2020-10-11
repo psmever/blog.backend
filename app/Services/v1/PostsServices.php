@@ -2,12 +2,14 @@
 
 namespace App\Services\v1;
 
+use App\Repositories\v1\GuitarClass as V1GuitarClass;
 use Illuminate\Http\Request;
 use App\Repositories\v1\PostsRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Supports\Facades\GuitarClass;
+use Illuminate\Support\Facades\Storage;
 
 class PostsServices
 {
@@ -349,6 +351,71 @@ class PostsServices
             'post_publish' => $result->post_publish,
             'created' => \Carbon\Carbon::parse($result->created_at)->format('Y-m-d H:s'),
             'updated' => \Carbon\Carbon::parse($result->updated_at)->format('Y-m-d H:s'),
+        ];
+    }
+
+    public function createImage(Request $request) : array
+    {
+        if ($request->hasFile('image')) {
+
+            if ($request->file('image')->isValid()) {
+
+                $validator = Validator::make($request->all(), [
+                        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                    ],
+                    [
+                        'image.required'=> '이미지를 선택해주세요.',
+                        'image.image'=> '이미지가 아닙니다.',
+                        'image.mimes'=> '"이미지는 (jpeg,png,jpg,gif)" 만 업로드가 가능합니다.',
+                        'max.mimes'=> '용량 초과 입니다.',
+                ]);
+
+                if( $validator->fails() ) {
+                    throw new \App\Exceptions\CustomException($validator->errors()->first());
+                }
+
+                $uploadFullFileName = GuitarClass::randomNumberUUID() . '.' . $request->image->extension();
+
+                // $filename = uniqid().File::extension($file->getClientOriginalName());
+
+                $image = $request->file('image');
+
+                $path = Storage::putFileAs(
+                    'imagess', $request->file('images'), $uploadFullFileName
+                );
+
+
+                // print_r($image);
+                // echo md5("test_" . microtime());
+
+                // $validated = $request->validate([
+                //     'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                // ]);
+                // $extension = $request->image->extension();
+                // echo $extension;
+                // dd($request->image->);
+
+
+                // FilesHelper::hashName();
+
+                // echo "2a41cbc8cc11f8c8d0eb54210fe524748b4def1c5b04fcf18c2d5972e24d11c2";
+
+                // echo Str::random();
+
+
+                $uploadFileName = GuitarClass::randomNumberUUID() . '.' . $request->image->extension();
+
+                echo $uploadFileName;
+
+
+            }
+        }
+
+        //GuitarClass::randomNumberUUID()
+        return [
+            'image-create' => false,
+
+
         ];
     }
 }
