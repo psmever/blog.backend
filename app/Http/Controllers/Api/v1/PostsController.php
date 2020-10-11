@@ -60,4 +60,8 @@ class PostsController extends ApiRootController
 
         return Response::success_only_message();
     }
+
+    public function create_image(Request $request) {
+        return Response::success_only_data($this->PostsServices->createImage($request));
+    }
 }

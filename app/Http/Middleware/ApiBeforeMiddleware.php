@@ -18,7 +18,7 @@ class ApiBeforeMiddleware
     public function handle($request, Closure $next)
     {
         // ajax가 아닐때.
-        if($request->isJson() == false) {
+        if($request->wantsJson() == false) {
             throw new \App\Exceptions\ClientErrorException(__('정상적인 요청이 아닙니다.'));
         }
 
