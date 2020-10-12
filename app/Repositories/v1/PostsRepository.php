@@ -210,7 +210,7 @@ class PostsRepository implements PostsRepositoryInterface
      * @param Array $dataObject
      * @return boolean
      */
-    public function createMediaFiles(Array $dataObject) : bool
+    public function createMediaFiles(Array $dataObject) : object
     {
         return $this->MediaFiles::create($dataObject);
     }
