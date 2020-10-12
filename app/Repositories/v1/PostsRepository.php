@@ -4,7 +4,7 @@ namespace App\Repositories\v1;
 
 use App\Model\Posts;
 use App\Model\PostsTags;
-use phpDocumentor\Reflection\Types\Boolean;
+use App\Model\MediaFiles;
 
 class PostsRepository implements PostsRepositoryInterface
 {
@@ -19,13 +19,19 @@ class PostsRepository implements PostsRepositoryInterface
     protected $PostsTags;
 
     /**
+     * @var MediaFiles
+     */
+    protected $MediaFiles;
+
+    /**
      * @param Posts $posts
      * @param PostsTags $poststag
      */
-    public function __construct(Posts $posts, PostsTags $poststags)
+    public function __construct(Posts $posts, PostsTags $poststags, MediaFiles $mediafiles)
     {
         $this->Posts = $posts;
         $this->PostsTags = $poststags;
+        $this->MediaFiles = $mediafiles;
     }
 
     public function getAll()
@@ -196,5 +202,16 @@ class PostsRepository implements PostsRepositoryInterface
     public function deletePosts(Int $post_id) : bool
     {
         return $this->Posts::where('id', $post_id)->delete();
+    }
+
+    /**
+     * 업로드 파일 기록 테이블
+     *
+     * @param Array $dataObject
+     * @return boolean
+     */
+    public function createMediaFiles(Array $dataObject) : bool
+    {
+        return $this->MediaFiles::create($dataObject);
     }
 }

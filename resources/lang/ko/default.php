@@ -43,5 +43,9 @@ return [
         'tags_required' => '테그를 입력해 주세요.',
         'contents_required' => '내용을 입력해 주세요.',
         'auth_error' => '내용을 입력해 주세요.',
+        'image_required' => '이미지를 선택해주세요.',
+        'image_image' => '이미지 형식이 올바르지 않습니다.',
+        'image_mimes' => '업로드 가능한 이미지가 아닙니다.',
+        'image_max' => '이미지 용량이 너무 큽니다.',
     ],
 ];
