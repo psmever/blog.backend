@@ -390,10 +390,10 @@ class PostsServices
 
                 $response = Http::withHeaders([
                     'Accept' => 'application/json',
-                    'Client-Token'=>'L2Ntcy1kb250ZW50L3VwbG9hYHMvMjAyMC8wOS8xMA==_gubun_2f7ade82-cb69-4934-b39e-811500acef1c'
+                    'Client-Token' => env('MEDIA_IMAGE_UPLOAD_TOKEN')
                 ])
                 ->attach('media_file', $photo)
-                ->post("http://nicepage.media.test/image-upload", [
+                ->post(env('MEDIA_UPLOAD_API_URL'), [
                     'media_category' => 'blog',
                 ]);
 
