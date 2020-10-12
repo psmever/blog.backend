@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Supports\Facades\GuitarClass;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class PostsServices
 {
@@ -354,6 +355,12 @@ class PostsServices
         ];
     }
 
+    /**
+     * 이미지 등록 및 기록.
+     *
+     * @param Request $request
+     * @return array
+     */
     public function createImage(Request $request) : array
     {
         if ($request->hasFile('image')) {
@@ -364,10 +371,10 @@ class PostsServices
                         'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                     ],
                     [
-                        'image.required'=> '이미지를 선택해주세요.',
-                        'image.image'=> '이미지가 아닙니다.',
-                        'image.mimes'=> '"이미지는 (jpeg,png,jpg,gif)" 만 업로드가 가능합니다.',
-                        'max.mimes'=> '용량 초과 입니다.',
+                        'image.required' => __('default.post.image_required'),
+                        'image.image' => __('default.post.image_image'),
+                        'image.mimes' => __('default.post.image_mimes'),
+                        'image.max' => __('default.post.image_max'),
                 ]);
 
                 if( $validator->fails() ) {
@@ -376,46 +383,44 @@ class PostsServices
 
                 $uploadFullFileName = GuitarClass::randomNumberUUID() . '.' . $request->image->extension();
 
-                // $filename = uniqid().File::extension($file->getClientOriginalName());
+                Storage::putFileAs('blog/tmp_images/', $request->file('image'), $uploadFullFileName);
 
-                $image = $request->file('image');
+                $photo = fopen(storage_path('app/blog/tmp_images' . '/' . $uploadFullFileName), 'r');
+                // $photo = file_get_contents(storage_path('app/blog/images/'.sha1(date("Ymd")) . '/' . $uploadFullFileName));
 
-                $path = Storage::putFileAs(
-                    'imagess', $request->file('images'), $uploadFullFileName
-                );
+                $response = Http::withHeaders([
+                    'Accept' => 'application/json',
+                    'Client-Token'=>'L2Ntcy1kb250ZW50L3VwbG9hYHMvMjAyMC8wOS8xMA==_gubun_2f7ade82-cb69-4934-b39e-811500acef1c'
+                ])
+                ->attach('media_file', $photo)
+                ->post("http://nicepage.media.test/image-upload", [
+                    'media_category' => 'blog',
+                ]);
 
+                Storage::delete('blog/tmp_images/' . $uploadFullFileName);
 
-                // print_r($image);
-                // echo md5("test_" . microtime());
+                if(!$response->successful()) {
+                    $result = $response->json();
+                    throw new \App\Exceptions\SomethingErrorException($result['message']);
+                }
 
-                // $validated = $request->validate([
-                //     'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-                // ]);
-                // $extension = $request->image->extension();
-                // echo $extension;
-                // dd($request->image->);
+                $result = json_decode($response->body())->data;
 
+                $this->postsRepository->createMediaFiles([
+                    'dest_path' => $result->dest_path,
+                    'file_name' => $result->new_file_name,
+                    'original_name' => $result->original_name,
+                    'file_type' => $result->file_type,
+                    'file_size' => $result->file_size,
+                    'file_extension' => $result->file_extension,
+                ]);
 
-                // FilesHelper::hashName();
-
-                // echo "2a41cbc8cc11f8c8d0eb54210fe524748b4def1c5b04fcf18c2d5972e24d11c2";
-
-                // echo Str::random();
-
-
-                $uploadFileName = GuitarClass::randomNumberUUID() . '.' . $request->image->extension();
-
-                echo $uploadFileName;
-
-
+                return [
+                    'media_url' => $result->media_url
+                ];
             }
         }
 
-        //GuitarClass::randomNumberUUID()
-        return [
-            'image-create' => false,
-
-
-        ];
+        throw new \App\Exceptions\CustomException(__('default.post.image_required'));
     }
 }
