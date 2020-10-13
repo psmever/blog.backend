@@ -58,4 +58,9 @@ class Posts extends Model
         return $this->hasMany(PostsTags::class, 'post_id', 'id');
     }
 
+    // 썸네일
+    public function thumb()
+    {
+        return $this->hasOne(PostsThumbs::class, 'post_id', 'id');
+    }
 }

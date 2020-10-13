@@ -5,6 +5,7 @@ namespace App\Repositories\v1;
 use App\Model\Posts;
 use App\Model\PostsTags;
 use App\Model\MediaFiles;
+use App\Model\PostsThumbs;
 
 class PostsRepository implements PostsRepositoryInterface
 {
@@ -24,14 +25,20 @@ class PostsRepository implements PostsRepositoryInterface
     protected $MediaFiles;
 
     /**
+     * @var PostsThumbs
+     */
+    protected $PostsThumbs;
+
+    /**
      * @param Posts $posts
      * @param PostsTags $poststag
      */
-    public function __construct(Posts $posts, PostsTags $poststags, MediaFiles $mediafiles)
+    public function __construct(Posts $posts, PostsTags $poststags, MediaFiles $mediafiles, PostsThumbs $poststhumbs)
     {
         $this->Posts = $posts;
         $this->PostsTags = $poststags;
         $this->MediaFiles = $mediafiles;
+        $this->PostsThumbs = $poststhumbs;
     }
 
     public function getAll()
@@ -95,7 +102,7 @@ class PostsRepository implements PostsRepositoryInterface
     // 글 목록(페이징처리).
     public function posts_list(Int $pages)
     {
-        return $this->Posts::with(['user', 'tag'])
+        return $this->Posts::with(['user', 'tag', 'thumb.file'])
             ->where([
                 ['post_active', 'Y'], ['post_publish', 'Y']
             ])->orderBy('updated_at','DESC')->simplePaginate(5, ['*'], 'page', $pages);
@@ -214,4 +221,27 @@ class PostsRepository implements PostsRepositoryInterface
     {
         return $this->MediaFiles::create($dataObject);
     }
+
+    /**
+     * 미디어 파일 id
+     *
+     * @param String $imageName
+     * @return void
+     */
+    public function getMediaFilesId(String $imageName) : ?object
+    {
+        return $this->MediaFiles::where('file_name', $imageName)->first();
+    }
+
+    /**
+     * 썸네일 생성.
+     *
+     * @param array $dataObject
+     * @return object
+     */
+    public function createPostsThums($dataObject = []) : object
+    {
+        return $this->PostsThumbs::create($dataObject);
+    }
+
 }

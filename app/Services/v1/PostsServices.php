@@ -48,6 +48,15 @@ class PostsServices
                 }, $e);
             };
 
+            $thumb = function($e) {
+                if(isset($e['file']) && $e['file']) {
+                    return env('MEDIA_URL') . $e['file']['dest_path'].'/'.$e['file']['file_name'];
+                } else {
+                    // FIXME 2020-10-14 00:52  썸네일 없는 포스트 디폴드 이미지 생성.
+                    return "https://picsum.photos/300";
+                }
+            };
+
             $list_contents = function($contents) {
                 return Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
             };
@@ -65,6 +74,7 @@ class PostsServices
                 'list_contents' => $list_contents($e['contents_html']),
                 'markdown' => $e['markdown'],
                 'tags' => $tags($e['tag']),
+                'thumb_url' => $thumb($e['thumb']),
                 'post_active' => $e['post_active'],
                 'post_publish' => $e['post_publish'],
                 'list_created' => $list_created($e['updated_at'])
@@ -186,22 +196,8 @@ class PostsServices
             throw new \App\Exceptions\CustomException($validator->errors()->first());
         }
 
-        $imageBasename = NULL;
         $parsedown = new \Parsedown();
         $markdownHtmlContents = $parsedown->text($request->input('contents.text'));
-
-        preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $markdownHtmlContents, $matches);
-        $imageMatches = isset($matches[1]) && $matches[1] ? $matches[1] : [];
-
-
-        if(isset($imageMatches[0]) && $imageMatches[0]) {
-            $imageBasename = basename($imageMatches[0]);
-        }
-
-
-
-
-
 
         // 글 등록.
         $postTask = $this->postsRepository->createPosts([
@@ -222,6 +218,27 @@ class PostsServices
                 'tag_text' => $element['tag_text'],
             ]);
         endforeach;
+
+        // 썸네일 이미지.
+        $getThumbnail = function($content) {
+            preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $content, $matches);
+            $imageMatches = isset($matches[1]) && $matches[1] ? $matches[1] : [];
+
+            if(isset($imageMatches[0]) && $imageMatches[0]) {
+                return basename($imageMatches[0]);
+            }
+
+            return '';
+        };
+
+        $file = $this->postsRepository->getMediaFilesId($getThumbnail($markdownHtmlContents));
+
+        if($file) {
+            $this->postsRepository->createPostsThums([
+                'post_id' =>  $postTask->id,
+                'media_file_id' => $file->id
+            ]);
+        }
 
         return [
             'post_uuid' => $postTask->post_uuid,
