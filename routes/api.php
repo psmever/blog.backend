@@ -40,7 +40,7 @@ Route::group(['as' => 'api.'], function () {
             Route::post('login', 'AuthController@client_login')->name('login');
 
             Route::post('logout', 'AuthController@client_logout')->name('logout')->middleware('auth:api');
-            Route::post('login-check', 'AuthController@client_login_check')->name('logincheck')->middleware('auth:api');
+            Route::get('login-check', 'AuthController@client_login_check')->name('logincheck')->middleware('auth:api');
             Route::post('token-refresh', 'AuthController@client_token_refresh')->name('token_refresh');
         });
 

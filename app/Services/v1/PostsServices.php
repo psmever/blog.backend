@@ -186,13 +186,30 @@ class PostsServices
             throw new \App\Exceptions\CustomException($validator->errors()->first());
         }
 
+        $imageBasename = NULL;
+        $parsedown = new \Parsedown();
+        $markdownHtmlContents = $parsedown->text($request->input('contents.text'));
+
+        preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $markdownHtmlContents, $matches);
+        $imageMatches = isset($matches[1]) && $matches[1] ? $matches[1] : [];
+
+
+        if(isset($imageMatches[0]) && $imageMatches[0]) {
+            $imageBasename = basename($imageMatches[0]);
+        }
+
+
+
+
+
+
         // 글 등록.
         $postTask = $this->postsRepository->createPosts([
             'user_id' => $user_id,
             'post_uuid' => Str::uuid(),
             'title' => $request->input('title'),
             'slug_title' => $this->postsRepository->getSlugTitle($request->input('title')),
-            'contents_html' => $request->input('contents.html'),
+            'contents_html' => $markdownHtmlContents,
             'contents_text' => $request->input('contents.text'),
             'markdown' => 'Y'
         ]);

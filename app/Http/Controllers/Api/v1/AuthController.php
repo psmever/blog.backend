@@ -51,7 +51,7 @@ class AuthController extends ApiRootController
      */
     public function client_login_check()
     {
-        return Response::success($this->AuthServices->attemptLoginCheck());
+        return Response::success_only_data($this->AuthServices->attemptLoginCheck());
     }
 
     /**
