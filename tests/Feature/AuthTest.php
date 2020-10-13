@@ -133,7 +133,7 @@ class AuthTest extends TestCase
         ]);
     }
 
-    // 로그아웃 성공.
+    // 로그인 상태 체크.
     public function test_auth_login_check()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
@@ -148,21 +148,15 @@ class AuthTest extends TestCase
         $response = $this->withHeaders($header)->json('POST', '/api/v1/auth/login-check');
         // $response->dump();
         $response->assertOk();
-        $response->assertJsonStructure(
-            $this->getDefaultSuccessJsonType()
-        );
         $response->assertJsonStructure([
-            'message',
-            'result' => [
-                "user_uuid",
-                "user_type" => [
-                    "code",
-                    "code_name"
-                ],
-                "user_level" => [
-                    "code",
-                    "code_name"
-                ]
+            "user_uuid",
+            "user_type" => [
+                "code",
+                "code_name"
+            ],
+            "user_level" => [
+                "code",
+                "code_name"
             ]
         ]);
     }
