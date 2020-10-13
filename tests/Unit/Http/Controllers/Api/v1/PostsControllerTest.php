@@ -291,6 +291,7 @@ class PostsControllerTest extends TestCase
                             "tag_text"
                         ]
                     ],
+                    "thumb_url",
                     "post_active",
                     "post_publish",
                     "list_created"
