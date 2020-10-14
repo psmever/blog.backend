@@ -93,6 +93,27 @@ class PostsRepository implements PostsRepositoryInterface
         ]);
     }
 
+    // 정상적인 공개 글이 있는지 체크
+    public function postsExitsByUUID(String $post_uuid) : bool
+    {
+        return $this->Posts::where([
+            ['post_uuid', $post_uuid],
+            ['post_active', 'Y'],
+            ['post_publish', 'Y']
+        ])->exists();
+    }
+
+    /**
+     * view_count 증가.
+     *
+     * @param String $post_uuid
+     * @return boolean
+     */
+    public function incrementPostsViewCount(String $post_uuid) : bool
+    {
+        return $this->Posts::where('post_uuid', $post_uuid)->increment('view_count');
+    }
+
     // 테그 등록.
     public function createPostsTags(Array $dataObject) : object
     {
