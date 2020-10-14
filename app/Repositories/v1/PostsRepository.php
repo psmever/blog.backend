@@ -126,7 +126,7 @@ class PostsRepository implements PostsRepositoryInterface
         return $this->Posts::with(['user', 'tag', 'thumb.file'])
             ->where([
                 ['post_active', 'Y'], ['post_publish', 'Y']
-            ])->orderBy('updated_at','DESC')->simplePaginate(5, ['*'], 'page', $pages);
+            ])->orderBy('updated_at','DESC')->simplePaginate(env('DEFAULT_PAGEING_COUNT', 15), ['*'], 'page', $pages);
     }
 
     /**
