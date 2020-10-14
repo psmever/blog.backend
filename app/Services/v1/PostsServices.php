@@ -20,6 +20,12 @@ class PostsServices
         $this->postsRepository = $postsRepository;
     }
 
+    /**
+     * 마크다운 텍스트에서 썸네일 뽑아오기.
+     *
+     * @param String $markdownText
+     * @return string
+     */
     public function getThumbNailInContents(String $markdownText = '') : string
     {
         preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $markdownText, $matches);
@@ -289,7 +295,8 @@ class PostsServices
         $markdownHtmlContents = $parsedown->text($request->input('contents.text'));
 
         //내용 업데이트
-        $slug_title = $this->postsRepository->getSlugTitle($request->input('title'));
+
+        $slug_title = strcmp($request->input('title'), $postsData->title) !== 0 ? $this->postsRepository->getSlugTitle($request->input('title')) : $postsData->slug_title;
         $this->postsRepository->updatePosts($postsData->id, [
             'title' => $request->input('title'),
             'slug_title' => $slug_title,
