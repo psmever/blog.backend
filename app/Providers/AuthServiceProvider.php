@@ -29,13 +29,15 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
         Passport::enableImplicitGrant();
 
-        Passport::tokensExpireIn(now()->addHour(1));
-        Passport::refreshTokensExpireIn(now()->addHour(3));
-        Passport::personalAccessTokensExpireIn(now()->addMonths(1));
-
-        // Test용.
-        // Passport::tokensExpireIn(now()->addSecond(5));
-        // Passport::refreshTokensExpireIn(now()->addDays(60));
-        // Passport::personalAccessTokensExpireIn(now()->addMonths(1));
+        if(env('APP_ENV') == 'production') {
+            Passport::tokensExpireIn(now()->addHour(1));
+            Passport::refreshTokensExpireIn(now()->addHour(3));
+            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
+        } else {
+            // Test용.
+            Passport::tokensExpireIn(now()->addMinute(1));
+            Passport::refreshTokensExpireIn(now()->addMinute(2));
+            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
+        }
     }
 }
