@@ -20,6 +20,18 @@ class PostsServices
         $this->postsRepository = $postsRepository;
     }
 
+    public function getThumbNailInContents(String $markdownText = '') : string
+    {
+        preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $markdownText, $matches);
+        $imageMatches = isset($matches[1]) && $matches[1] ? $matches[1] : [];
+
+        if(isset($imageMatches[0]) && $imageMatches[0]) {
+            return basename($imageMatches[0]);
+        }
+
+        return '';
+    }
+
     /**
      * 글 리스트 ( 페이징 처리 ).
      *
@@ -52,8 +64,7 @@ class PostsServices
                 if(isset($e['file']) && $e['file']) {
                     return env('MEDIA_URL') . $e['file']['dest_path'].'/'.$e['file']['file_name'];
                 } else {
-                    // FIXME 2020-10-14 00:52  썸네일 없는 포스트 디폴드 이미지 생성.
-                    return "https://picsum.photos/300";
+                    return env("MEDIA_URL") . "/assets/blog/img/post_list.png";
                 }
             };
 
@@ -220,18 +231,9 @@ class PostsServices
         endforeach;
 
         // 썸네일 이미지.
-        $getThumbnail = function($content) {
-            preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $content, $matches);
-            $imageMatches = isset($matches[1]) && $matches[1] ? $matches[1] : [];
+        $getThumbnail = $this->getThumbNailInContents($markdownHtmlContents);
 
-            if(isset($imageMatches[0]) && $imageMatches[0]) {
-                return basename($imageMatches[0]);
-            }
-
-            return '';
-        };
-
-        $file = $this->postsRepository->getMediaFilesId($getThumbnail($markdownHtmlContents));
+        $file = $this->postsRepository->getMediaFilesId($getThumbnail);
 
         if($file) {
             $this->postsRepository->createPostsThums([
@@ -281,12 +283,15 @@ class PostsServices
             throw new \App\Exceptions\CustomException($validator->errors()->first());
         }
 
+        $parsedown = new \Parsedown();
+        $markdownHtmlContents = $parsedown->text($request->input('contents.text'));
+
         //내용 업데이트
         $slug_title = $this->postsRepository->getSlugTitle($request->input('title'));
         $this->postsRepository->updatePosts($postsData->id, [
             'title' => $request->input('title'),
             'slug_title' => $slug_title,
-            'contents_html' => $request->input('contents.html'),
+            'contents_html' => $markdownHtmlContents,
             'contents_text' => $request->input('contents.text'),
             'markdown' => 'Y'
         ]);
@@ -302,6 +307,18 @@ class PostsServices
                 'tag_text' => $element['tag_text'],
             ]);
         endforeach;
+
+        // 썸네일 이미지.
+        $getThumbnail = $this->getThumbNailInContents($markdownHtmlContents);
+        $file = $this->postsRepository->getMediaFilesId($getThumbnail);
+
+        if($file) {
+            $this->postsRepository->deletePostsThums($postsData->id);
+            $this->postsRepository->createPostsThums([
+                'post_id' =>  $postsData->id,
+                'media_file_id' => $file->id
+            ]);
+        }
 
         return [
             'post_uuid' => $postsData->id,
