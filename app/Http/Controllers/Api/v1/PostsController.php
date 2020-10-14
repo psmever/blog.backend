@@ -61,7 +61,15 @@ class PostsController extends ApiRootController
         return Response::success_only_message();
     }
 
+    // 이미지 등록.
     public function create_image(Request $request) {
         return Response::success_only_data($this->PostsServices->createImage($request));
+    }
+
+    // 뷰카운트
+    public function view_increment(String $post_uuid) {
+        $this->PostsServices->incrementPostsViewCount($post_uuid);
+
+        return Response::success_only_message();
     }
 }

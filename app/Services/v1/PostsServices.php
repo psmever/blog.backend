@@ -86,6 +86,7 @@ class PostsServices
                 'markdown' => $e['markdown'],
                 'tags' => $tags($e['tag']),
                 'thumb_url' => $thumb($e['thumb']),
+                'view_count' => $e['view_count'],
                 'post_active' => $e['post_active'],
                 'post_publish' => $e['post_publish'],
                 'list_created' => $list_created($e['updated_at'])
@@ -173,6 +174,7 @@ class PostsServices
             'contents_text' => $result->contents_text,
             'markdown' => $result->markdown,
             'tags' => $tags($result->tag->toarray()),
+            'view_count' => $result->view_count,
             'detail_created' => $detail_created($result->created_at),
             'detail_updated' => $detail_updated($result->updated_at),
         ];
@@ -474,4 +476,24 @@ class PostsServices
 
         throw new \App\Exceptions\CustomException(__('default.post.image_required'));
     }
+
+    /**
+     * view_count 증가.
+     *
+     * @param String $post_uuid
+     * @return void
+     */
+    public function incrementPostsViewCount(String $post_uuid) : void
+    {
+        if(!$this->postsRepository->postsExitsByUUID($post_uuid)) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('');
+        }
+
+        if(!$this->postsRepository->incrementPostsViewCount($post_uuid)) {
+            throw new \App\Exceptions\CustomException(__('default.exception.pdo_exception'));
+        }
+
+        return;
+    }
+
 }
