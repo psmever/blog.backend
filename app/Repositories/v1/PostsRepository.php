@@ -244,4 +244,9 @@ class PostsRepository implements PostsRepositoryInterface
         return $this->PostsThumbs::create($dataObject);
     }
 
+    public function deletePostsThums(Int $post_id) : bool
+    {
+        return $this->PostsThumbs::where('post_id', $post_id)->delete();
+    }
+
 }
