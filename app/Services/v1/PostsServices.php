@@ -103,6 +103,7 @@ class PostsServices
             // 'result' => $result,
             'per_page' => $result['per_page'],
             'current_page' => $result['current_page'],
+            'hasmore' => (count($items) < env('DEFAULT_PAGEING_COUNT', 15)) ? false : true,
             'posts' => $items
         ];
     }
