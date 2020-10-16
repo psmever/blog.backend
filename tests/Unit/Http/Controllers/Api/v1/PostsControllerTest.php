@@ -271,6 +271,7 @@ class PostsControllerTest extends TestCase
         $response->assertJsonStructure([
             'per_page',
             'current_page',
+            'hasmore',
             'posts' => [
                 '*' => [
                     "post_id",
