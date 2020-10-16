@@ -331,7 +331,7 @@ class PostsServices
         }
 
         return [
-            'post_uuid' => $postsData->id,
+            'post_uuid' => $post_uuid,
             'slug_title' => $slug_title,
         ];
     }
