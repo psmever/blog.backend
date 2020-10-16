@@ -47,6 +47,7 @@ class PostsServices
     public function posts(Int $page = 1) : array
     {
         $result = collect($this->postsRepository->posts_list($page))->toArray();
+
         $items = array_map(function($e){
             $user = function($e) {
                 return [
@@ -106,6 +107,71 @@ class PostsServices
             'hasmore' => (count($items) < env('DEFAULT_PAGEING_COUNT', 15)) ? false : true,
             'posts' => $items
         ];
+    }
+
+    /**
+     * 글검색.
+     *
+     * @param String $searchItem
+     * @return array
+     */
+    public function postsSearch(String $searchItem) : array
+    {
+        $result = $this->postsRepository->posts_search_list($searchItem)->get()->toArray();
+
+        $items = array_map(function($e){
+            $user = function($e) {
+                return [
+                    'user_uuid' => $e['user_uuid'],
+                    'name' => $e['name'],
+                    'nickname' => $e['nickname'],
+                    'email' => $e['email'],
+                ];
+            };
+
+            $tags = function($e) {
+                return array_map(function($e){
+                    return [
+                        'tag_id' => $e['tag_id'],
+                        'tag_text' => $e['tag_text'],
+                    ];
+                }, $e);
+            };
+
+            $thumb = function($e) {
+                if(isset($e['file']) && $e['file']) {
+                    return env('MEDIA_URL') . $e['file']['dest_path'].'/'.$e['file']['file_name'];
+                } else {
+                    return env("MEDIA_URL") . "/assets/blog/img/post_list.png";
+                }
+            };
+
+            $list_contents = function($contents) {
+                return Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
+            };
+
+            $list_created = function($timestamp) {
+                return GuitarClass::convertTimeToString(strtotime($timestamp));
+            };
+
+            return [
+                'post_id' => $e['id'],
+                'post_uuid' => $e['post_uuid'],
+                'user' => $user($e['user']),
+                'post_title' => $e['title'],
+                'slug_title' => $e['slug_title'],
+                'list_contents' => $list_contents($e['contents_html']),
+                'markdown' => $e['markdown'],
+                'tags' => $tags($e['tag']),
+                'thumb_url' => $thumb($e['thumb']),
+                'view_count' => $e['view_count'],
+                'post_active' => $e['post_active'],
+                'post_publish' => $e['post_publish'],
+                'list_created' => $list_created($e['created_at'])
+            ];
+        }, $result);
+
+        return $items;
     }
 
     /**
@@ -502,6 +568,11 @@ class PostsServices
         }
 
         return;
+    }
+
+    public function postItemSearch(String $searchItem)
+    {
+        echo $searchItem;
     }
 
 }

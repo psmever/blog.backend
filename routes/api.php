@@ -56,8 +56,8 @@ Route::group(['as' => 'api.'], function () {
             Route::put('/{post_uuid}/update', 'PostsController@update')->name('update')->middleware('auth:api');
             Route::put('/{post_uuid}/view-increment', 'PostsController@view_increment')->name('view.increment');
             Route::delete('/{post_uuid}/destroy', 'PostsController@destroy')->name('destroy')->middleware('auth:api');
-
             Route::post('/create-image', 'PostsController@create_image')->name('image.create')->middleware('auth:api');
+            Route::get('/{search_item}/search', 'PostsController@search')->name('search');
         });
     });
 });
