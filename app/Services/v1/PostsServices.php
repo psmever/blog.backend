@@ -95,7 +95,7 @@ class PostsServices
                 'view_count' => $e['view_count'],
                 'post_active' => $e['post_active'],
                 'post_publish' => $e['post_publish'],
-                'list_created' => $list_created($e['updated_at'])
+                'list_created' => $list_created($e['created_at'])
             ];
         }, $result['data']);
 
