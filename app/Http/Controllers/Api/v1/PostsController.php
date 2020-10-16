@@ -72,4 +72,16 @@ class PostsController extends ApiRootController
 
         return Response::success_only_message();
     }
+
+    // 검색
+    public function search(String $search_item) {
+
+        $result = $this->PostsServices->postsSearch($search_item);
+
+        if(empty($result)) {
+            return Response::success_no_content();
+        } else {
+            return Response::success_only_data($result);
+        }
+    }
 }

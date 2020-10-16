@@ -129,6 +129,15 @@ class PostsRepository implements PostsRepositoryInterface
             ])->orderBy('created_at','DESC')->simplePaginate(env('DEFAULT_PAGEING_COUNT', 15), ['*'], 'page', $pages);
     }
 
+    // 글 목록(검색).
+    public function posts_search_list(String $SearchItem)
+    {
+        return $this->Posts::with(['user', 'tag', 'thumb.file'])
+            ->where([
+                ['post_active', 'Y'], ['post_publish', 'Y'], ['title', 'like', "%".$SearchItem."%"]
+            ])->orderBy('created_at','DESC');
+    }
+
     /**
      * slug URL 로 글 내용 보기.
      *
