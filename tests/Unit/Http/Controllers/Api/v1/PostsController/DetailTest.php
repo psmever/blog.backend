@@ -126,8 +126,8 @@ class DetailTest extends TestCase
             "markdown",
             "tags" => [
                 '*' => [
-                    "tag_id",
-                    "tag_text"
+                    "id",
+                    "text"
                 ],
             ],
             "view_count",
