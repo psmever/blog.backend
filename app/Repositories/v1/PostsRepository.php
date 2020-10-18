@@ -298,11 +298,11 @@ class PostsRepository implements PostsRepositoryInterface
             ->groupBy('tag_text');
     }
 
-    public function postsSearchByTagText(String $search_item) : array
+    public function postsSearchByTagItem(String $SearchItem) : object
     {
-        return $this->Posts::with(['user', 'tag', 'thumb.file'])
+        return $this->PostsTags::with(['posts'])
         ->where([
-            ['post_active', 'Y'], ['post_publish', 'Y'], ['title', 'like', "%".$SearchItem."%"]
+            ['tag_text', $SearchItem]
         ])->orderBy('created_at','DESC');
     }
 
