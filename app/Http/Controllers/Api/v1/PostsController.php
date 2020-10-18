@@ -85,11 +85,19 @@ class PostsController extends ApiRootController
         }
     }
 
+    // 테그 그룹 리스트.
     public function tag_list() {
         return Response::success_only_data($this->PostsServices->postsTagList());
     }
 
+    // 테그 검색 리스트.
     public function tag_search(String $search_item) {
-        return Response::success_only_data($this->PostsServices->postsTagItemSearch($search_item));
+        $result = $this->PostsServices->postsTagItemSearch($search_item);
+
+        if(empty($result)) {
+            return Response::success_no_content();
+        } else {
+            return Response::success_only_data($result);
+        }
     }
 }

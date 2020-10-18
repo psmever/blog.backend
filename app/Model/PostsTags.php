@@ -13,6 +13,6 @@ class PostsTags extends Model
     // 글 테그.
     public function posts()
     {
-        return $this->hasMany(Posts::class, 'id', 'post_id');
+        return $this->hasOne(Posts::class, 'id', 'post_id');
     }
 }
