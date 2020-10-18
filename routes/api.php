@@ -61,6 +61,7 @@ Route::group(['as' => 'api.'], function () {
 
             Route::get('/tag/tag-list', 'PostsController@tag_list')->name('search');
             Route::get('/tag/{search_item}/tag-search', 'PostsController@tag_search')->name('search');
+            Route::get('/waiting-list', 'PostsController@waiting_list')->name('waiting.list')->middleware('auth:api');
         });
     });
 });

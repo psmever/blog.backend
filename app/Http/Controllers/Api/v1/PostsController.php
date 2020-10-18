@@ -100,4 +100,16 @@ class PostsController extends ApiRootController
             return Response::success_only_data($result);
         }
     }
+
+    // 글 개시전 글 리스트
+    public function waiting_list(Request $request) {
+        $result = $this->PostsServices->waitingPostsList();
+
+        if(empty($result)) {
+            return Response::success_no_content();
+        } else {
+            return Response::success_only_data($result);
+        }
+
+    }
 }
