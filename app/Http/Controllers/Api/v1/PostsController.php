@@ -84,4 +84,12 @@ class PostsController extends ApiRootController
             return Response::success_only_data($result);
         }
     }
+
+    public function tag_list() {
+        return Response::success_only_data($this->PostsServices->postsTagList());
+    }
+
+    public function tag_search(String $search_item) {
+        return Response::success_only_data($this->PostsServices->postsTagItemSearch($search_item));
+    }
 }

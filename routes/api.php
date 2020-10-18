@@ -58,6 +58,9 @@ Route::group(['as' => 'api.'], function () {
             Route::delete('/{post_uuid}/destroy', 'PostsController@destroy')->name('destroy')->middleware('auth:api');
             Route::post('/create-image', 'PostsController@create_image')->name('image.create')->middleware('auth:api');
             Route::get('/{search_item}/search', 'PostsController@search')->name('search');
+
+            Route::get('/tag/tag-list', 'PostsController@tag_list')->name('search');
+            Route::get('/tag/{search_item}/tag-search', 'PostsController@tag_search')->name('search');
         });
     });
 });
