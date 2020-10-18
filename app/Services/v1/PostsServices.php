@@ -26,7 +26,7 @@ class PostsServices
      * @param String $markdownText
      * @return string
      */
-    public function getThumbNailInContents(String $markdownText = '') : string
+    private static function getThumbNailInContents(String $markdownText = '') : string
     {
         preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $markdownText, $matches);
         $imageMatches = isset($matches[1]) && $matches[1] ? $matches[1] : [];
@@ -39,16 +39,14 @@ class PostsServices
     }
 
     /**
-     * 글 리스트 ( 페이징 처리 ).
+     * 글 리스트 생성.
      *
-     * @param Int $page
+     * @param Array $Item
      * @return array
      */
-    public function posts(Int $page = 1) : array
+    private static function gneratorPostListResponse(Array $Item) : array
     {
-        $result = collect($this->postsRepository->posts_list($page))->toArray();
-
-        $items = array_map(function($e){
+        return array_map(function($e){
             $user = function($e) {
                 return [
                     'user_uuid' => $e['user_uuid'],
@@ -98,10 +96,22 @@ class PostsServices
                 'post_publish' => $e['post_publish'],
                 'list_created' => $list_created($e['created_at'])
             ];
-        }, $result['data']);
+        }, $Item);
+    }
+
+    /**
+     * 글 리스트 ( 페이징 처리 ).
+     *
+     * @param Int $page
+     * @return array
+     */
+    public function posts(Int $page = 1) : array
+    {
+        $result = collect($this->postsRepository->posts_list($page))->toArray();
+
+        $items = self::gneratorPostListResponse($result['data']);
 
         return [
-            // 'result' => $result,
             'per_page' => $result['per_page'],
             'current_page' => $result['current_page'],
             'hasmore' => (count($items) < env('DEFAULT_PAGEING_COUNT', 15)) ? false : true,
@@ -119,59 +129,7 @@ class PostsServices
     {
         $result = $this->postsRepository->posts_search_list($searchItem)->get()->toArray();
 
-        $items = array_map(function($e){
-            $user = function($e) {
-                return [
-                    'user_uuid' => $e['user_uuid'],
-                    'name' => $e['name'],
-                    'nickname' => $e['nickname'],
-                    'email' => $e['email'],
-                ];
-            };
-
-            $tags = function($e) {
-                return array_map(function($e){
-                    return [
-                        'tag_id' => $e['tag_id'],
-                        'tag_text' => $e['tag_text'],
-                    ];
-                }, $e);
-            };
-
-            $thumb = function($e) {
-                if(isset($e['file']) && $e['file']) {
-                    return env('MEDIA_URL') . $e['file']['dest_path'].'/'.$e['file']['file_name'];
-                } else {
-                    return env("MEDIA_URL") . "/assets/blog/img/post_list.png";
-                }
-            };
-
-            $list_contents = function($contents) {
-                return Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
-            };
-
-            $list_created = function($timestamp) {
-                return GuitarClass::convertTimeToString(strtotime($timestamp));
-            };
-
-            return [
-                'post_id' => $e['id'],
-                'post_uuid' => $e['post_uuid'],
-                'user' => $user($e['user']),
-                'post_title' => $e['title'],
-                'slug_title' => $e['slug_title'],
-                'list_contents' => $list_contents($e['contents_html']),
-                'markdown' => $e['markdown'],
-                'tags' => $tags($e['tag']),
-                'thumb_url' => $thumb($e['thumb']),
-                'view_count' => $e['view_count'],
-                'post_active' => $e['post_active'],
-                'post_publish' => $e['post_publish'],
-                'list_created' => $list_created($e['created_at'])
-            ];
-        }, $result);
-
-        return $items;
+        return self::gneratorPostListResponse($result);
     }
 
     /**
@@ -306,7 +264,7 @@ class PostsServices
         endforeach;
 
         // 썸네일 이미지.
-        $getThumbnail = $this->getThumbNailInContents($markdownHtmlContents);
+        $getThumbnail = self::getThumbNailInContents($markdownHtmlContents);
 
         $file = $this->postsRepository->getMediaFilesId($getThumbnail);
 
@@ -385,7 +343,7 @@ class PostsServices
         endforeach;
 
         // 썸네일 이미지.
-        $getThumbnail = $this->getThumbNailInContents($markdownHtmlContents);
+        $getThumbnail = self::getThumbNailInContents($markdownHtmlContents);
         $file = $this->postsRepository->getMediaFilesId($getThumbnail);
 
         if($file) {
@@ -591,12 +549,20 @@ class PostsServices
         }, $result);
     }
 
+    /**
+     * 테그 검색 리스트.
+     *
+     * @param String $search_item
+     * @return array
+     */
     public function postsTagItemSearch(String $search_item) : array
     {
         $result = $this->postsRepository->postsSearchByTagItem($search_item)->get()->toArray();
-        print_r($result);
 
-
-        return [];
+        return self::gneratorPostListResponse(array_map(function($e){
+            return $e['posts'];
+        }, array_filter($result, function($e) {
+            return !empty($e['posts']);
+        })));
     }
 }

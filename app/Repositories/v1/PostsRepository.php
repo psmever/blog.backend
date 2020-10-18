@@ -130,8 +130,20 @@ class PostsRepository implements PostsRepositoryInterface
             ])->orderBy('created_at','DESC')->simplePaginate(env('DEFAULT_PAGEING_COUNT', 15), ['*'], 'page', $pages);
     }
 
+    // 테그 검색 리스트.
+    public function postsSearchByTagItem(String $SearchItem) : object
+    {
+        return $this->PostsTags::with(['posts' => function($query){
+            $query->where('post_publish', 'Y');
+            $query->where('post_active', 'Y');
+        }, 'posts.user', 'posts.tag', 'posts.thumb.file'])
+        ->where([
+            ['tag_text', $SearchItem]
+        ])->orderBy('created_at','DESC');
+    }
+
     // 글 목록(검색).
-    public function posts_search_list(String $SearchItem)
+    public function posts_search_list(String $SearchItem) : object
     {
         return $this->Posts::with(['user', 'tag', 'thumb.file'])
             ->where([
@@ -297,13 +309,4 @@ class PostsRepository implements PostsRepositoryInterface
             ->select(DB::raw('tag_text,count(*) as count'))
             ->groupBy('tag_text');
     }
-
-    public function postsSearchByTagItem(String $SearchItem) : object
-    {
-        return $this->PostsTags::with(['posts'])
-        ->where([
-            ['tag_text', $SearchItem]
-        ])->orderBy('created_at','DESC');
-    }
-
 }
