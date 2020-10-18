@@ -570,9 +570,33 @@ class PostsServices
         return;
     }
 
-    public function postItemSearch(String $searchItem)
+    /**
+     * 포스트 테그 그룹 리스트
+     *
+     * @return array
+     */
+    public function postsTagList() : array
     {
-        echo $searchItem;
+        $result = $this->postsRepository->postsTagGroupList()->get()->toArray();
+
+        if(empty($result)) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException;
+        }
+
+        return array_map(function($e){
+            return [
+                'value' => $e['tag_text'],
+                'count' => $e['count'],
+            ];
+        }, $result);
     }
 
+    public function postsTagItemSearch(String $search_item) : array
+    {
+        echo $search_item;
+
+
+
+        return [];
+    }
 }

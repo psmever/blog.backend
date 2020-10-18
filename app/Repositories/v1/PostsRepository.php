@@ -6,6 +6,7 @@ use App\Model\Posts;
 use App\Model\PostsTags;
 use App\Model\MediaFiles;
 use App\Model\PostsThumbs;
+use Illuminate\Support\Facades\DB;
 
 class PostsRepository implements PostsRepositoryInterface
 {
@@ -274,9 +275,35 @@ class PostsRepository implements PostsRepositoryInterface
         return $this->PostsThumbs::create($dataObject);
     }
 
+    /**
+     * 썸네일 삭제.
+     *
+     * @param Int $post_id
+     * @return boolean
+     */
     public function deletePostsThums(Int $post_id) : bool
     {
         return $this->PostsThumbs::where('post_id', $post_id)->delete();
+    }
+
+    /**
+     * 테그 그룹 리스트.
+     *
+     * @return object
+     */
+    public function postsTagGroupList() : object
+    {
+        return $this->PostsTags::orderBy('count', 'desc')
+            ->select(DB::raw('tag_text,count(*) as count'))
+            ->groupBy('tag_text');
+    }
+
+    public function postsSearchByTagText(String $search_item) : array
+    {
+        return $this->Posts::with(['user', 'tag', 'thumb.file'])
+        ->where([
+            ['post_active', 'Y'], ['post_publish', 'Y'], ['title', 'like', "%".$SearchItem."%"]
+        ])->orderBy('created_at','DESC');
     }
 
 }
