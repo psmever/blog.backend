@@ -593,8 +593,8 @@ class PostsServices
 
     public function postsTagItemSearch(String $search_item) : array
     {
-        echo $search_item;
-
+        $result = $this->postsRepository->postsSearchByTagItem($search_item)->get()->toArray();
+        print_r($result);
 
 
         return [];
