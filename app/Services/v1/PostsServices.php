@@ -182,8 +182,8 @@ class PostsServices
         $tags = function($e) {
             return array_map(function($e){
                 return [
-                    'tag_id' => $e['tag_id'],
-                    'tag_text' => $e['tag_text'],
+                    'id' => $e['tag_id'],
+                    'text' => $e['tag_text'],
                 ];
             }, $e);
         };
