@@ -110,6 +110,5 @@ class PostsController extends ApiRootController
         } else {
             return Response::success_only_data($result);
         }
-
     }
 }
