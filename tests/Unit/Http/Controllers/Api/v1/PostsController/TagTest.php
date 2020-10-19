@@ -16,7 +16,7 @@ class TagTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function test_tag_리스트() {
+    public function test_post_tag_리스트() {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/tag/tag-list', []);
         // $response->dump();
         $response->assertStatus(200);
@@ -28,14 +28,14 @@ class TagTest extends TestCase
         ]);
     }
 
-    public function test_tag_결과_리스트_없을때()
+    public function test_post_tag_결과_리스트_없을때()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/tag/eourqiweurpoasdfkjhaksldjhfweqoriuqqwe/tag-search', []);
         // $response->dump();
         $response->assertStatus(204);
     }
 
-    public function test_tag_검색_정상()
+    public function test_psot_tag_검색_정상()
     {
         $randPost = \App\Model\PostsTags::select("tag_text")->inRandomOrder()->first();
         $tag_text = $randPost->tag_text;

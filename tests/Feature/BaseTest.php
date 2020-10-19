@@ -45,7 +45,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_landing_page()
+    public function test_base_server_landing_page()
     {
         $response = $this->get('/');
 
@@ -57,7 +57,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_migrate()
+    public function test_base_server_migrate()
     {
         $this->assertDatabaseHas('users', [
             'email' => 'root@gmail.com',
@@ -69,7 +69,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_exception_not_found_client_type_check()
+    public function test_base_server_exception_not_found_client_type_check()
     {
         $testHeader = [
             'Accept' => 'application/json',
@@ -95,7 +95,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_exception_not_client_type_code_check()
+    public function test_base_server_exception_not_client_type_code_check()
     {
         $testHeader = [
             'Request-Client-Type' => 'S010101',
@@ -121,7 +121,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_exception_client_type_check()
+    public function test_base_server_exception_client_type_check()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-status');
         // $response->dump();
@@ -133,7 +133,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_exception_not_found_check()
+    public function test_base_server_exception_not_found_check()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-status1');
         // $response->dump();
@@ -154,7 +154,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_exception_not_allowd_check()
+    public function test_base_server_exception_not_allowd_check()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', '/api/system/check-status');
         // $response->dump();
@@ -175,7 +175,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_check_status_down()
+    public function test_base_server_check_status_down()
     {
         $this->artisan('down');
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-status');
@@ -198,7 +198,7 @@ class BaseTest extends TestCase
      *
      * @return void
      */
-    public function test_server_check_status_up()
+    public function test_base_server_check_status_up()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-status');
         $response->assertStatus(204);

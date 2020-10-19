@@ -17,7 +17,7 @@ class SearchTest extends TestCase
     }
 
     // 검색어 없이 요청 할떄.
-    public function test_post_검색_검색어_없이_요청()
+    public function test_post_search_검색_검색어_없이_요청()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post//search', []);
         // $response->dump();
@@ -33,7 +33,7 @@ class SearchTest extends TestCase
         ]);
     }
     // 결과가 없을때.
-    public function test_post_검색_결과가_없을때()
+    public function test_post_search_검색_결과가_없을때()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/search', []);
         // $response->dump();
@@ -41,7 +41,7 @@ class SearchTest extends TestCase
     }
 
     // 정상 요청 일때.
-    public function test_post_검색_정상()
+    public function test_post_search_검색_정상()
     {
         $randPost = \App\Model\Posts::select("title")->inRandomOrder()->first();
         $post_title = $randPost->title;
