@@ -32,6 +32,16 @@ cp .env.example .env
 php artisan serve
 ```
 
+## Local Unit Test.
+```
+composer test:watch --dev
+
+php artisan test
+
+vendor/bin/phpunit-watcher watch --filter=test_waiting_
+
+```
+
 ## Browser.
 ```bash
 http://127.0.0.1:8000 || http://localhost:8000/
@@ -84,6 +94,9 @@ SlackMessage notifications
 https://medium.com/@olayinka.omole/sending-slack-notifications-from-your-laravel-app-1bdb6e4e4127
 https://www.lesstif.com/php-and-laravel/sending-slack-notifications-from-laravel-36209045.html
 ```
+
+
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

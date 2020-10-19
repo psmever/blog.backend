@@ -157,6 +157,18 @@ class PostsRepository implements PostsRepositoryInterface
     }
 
     /**
+     * 아직 개시전 글 리스트.
+     *
+     * @return object
+     */
+    public function posts_waiting_list() : object
+    {
+        return $this->Posts::where([
+            ['post_active', 'Y'], ['post_publish', 'N']
+            ])->orderBy('created_at','DESC');
+    }
+
+    /**
      * slug URL 로 글 내용 보기.
      *
      * @param String $slug_title

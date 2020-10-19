@@ -566,9 +566,19 @@ class PostsServices
         })));
     }
 
+    /**
+     * 개시전 글 리스트.
+     *
+     * @return void
+     */
     public function waitingPostsList()
     {
         $result = $this->postsRepository->posts_waiting_list()->get()->toArray();
-        print_r($result);
+        return array_map(function($e){
+            return [
+                'post_uuid' => $e['post_uuid'],
+                'post_title' => $e['title']
+            ];
+        }, $result);
     }
 }
