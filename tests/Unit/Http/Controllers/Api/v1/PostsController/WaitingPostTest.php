@@ -19,11 +19,11 @@ class WaitingPostTest extends TestCase
     public function test_waiting_결과_없을때()
     {
         \App\Model\Posts::where('id', '>' , 0)->update([
-            'post_publish' => 'Y'
+            'post_publish' => 'N'
         ]);
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/waiting-list', []);
-        // $response->dump();
+        $response->dump();
         $response->assertStatus(204);
     }
 
