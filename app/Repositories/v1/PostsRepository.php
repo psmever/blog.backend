@@ -151,9 +151,16 @@ class PostsRepository implements PostsRepositoryInterface
             ])->orderBy('created_at','DESC');
     }
 
-    public function posts_waiting_list()
+    /**
+     * 아직 개시전 글 리스트.
+     *
+     * @return object
+     */
+    public function posts_waiting_list() : object
     {
-        return $this->Posts::where(['post_active', 'Y'], ['post_publish', 'Y'])->orderBy()->orderBy('created_at','DESC');
+        return $this->Posts::where([
+            ['post_active', 'Y'], ['post_publish', 'N']
+            ])->orderBy('created_at','DESC');
     }
 
     /**
