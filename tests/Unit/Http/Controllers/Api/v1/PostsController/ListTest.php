@@ -23,14 +23,14 @@ class ListTest extends TestCase
     }
 
     // 글 리스트 테스트
-    public function test_포스트_리스트_요청_테스트_없을떄()
+    public function test_post_list_포스트_리스트_요청_테스트_없을떄()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/100000', []);
         // $response->dump();
         $response->assertStatus(204);
     }
 
-    public function test_포스트_리스트_테스트()
+    public function test_post_list_포스트_리스트_테스트()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post', []);
         // $response->dump();
