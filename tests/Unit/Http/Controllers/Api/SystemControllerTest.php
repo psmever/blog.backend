@@ -29,7 +29,7 @@ class SystemControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_server_notice_not_exists()
+    public function test_system_notice_not_exists()
     {
         Storage::disk('sitedata')->delete('notice.txt');
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-notice');
@@ -42,7 +42,7 @@ class SystemControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_server_notice_not_exists_contents()
+    public function test_system_notice_not_exists_contents()
     {
         Storage::disk('sitedata')->put('notice.txt', '');
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-notice');
@@ -55,7 +55,7 @@ class SystemControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_server_notice_exists_contents()
+    public function test_system_notice_exists_contents()
     {
         $tmpNoticeMessage = '긴급 공지 사항 테스트입니다.';
         Storage::disk('sitedata')->put('notice.txt', $tmpNoticeMessage);
@@ -76,7 +76,7 @@ class SystemControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_server_check_base_data() {
+    public function test_system_check_base_data() {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/base-data');
         // $response->dump();
         $response->assertOk();

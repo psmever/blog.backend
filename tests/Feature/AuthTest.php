@@ -163,7 +163,7 @@ class AuthTest extends TestCase
 
     // 토큰 리프레쉬-
     // FIXME 토큰 없이 리프레쉬 시도시 에러코드, 메시지 수정??
-    public function test_TokenRefresh_로그인정보없을때()
+    public function test_auth_TokenRefresh_로그인정보없을때()
     {
         $header = $this->getTestApiHeaders();
 
@@ -177,7 +177,7 @@ class AuthTest extends TestCase
         ]);
     }
 
-    public function test_TokenRefresh_리프레쉬토큰_에러()
+    public function test_auth_TokenRefresh_리프레쉬토큰_에러()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
             "email" => $this->user_email,
@@ -201,7 +201,7 @@ class AuthTest extends TestCase
 
     }
 
-    public function test_TokenRefresh_성공_했을때()
+    public function test_auth_TokenRefresh_성공_했을때()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
             "email" => $this->user_email,

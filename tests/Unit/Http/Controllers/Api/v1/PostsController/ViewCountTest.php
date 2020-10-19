@@ -23,7 +23,7 @@ class ViewCountTest extends TestCase
 
 
     // 뷰카운트.
-    public function test_포스트_뷰카운트_등록되어있지_않은_포스트_요청()
+    public function test_post_viewcount_포스트_뷰카운트_등록되어있지_않은_포스트_요청()
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', '/api/v1/post/sdafsdfasdf/view-increment', []);
         // $response->dump();
@@ -39,7 +39,7 @@ class ViewCountTest extends TestCase
         ]);
     }
 
-    public function test_포스트_뷰카운트_비공개_포스트_요청()
+    public function test_post_viewcount_포스트_뷰카운트_비공개_포스트_요청()
     {
         $testPost = \App\Model\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
 
@@ -66,7 +66,7 @@ class ViewCountTest extends TestCase
         ]);
     }
 
-    public function test_포스트_뷰카운트_개시전_포스트_요청()
+    public function test_post_viewcount_포스트_뷰카운트_개시전_포스트_요청()
     {
         $testPost = \App\Model\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
 
@@ -93,7 +93,7 @@ class ViewCountTest extends TestCase
         ]);
     }
 
-    public function test_포스트_뷰카운트_정상_포스트_요청()
+    public function test_post_viewcount_포스트_뷰카운트_정상_포스트_요청()
     {
         $randPost = \App\Model\Posts::select("post_uuid")->where([['post_active', 'Y'], ['post_publish', 'Y']])->inRandomOrder()->first();
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/$randPost->post_uuid/view-increment", []);

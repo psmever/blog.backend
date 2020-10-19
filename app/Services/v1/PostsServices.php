@@ -565,4 +565,10 @@ class PostsServices
             return !empty($e['posts']);
         })));
     }
+
+    public function waitingPostsList()
+    {
+        $result = $this->postsRepository->posts_waiting_list()->get()->toArray();
+        print_r($result);
+    }
 }
