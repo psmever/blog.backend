@@ -2,10 +2,10 @@
 
 namespace App\Repositories\v1;
 
-use App\Model\Posts;
-use App\Model\PostsTags;
-use App\Model\MediaFiles;
-use App\Model\PostsThumbs;
+use App\Models\Posts;
+use App\Models\PostsTags;
+use App\Models\MediaFiles;
+use App\Models\PostsThumbs;
 use Illuminate\Support\Facades\DB;
 
 class PostsRepository implements PostsRepositoryInterface

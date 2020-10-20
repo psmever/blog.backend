@@ -59,7 +59,7 @@ class EditTest extends TestCase
     // 없는 글일때
     public function test_post_edit_등록_되지않은_글_요청()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/11111111111111111${testPostUuid}/edit", []);
         // $response->dump();
@@ -77,7 +77,7 @@ class EditTest extends TestCase
     // 권한 없을때.
     public function test_post_edit_권한_부족()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('GET', "/api/v1/post/${testPostUuid}/edit", []);
         // $response->dump();
@@ -96,7 +96,7 @@ class EditTest extends TestCase
     // 정상.
     public function test_post_edit_정상_처리()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testPostUuid}/edit", []);
         // $response->dump();

@@ -18,7 +18,7 @@ class AuthTest extends TestCase
     {
         parent::setUp();
 
-        $this->user_email = \App\User::where('user_level', 'S02900')->orderBy('id', 'ASC')->first()->email;
+        $this->user_email = \App\Models\User::where('user_level', 'S02900')->orderBy('id', 'ASC')->first()->email;
     }
 
     /**

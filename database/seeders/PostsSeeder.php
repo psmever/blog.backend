@@ -1,6 +1,10 @@
 <?php
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Posts;
+use App\Models\PostsTags;
 
 class PostsSeeder extends Seeder
 {
@@ -12,8 +16,8 @@ class PostsSeeder extends Seeder
     public function run()
     {
         if (env('APP_ENV') == "testing") {
-            factory('App\Model\Posts', 1)->create();
-            factory('App\Model\PostsTags', 1)->create();
+            Posts::factory()->count(1)->create();
+            PostsTags::factory()->count(1)->create();
         }
     }
 }

@@ -51,7 +51,7 @@ class DeleteTest extends TestCase
         ]);
     }
     public function test_post_delete_등록_되지않은_글_요청(){
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('DELETE', "/api/v1/post/11111111111111111${testPostUuid}/destroy", []);
         // $response->dump();
@@ -68,7 +68,7 @@ class DeleteTest extends TestCase
     }
 
     public function test_post_delete_권한_부족(){
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('DELETE', "/api/v1/post/${testPostUuid}/destroy", []);
         // $response->dump();
@@ -85,7 +85,7 @@ class DeleteTest extends TestCase
     }
 
     public function test_post_delete_정상_처리(){
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('DELETE', "/api/v1/post/${testPostUuid}/destroy", []);
         // $response->dump();

@@ -43,7 +43,7 @@ class SearchTest extends TestCase
     // 정상 요청 일때.
     public function test_post_search_검색_정상()
     {
-        $randPost = \App\Model\Posts::select("title")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("title")->inRandomOrder()->first();
         $post_title = $randPost->title;
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${post_title}/search", []);

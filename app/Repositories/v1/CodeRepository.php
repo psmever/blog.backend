@@ -2,7 +2,7 @@
 
 namespace App\Repositories\v1;
 
-use App\Model\Codes;
+use App\Models\Codes;
 
 class CodeRepository implements CodeRepositoryInterface
 {
