@@ -39,9 +39,9 @@ class DetailTest extends TestCase
 
     public function test_post_detail_포스트_보기_비공개_포스트_요청()
     {
-        $testPost = \App\Model\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
+        $testPost = \App\Models\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
 
-        \App\Model\Posts::where('post_uuid', $testPost->post_uuid)->update([
+        \App\Models\Posts::where('post_uuid', $testPost->post_uuid)->update([
             'post_active' => 'N'
         ]);
 
@@ -68,9 +68,9 @@ class DetailTest extends TestCase
 
     public function test_post_detail_포스트_보기_개시전_포스트_요청()
     {
-        $testPost = \App\Model\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
+        $testPost = \App\Models\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
 
-        \App\Model\Posts::where('post_uuid', $testPost->post_uuid)->update([
+        \App\Models\Posts::where('post_uuid', $testPost->post_uuid)->update([
             'post_publish' => 'N'
         ]);
 
@@ -97,7 +97,7 @@ class DetailTest extends TestCase
 
     public function test_post_detail_포스트_보기_정상_포스트_요청()
     {
-        $randPost = \App\Model\Posts::select("slug_title")->where([['post_active', 'Y'], ['post_publish', 'Y']])->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("slug_title")->where([['post_active', 'Y'], ['post_publish', 'Y']])->inRandomOrder()->first();
         $testSlugTitle = $randPost->slug_title;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/detail", []);
         // $response->dump();

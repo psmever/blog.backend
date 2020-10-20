@@ -25,7 +25,7 @@ class PublishTest extends TestCase
     // 퍼블리시 테스트.
     public function test_post_publish_로그인_하지_않은_상태에서_요청할때()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestApiHeaders())->json('PUT', "/api/v1/post/${testPostUuid}/publish");
         // $response->dump();
@@ -42,7 +42,7 @@ class PublishTest extends TestCase
     }
     public function test_post_publish_존재_하지않은_요청_할때()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/1111111111111${testPostUuid}/publish");
         // $response->dump();
@@ -59,7 +59,7 @@ class PublishTest extends TestCase
     }
     public function test_post_publish_등록자와_다를때()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/publish", []);
         // $response->dump();
@@ -76,9 +76,9 @@ class PublishTest extends TestCase
     }
     public function test_post_publish_정상처리()
     {
-        $testPost = \App\Model\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
+        $testPost = \App\Models\Posts::select("post_uuid", "slug_title")->inRandomOrder()->first();
 
-        \App\Model\Posts::where('post_uuid', $testPost->post_uuid)->update([
+        \App\Models\Posts::where('post_uuid', $testPost->post_uuid)->update([
             'post_publish' => 'N'
         ]);
 

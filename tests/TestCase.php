@@ -63,7 +63,7 @@ abstract class TestCase extends BaseTestCase
     protected function getTestAccessTokenHeader()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
-            "email" => \App\User::where('user_level', 'S02900')->orderBy('id', 'ASC')->first()->email,
+            "email" => \App\Models\User::where('user_level', 'S02900')->orderBy('id', 'ASC')->first()->email,
             "password" => 'password'
         ]);
         return [
@@ -77,7 +77,7 @@ abstract class TestCase extends BaseTestCase
     protected function getTestGuestAccessTokenHeader()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
-            "email" => \App\User::where('user_level', 'S02010')->orderBy('id', 'ASC')->first()->email,
+            "email" => \App\Models\User::where('user_level', 'S02010')->orderBy('id', 'ASC')->first()->email,
             "password" => 'password'
         ]);
         return [

@@ -26,7 +26,7 @@ class UpdateTest extends TestCase
     // 글 업데이트 테스트
     public function test_post_update_로그인_하지_않은_상태에서_요청할때()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestApiHeaders())->json('PUT', "/api/v1/post/${testPostUuid}/update");
         // $response->dump();
@@ -44,7 +44,7 @@ class UpdateTest extends TestCase
 
     public function test_post_update_존재_하지않은_요청_할때()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/1111111111111${testPostUuid}/update");
         // $response->dump();
@@ -62,7 +62,7 @@ class UpdateTest extends TestCase
 
     public function test_post_update_등록자와_다를때()
     {
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", []);
         // $response->dump();
@@ -99,7 +99,7 @@ class UpdateTest extends TestCase
             }
         }';
 
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();
@@ -126,7 +126,7 @@ class UpdateTest extends TestCase
                 ,"text" : "# Blog.Frontend\n\n\n#### Git Clone.\n\n```\ngit clone https:\/\/github.com\/psmever\/blog.front.git blog.front\n```\n\n#### Config\n```\ncp config\/sample.environment.env config\/development.env\ncp config\/sample.environment.env config\/production.env\n```\n\n#### Node Module Install.\n```\nyarn install\n```\n\n### Local Develper\n\n```\nyarn start\nyarn start:prod\n```\n\n### Build\n```\nyarn build\nyarn build:prod\n```\n\n### Server Deploy:prod\n```\nyarn deploy:prod\n```\n\n\n## Contributing\nPull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.\n\nPlease make sure to update tests as appropriate.\n\n## License\n[MIT](https:\/\/choosealicense.com\/licenses\/mit\/)"
                 }
         }';
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();
@@ -162,7 +162,7 @@ class UpdateTest extends TestCase
                 ,"text" : ""
             }
         }';
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();
@@ -198,7 +198,7 @@ class UpdateTest extends TestCase
                 ,"text" : "# Blog.Frontend\n\n\n#### Git Clone.\n\n```\ngit clone https:\/\/github.com\/psmever\/blog.front.git blog.front\n```\n\n#### Config\n```\ncp config\/sample.environment.env config\/development.env\ncp config\/sample.environment.env config\/production.env\n```\n\n#### Node Module Install.\n```\nyarn install\n```\n\n### Local Develper\n\n```\nyarn start\nyarn start:prod\n```\n\n### Build\n```\nyarn build\nyarn build:prod\n```\n\n### Server Deploy:prod\n```\nyarn deploy:prod\n```\n\n\n## Contributing\nPull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.\n\nPlease make sure to update tests as appropriate.\n\n## License\n[MIT](https:\/\/choosealicense.com\/licenses\/mit\/)"
             }
         }';
-        $randPost = \App\Model\Posts::select("post_uuid")->inRandomOrder()->first();
+        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/${testPostUuid}/update", json_decode($testBody, true));
         // $response->dump();

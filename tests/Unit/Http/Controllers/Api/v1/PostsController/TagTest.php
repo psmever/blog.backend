@@ -37,7 +37,7 @@ class TagTest extends TestCase
 
     public function test_psot_tag_검색_정상()
     {
-        $randPost = \App\Model\PostsTags::select("tag_text")->inRandomOrder()->first();
+        $randPost = \App\Models\PostsTags::select("tag_text")->inRandomOrder()->first();
         $tag_text = $randPost->tag_text;
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/tag/${tag_text}/tag-search", []);

@@ -18,7 +18,7 @@ class WaitingPostTest extends TestCase
 
     public function test_waiting_결과_없을때()
     {
-        \App\Model\Posts::where('id', '>' , 0)->update([
+        \App\Models\Posts::where('id', '>' , 0)->update([
             'post_publish' => 'Y'
         ]);
 
@@ -29,7 +29,7 @@ class WaitingPostTest extends TestCase
 
     public function test_waiting_정상()
     {
-        \App\Model\Posts::where('id', '>' , 0)->update([
+        \App\Models\Posts::where('id', '>' , 0)->update([
             'post_publish' => 'N'
         ]);
 

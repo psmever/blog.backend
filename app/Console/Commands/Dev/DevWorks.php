@@ -4,10 +4,10 @@ namespace App\Console\Commands\Dev;
 
 use Illuminate\Console\Command;
 
-use App\Model\Posts;
-use App\Model\PostsTags;
-use App\Model\PostsThumbs;
-use App\Model\MediaFiles;
+use App\Models\Posts;
+use App\Models\PostsTags;
+use App\Models\PostsThumbs;
+use App\Models\MediaFiles;
 use Illuminate\Support\Facades\Schema;
 
 class DevWorks extends Command

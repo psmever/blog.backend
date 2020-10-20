@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +16,7 @@ class CodesSeeder extends Seeder
     {
         if (env('APP_ENV') != "testing") {
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            \App\Model\Codes::truncate();
+            \App\Models\Codes::truncate();
         }
 
         $arrayGroupCodesList = $this->initGroupCodesList();
