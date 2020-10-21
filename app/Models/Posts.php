@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use App\Supports\Facades\GuitarClass;
 
 class Posts extends Model
 {
+    use HasFactory;
+
     protected $table = "posts";
 
     // protected $primaryKey = 'slug_title';

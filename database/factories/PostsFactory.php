@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Supports\Facades\GuitarClass;
-use App\Models\Model;
+use App\Models\Posts;
 
 class PostsFactory extends Factory
 {
@@ -15,7 +15,7 @@ class PostsFactory extends Factory
      *
      * @var string
      */
-    protected $model = Model::class;
+    protected $model = Posts::class;
 
     /**
      * Define the model's default state.
