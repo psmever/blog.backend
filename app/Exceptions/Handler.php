@@ -106,7 +106,10 @@ class Handler extends ExceptionHandler
         if($request->is('api/*')) {
 
             if(app()->isDownForMaintenance()) {
-                return Response::error(503, $exception->getMessage() ? $exception->getMessage() : __('default.server.down'));
+                // 2020-10-22 09:50  Laravel 8 에서 php artisan down --message 옵션 없어짐.
+                // return Response::error(503, $exception->getMessage() ? $exception->getMessage() : __('default.server.down'));
+                return Response::error(503, __('default.server.down'));
+
             } else {
                 return Response::error(
                     $error_code ? $error_code : 503,

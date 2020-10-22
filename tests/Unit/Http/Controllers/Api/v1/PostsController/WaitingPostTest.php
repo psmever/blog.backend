@@ -23,7 +23,7 @@ class WaitingPostTest extends TestCase
         ]);
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/write/waiting-list', []);
-        $response->dump();
+        // $response->dump();
         $response->assertStatus(204);
     }
 

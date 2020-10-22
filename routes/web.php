@@ -16,13 +16,12 @@ use App\Http\Controllers\Front\TestController;
 */
 
 // uses 에러 나서 변경.
-Route::get('/', [
-    'as' => 'home', 'uses' => [HomeController::class, 'index']
-]);
+// laravel 8 에서 에러 나서 변경.
+// Route::get('/', [ 'as' => 'home', 'uses' => [HomeController::class, 'index'] ]);
+Route::get('/', [HomeController::class, 'index'])->name('index');
 
-Route::get('login', [
-    'as' => 'login', 'uses' => [HomeController::class, 'login']
-]);
+// Route::get('login', ['as' => 'login', 'uses' => [HomeController::class, 'login']]);
+Route::get('login', [HomeController::class, 'login'])->name('login');
 
 Route::group(['namespace'=> 'Front', 'prefix' => 'front', 'as' => 'front.'], function () {
 
