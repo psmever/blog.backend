@@ -48,7 +48,7 @@ class BaseTest extends TestCase
     public function test_base_server_landing_page()
     {
         $response = $this->get('/');
-
+        // $response->dump();
         $response->assertStatus(200);
     }
 
@@ -201,6 +201,7 @@ class BaseTest extends TestCase
     public function test_base_server_check_status_up()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-status');
+        // $response->dump();
         $response->assertStatus(204);
     }
 }
