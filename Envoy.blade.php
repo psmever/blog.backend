@@ -22,7 +22,7 @@
     cd {{ $prod_root_directory }}
     pwd
 
-    php artisan down --message="Now deploy" --retry=60
+    php artisan down --retry=60
 
     # update source code
     echo "update source code";
@@ -67,7 +67,7 @@
     cd {{ $stage_root_directory }}
     pwd
 
-    php artisan down --message="Now deploy" --retry=60
+    php artisan down --retry=60
 
     # update source code
     echo "update source code";
