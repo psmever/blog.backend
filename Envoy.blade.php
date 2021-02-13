@@ -35,6 +35,10 @@
         # --no-dev		Disables installation of require-dev packages.
         # --prefer-dist		Forces installation from package dist even for dev versions.
 
+    # Queue worker restart
+    echo "Queue worker restart";
+    php artisan queue:restart
+
     # clear cache
     echo "clear cache";
     php artisan cache:clear
@@ -79,6 +83,10 @@
         # --no-interaction	Do not ask any interactive question
         # --no-dev		Disables installation of require-dev packages.
         # --prefer-dist		Forces installation from package dist even for dev versions.
+
+    # Queue worker restart
+    echo "Queue worker restart";
+    php artisan queue:restart
 
     # clear cache
     echo "clear cache";

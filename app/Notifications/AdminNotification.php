@@ -51,7 +51,11 @@ class AdminNotification extends Notification
 
     public function toSlack($notifiable)
     {
+
         $slackMessage = new \stdClass();
+        $slackMessage->env = env('APP_ENV');
+
+
         if($this->task->type == 'notice') {
             $slackMessage->title = ":: 알림 ::";
             $slackMessage->hex = '#663399';
@@ -63,7 +67,7 @@ class AdminNotification extends Notification
         $slackMessage->message = "{$this->task->message}";
 
         return (new SlackMessage)->from('BlogApiServer', ':flushed:')->warning()->to('#blog_backend_notifications')->attachment(function ($attachment) use ($slackMessage) {
-            $attachment->title($slackMessage->title)->content($slackMessage->message)->color($slackMessage->hex);
+            $attachment->title(" {$slackMessage->title}")->content("({$slackMessage->env}) : {$slackMessage->message}")->color($slackMessage->hex);
         });
     }
 
