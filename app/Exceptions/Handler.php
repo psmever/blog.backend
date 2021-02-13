@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 
+// TODO: 2021-02-14 02:41  슬랙 알림 기능 추가.
 class Handler extends ExceptionHandler
 {
     /**
