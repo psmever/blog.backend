@@ -11,7 +11,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/forlocal
+/storage/forlocal
+storage/framework
 
 # Editor
 .vscode
