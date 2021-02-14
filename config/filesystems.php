@@ -53,6 +53,11 @@ return [
             'root' => storage_path('sitedata'),
         ],
 
+        'forlocal' => [
+            'driver' => 'local',
+            'root' => storage_path('forlocal'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
