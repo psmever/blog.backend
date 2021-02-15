@@ -69,13 +69,13 @@ class DevWeatherExcel extends Command
 
         $version = $this->argument('version') ? $this->argument('version') : \Carbon\Carbon::createFromFormat('Ymd');
 
-        Schema::disableForeignKeyConstraints();
-        VilageFcstinfoMaster::truncate();
-        Schema::enableForeignKeyConstraints();
-
-        Schema::disableForeignKeyConstraints();
-        VilageFcstinfo::truncate();
-        Schema::enableForeignKeyConstraints();
+//        Schema::disableForeignKeyConstraints();
+//        VilageFcstinfoMaster::truncate();
+//        Schema::enableForeignKeyConstraints();
+//
+//        Schema::disableForeignKeyConstraints();
+//        VilageFcstinfo::truncate();
+//        Schema::enableForeignKeyConstraints();
 
         VilageFcstinfoMaster::create([
             'version' => $version
