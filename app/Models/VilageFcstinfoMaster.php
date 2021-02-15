@@ -13,8 +13,13 @@ class VilageFcstinfoMaster extends Model
 
     protected $fillable = ['id', 'version'];
 
+    public function vilage_fcstinfos()
+    {
+        return $this->hasMany(VilageFcstinfo::class, 'version_id', 'id');
+    }
+
     public function vilage_fcstinfo()
     {
-        return $this->hasOne(VilageFcstinfo::class, 'id', 'version');
+        return $this->hasOne(VilageFcstinfo::class, 'version_id', 'id');
     }
 }

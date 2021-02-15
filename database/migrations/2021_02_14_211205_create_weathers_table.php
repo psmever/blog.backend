@@ -30,11 +30,8 @@ class CreateWeathersTable extends Migration
         Schema::create('weathers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('area_code_id')->nullable(false)->comment('행정구역코드 ID.');
-            $table->string('baseDate', 8)->nullable(false)->comment('발표일자.');
-            $table->string('baseTime', 8)->nullable(false)->comment('발표시각.');
             $table->string('fcstDate', 8)->nullable(false)->comment('예측일자.');
             $table->string('fcstTime', 8)->nullable(false)->comment('예측시간.');
-            $table->string('fcstValue')->nullable(false)->comment('예보값.');
             $table->string('T1H')->nullable(false)->comment('기온.');
             $table->string('RN1')->nullable(false)->comment('1시간 강수량.');
             $table->string('SKY')->nullable(false)->comment('하늘상태(맑음(1), 구름많음(3), 흐림(4))');
