@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 
 use App\Models\VilageFcstinfoMaster;
 use App\Jobs\ServerSlackNotice;
+use Illuminate\Support\Facades\Storage;
 
 class CronWeather extends Command
 {
@@ -60,14 +61,16 @@ class CronWeather extends Command
      */
     public function getWeather()
     {
+
+        if(!Storage::disk('sitedata')->exists("weather_area_code.json")) {
+            echo "json file not found";
+            return 0;
+        }
+
+        $readData = json_decode(Storage::disk('sitedata')->get('weather_area_code.json'), true);
+
         // 행정구역 코드.
-        $AreaCode = [
-            '1153079000', // 서울특별시	구로구	수궁동
-            '1100000000', // 서울특별시
-            '4100000000', // 경기도
-            '4275035500', // 강원도	영월군	한반도면
-            '4315000000', // 충청북도	제천시
-        ];
+        $AreaCode = $readData['area_code'];
 
         $serviceKey = env('APIS_DATA_GO_KR_SERVICE_KEY');
         $pageNo = 1;
