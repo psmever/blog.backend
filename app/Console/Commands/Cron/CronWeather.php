@@ -171,7 +171,7 @@ class CronWeather extends Command
                 }
             }
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $s = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
         }
     }

@@ -29,9 +29,18 @@ class SpecialtyRepository implements SpecialtyRepositoryInterface
     public function update() {}
     public function delete() {}
 
-    public function getTopWeatherData()
+    public function getTopWeatherData($params)
     {
+        // TODO: 관계형으로 날씨 가지고 오기.
 
+        // $result = VilageFcstinfoMaster::with(['vilage_fcstinfos.get_weathers' => function($query) use ($params) {
+
+        // }])->where('active', 'Y')->first()->toArray();
+
+        $result = VilageFcstinfoMaster::where('active', 'Y')->first()->toArray();
+
+        print_r($result);
+        return [];
     }
 
 }
