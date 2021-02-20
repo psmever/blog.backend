@@ -27,21 +27,58 @@ class SpecialtyServices
             "fcstTime" => Carbon::Now()->format('H00')
         ];
 
+        // $task = array_map(function($area_code) use ($params) {
 
-        return array_map(function($area_code) use ($params) {
+        //     // return [
+        //     //     'area_code' => $area_code,
+        //     //     'list' => $this->specialtyRepository->getTopWeatherData([
+        //     //         'area_code' => $area_code,
+        //     //         'fcstDate' => $params['fcstDate'],
+        //     //         'fcstTime' => $params['fcstTime']
+        //     //     ])
+        //     // ];
 
-            $task = $this->specialtyRepository->getTopWeatherData([
-                'area_code' => $area_code,
-                'fcstDate' => $params['fcstDate'],
-                'fcstTime' => $params['fcstTime']
-            ]);
+        //     $task = $this->specialtyRepository->getTopWeatherData([
+        //         'area_code' => $area_code,
+        //         'fcstDate' => $params['fcstDate'],
+        //         'fcstTime' => $params['fcstTime']
+        //     ]);
+
+        //     return $task;
+
+        // }, $areaCodes);
+
+        $task = $this->specialtyRepository->getTopWeatherData([
+            'area_code' => '1153079000',
+            'fcstDate' => $params['fcstDate'],
+            'fcstTime' => $params['fcstTime']
+        ]);
+
+        print_r($task);
 
 
-            return [];
-
-        }, $areaCodes);
+        return [];
 
 
+        // return array_map(function($area_code) use ($params) {
 
+        //     // return [
+        //     //     'area_code' => $area_code,
+        //     //     'list' => $this->specialtyRepository->getTopWeatherData([
+        //     //         'area_code' => $area_code,
+        //     //         'fcstDate' => $params['fcstDate'],
+        //     //         'fcstTime' => $params['fcstTime']
+        //     //     ])
+        //     // ];
+
+        //     $task = $this->specialtyRepository->getTopWeatherData([
+        //         'area_code' => $area_code,
+        //         'fcstDate' => $params['fcstDate'],
+        //         'fcstTime' => $params['fcstTime']
+        //     ]);
+
+        //     return $task;
+
+        // }, $areaCodes);
     }
 }

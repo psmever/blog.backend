@@ -22,4 +22,16 @@ class VilageFcstinfoMaster extends Model
     {
         return $this->hasOne(VilageFcstinfo::class, 'version_id', 'id');
     }
+
+    public function weathers() {
+
+        return $this->hasManyThrough(
+            Weathers::class,
+            VilageFcstinfo::class,
+            'version_id', // Foreign key on products table...
+            'area_code_id', // Foreign key on orders table...
+            'id', // Local key on countries table...
+            'id' // Local key on users table...
+        );
+    }
 }

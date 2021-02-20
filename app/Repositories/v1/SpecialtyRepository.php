@@ -7,7 +7,6 @@ use App\Models\VilageFcstinfoMaster;
 use App\Models\VilageFcstinfo;
 use App\Models\Weathers;
 
-
 class SpecialtyRepository implements SpecialtyRepositoryInterface
 {
 
@@ -33,14 +32,31 @@ class SpecialtyRepository implements SpecialtyRepositoryInterface
     {
         // TODO: 관계형으로 날씨 가지고 오기.
 
+        // print_r($params);
+        // [area_code] => 1153079000
+        // [fcstDate] => 20210220
+        // [fcstTime] => 0900
+
         // $result = VilageFcstinfoMaster::with(['vilage_fcstinfos.get_weathers' => function($query) use ($params) {
 
         // }])->where('active', 'Y')->first()->toArray();
 
-        $result = VilageFcstinfoMaster::where('active', 'Y')->first()->toArray();
+        // $result = VilageFcstinfoMaster::where('active', 'Y')->with(['weathers'])->first()->toArray();
+        // $result = VilageFcstinfoMaster::where('active', 'Y')->whereHas('weathers')->first()->toArray();
+        // $result = VilageFcstinfoMaster::where('active', 'Y')->with(['weathers' => function($query) {
+        //     // print_r($query);
+        //     // $query->where('fcstDate', '20210220');
+        //     $query->where('area_code', '1153079000');
+        // }])->first();
 
-        print_r($result);
-        return [];
+        // return VilageFcstinfoMaster::where('active', 'Y')->where('active', 'Y')->with(['weathers' => function($query) use ($params) {
+        //     // $query->where('area_code', $params['area_code']);
+        //     $query->where('area_code', '1153079000');
+        // }])->first();
+
+        return VilageFcstinfoMaster::where('active', 'Y')->orderBy('version', 'DESC')->first()->with(['weathers' => function($query) use ($params) {
+                $query->where('area_code', $params['area_code']);
+            }, 'weathers.vilage'])->get()->toArray();
     }
 
 }
