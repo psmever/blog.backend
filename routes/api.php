@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\PostsController;
+use App\Http\Controllers\Api\v1\SpecialtyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,9 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/tag/tag-list', [PostsController::class, 'tag_list'])->name('tag_list');
             Route::get('/tag/{search_item}/tag-search', [PostsController::class, 'tag_search'])->name('tag_search');
             Route::get('/write/waiting-list', [PostsController::class, 'waiting_list'])->name('write.waiting.list')->middleware('auth:api');
+        });
+        Route::group(['prefix' => 'specialty', 'as' => 'specialty.'], function () {
+            Route::get('/weather', [SpecialtyController::class, 'weather'])->name('weather');
         });
     });
 });
