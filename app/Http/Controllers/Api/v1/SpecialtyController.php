@@ -17,9 +17,9 @@ class SpecialtyController extends ApiRootController
         $this->SpecialtyServices = $specialtyServices;
     }
 
+    // 동네 날씨 예보.
     public function weather()
     {
-
-        return Response::success($this->SpecialtyServices->getNowWeather());
+        return Response::success_only_data($this->SpecialtyServices->getNowWeather());
     }
 }
