@@ -52,6 +52,10 @@ class AdminNotification extends Notification
     public function toSlack($notifiable)
     {
 
+        if(env('APP_ENV') !== 'production') {
+            return;
+        }
+
         $slackMessage = new \stdClass();
         $slackMessage->env = env('APP_ENV');
 
