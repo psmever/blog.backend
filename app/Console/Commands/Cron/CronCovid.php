@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\CovidMaster;
 use App\Models\CovidState;
 
+use App\Jobs\ServerSlackNotice;
+
 class CronCovid extends Command
 {
     /**
@@ -127,12 +129,27 @@ class CronCovid extends Command
                     );
                 }, $items);
 
+                $job = new ServerSlackNotice((object) [
+                    'type' => 'notice',
+                    'message' => '코로나 정보를 가지고 오는데 성공 했습니다.'
+                ]);
+                dispatch($job);
+
             } else {
-                echo "get Error".PHP_EOL;
+                $job = new ServerSlackNotice((object) [
+                    'type' => 'exception',
+                    'message' => '코로나 정보를 가지고 오지 못했습니다(002).'
+                ]);
+                dispatch($job);
             }
 
         } catch (\Exception $e) {
             $s = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
+            $job = new ServerSlackNotice((object) [
+                'type' => 'exception',
+                'message' => '코로나 정보를 가지고 오지 못했습니다(001).'
+            ]);
+            dispatch($job);
         }
     }
 }
