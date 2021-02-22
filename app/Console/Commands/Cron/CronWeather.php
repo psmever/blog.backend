@@ -165,7 +165,7 @@ class CronWeather extends Command
 
                     $job = new ServerSlackNotice((object) [
                         'type' => 'exception',
-                        'message' => '날씨 정보를 가지고 오는데 실패 했습니다.'
+                        'message' => '날씨 정보를 가지고 오는데 실패 했습니다.(002)'
                     ]);
                     dispatch($job);
                 }
@@ -173,6 +173,11 @@ class CronWeather extends Command
 
         } catch (\Exception $e) {
             $s = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
+            $job = new ServerSlackNotice((object) [
+                'type' => 'exception',
+                'message' => '날씨 정보를 가지고 오는데 실패 했습니다.(001)'
+            ]);
+            dispatch($job);
         }
     }
 }
