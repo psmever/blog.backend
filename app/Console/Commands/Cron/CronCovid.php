@@ -107,7 +107,7 @@ class CronCovid extends Command
 
                     $masterInfo = CovidMaster::firstOrCreate(
                         ['title' => $gubunEnString],
-                        ['gubun' => 'gubun', 'gubun_en' => $gubunEn]
+                        ['gubun' => $gubun, 'gubun_en' => $gubunEn]
                     );
 
                     CovidState::updateOrCreate(
