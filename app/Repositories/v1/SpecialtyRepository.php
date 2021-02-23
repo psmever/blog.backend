@@ -6,6 +6,7 @@ namespace App\Repositories\v1;
 use App\Models\VilageFcstinfoMaster;
 use App\Models\VilageFcstinfo;
 use App\Models\Weathers;
+use App\Models\CovidMaster;
 
 class SpecialtyRepository implements SpecialtyRepositoryInterface
 {
@@ -45,5 +46,10 @@ class SpecialtyRepository implements SpecialtyRepositoryInterface
                 $query->where([['area_code', $params['area_code']], ['fcstDate', ">=", $params['fcstDate']]]);
                 $query->limit(1)->orderBy('fcstDate', 'DESC');
             }, 'weathers.vilage'])->first();
+    }
+
+    // covid19 데이터 조회.
+    public function getCovidState() {
+        return CovidMaster::with(['covid_state'])->get();
     }
 }

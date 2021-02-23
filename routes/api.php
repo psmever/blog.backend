@@ -71,6 +71,7 @@ Route::group(['as' => 'api.'], function () {
         });
         Route::group(['prefix' => 'specialty', 'as' => 'specialty.'], function () {
             Route::get('/weather', [SpecialtyController::class, 'weather'])->name('weather');
+            Route::get('/covid', [SpecialtyController::class, 'covid'])->name('covid');
         });
     });
 });

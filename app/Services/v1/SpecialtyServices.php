@@ -108,4 +108,34 @@ class SpecialtyServices
 
         }, $areaCodes);
     }
+
+    // 코로나 현황
+    public function getCovidState()
+    {
+        return array_map(function($item) {
+            $covidState = $item["covid_state"];
+
+            return [
+                "title" => $item["title"],
+                "gubun" => $item["gubun"],
+                "gubun_en" => $item["gubun_en"],
+                "state" => [
+                    "seq" => $covidState["seq"],
+                    "createdt" => $covidState["createdt"],
+                    "deathcnt" => $covidState["deathcnt"],
+                    "incdec" => $covidState["incdec"],
+                    "isolclearcnt" => $covidState["isolclearcnt"],
+                    "qurrate" => $covidState["qurrate"],
+                    "stdday" => $covidState["stdday"],
+                    "updatedt" => $covidState["updatedt"],
+                    "defcnt" => $covidState["defcnt"],
+                    "isolingcnt" => $covidState["isolingcnt"],
+                    "overflowcnt" => $covidState["overflowcnt"],
+                    "localocccnt" => $covidState["localocccnt"],
+                    "created_at" => Carbon::parse($covidState["created_at"])->format('Y-m-d H:i:s'),
+                    "updated_at" => Carbon::parse($covidState["updated_at"])->format('Y-m-d H:i:s'),
+                ]
+            ];
+        } , $this->specialtyRepository->getCovidState()->toArray());
+    }
 }

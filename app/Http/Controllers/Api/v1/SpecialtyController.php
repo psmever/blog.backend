@@ -22,4 +22,10 @@ class SpecialtyController extends ApiRootController
     {
         return Response::success_only_data($this->SpecialtyServices->getNowWeather());
     }
+
+    // 코로나 현황.
+    public function covid()
+    {
+        return Response::success_only_data($this->SpecialtyServices->getCovidState());
+    }
 }
