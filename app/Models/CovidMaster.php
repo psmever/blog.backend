@@ -12,4 +12,10 @@ class CovidMaster extends Model
     protected $table = "covid_master";
 
     protected $fillable = ['id', 'title', 'gubun', 'gubun_en'];
+
+    // covid data 관계.
+    public function covid_state()
+    {
+        return $this->hasOne(CovidState::class, 'gubun_id' , 'id')->latest();
+    }
 }
