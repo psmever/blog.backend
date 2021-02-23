@@ -35,11 +35,17 @@ class SpecialtyServices
                 'fcstTime' => $params['fcstTime']
             ])->toArray();
 
+            if(empty($task['weathers'])) {
+                $task = $this->specialtyRepository->getTopWeatherDataSub([
+                    'area_code' => $area_code,
+                ])->toArray();
+            }
+
             $weathers = $task['weathers'][0] ?? null;
             $vilage = $weathers['vilage'] ?? null;
 
             if($weathers == null || $vilage == null) {
-                return null;
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
             }
 
             // fcstDate '예측일자.'

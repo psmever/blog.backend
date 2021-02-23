@@ -92,7 +92,7 @@ class Handler extends ExceptionHandler
             $error_code = 500;
             $error_message = __('default.exception.pdo_exception');
         } else if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-            $error_code = 406;
+            $error_code = 404;
             $error_message = __('default.exception.model_not_found_exception');
         } else {
 
