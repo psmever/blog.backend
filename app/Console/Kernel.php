@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('cron:weather get')->hourly();
-        $schedule->command('cron:covid get')->hourly();
+        $schedule->command('cron:covid get')->cron('1 08-23 * * *');
     }
 
     /**

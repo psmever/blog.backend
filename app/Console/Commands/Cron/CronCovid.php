@@ -129,11 +129,11 @@ class CronCovid extends Command
                     );
                 }, $items);
 
-                $job = new ServerSlackNotice((object) [
-                    'type' => 'notice',
-                    'message' => '코로나 정보를 가지고 오는데 성공 했습니다.'
-                ]);
-                dispatch($job);
+                // $job = new ServerSlackNotice((object) [
+                //     'type' => 'notice',
+                //     'message' => '코로나 정보를 가지고 오는데 성공 했습니다.'
+                // ]);
+                // dispatch($job);
 
             } else {
                 $job = new ServerSlackNotice((object) [
