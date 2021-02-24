@@ -27,7 +27,7 @@ class ViewCountTest extends TestCase
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', '/api/v1/post/sdafsdfasdf/view-increment', []);
         // $response->dump();
-        $response->assertStatus(406);
+        $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
                 'error_message'
@@ -54,7 +54,7 @@ class ViewCountTest extends TestCase
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/$testPost->post_uuid/view-increment", []);
         // $response->dump();
-        $response->assertStatus(406);
+        $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
                 'error_message'
@@ -81,7 +81,7 @@ class ViewCountTest extends TestCase
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('PUT', "/api/v1/post/$testPost->post_uuid/view-increment", []);
         // $response->dump();
-        $response->assertStatus(406);
+        $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
                 'error_message'
