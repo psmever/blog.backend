@@ -25,7 +25,7 @@ class DetailTest extends TestCase
     {
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', '/api/v1/post/sdafsdfasdf/detail', []);
         // $response->dump();
-        $response->assertStatus(406);
+        $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
                 'error_message'
@@ -54,7 +54,7 @@ class DetailTest extends TestCase
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/detail", []);
         // $response->dump();
-        $response->assertStatus(406);
+        $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
                 'error_message'
@@ -83,7 +83,7 @@ class DetailTest extends TestCase
 
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('GET', "/api/v1/post/${testSlugTitle}/detail", []);
         // $response->dump();
-        $response->assertStatus(406);
+        $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
                 'error_message'

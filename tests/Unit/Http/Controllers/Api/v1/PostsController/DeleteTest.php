@@ -55,7 +55,7 @@ class DeleteTest extends TestCase
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('DELETE', "/api/v1/post/11111111111111111${testPostUuid}/destroy", []);
         // $response->dump();
-        $response->assertStatus(406);
+        $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
                 'error_message'
