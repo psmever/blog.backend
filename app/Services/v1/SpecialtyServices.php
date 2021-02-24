@@ -38,6 +38,7 @@ class SpecialtyServices
             if(empty($task['weathers'])) {
                 $task = $this->specialtyRepository->getTopWeatherDataSub([
                     'area_code' => $area_code,
+                    'fcstDate' => $params['fcstDate'],
                 ])->toArray();
             }
 
