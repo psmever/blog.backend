@@ -70,6 +70,7 @@ class CodesSeeder extends Seeder
             [ 'group_id' => 'S03', 'group_name' => '사용자 상태' ],
             [ 'group_id' => 'S04', 'group_name' => '상태' ],
             [ 'group_id' => 'S05', 'group_name' => '포스트 카테고리 이미지(리스트용)' ],
+            [ 'group_id' => 'S06', 'group_name' => '날씨아이콘' ],
 	    ];
     }
 
@@ -112,6 +113,29 @@ class CodesSeeder extends Seeder
                 [ 'code_id' => '080', 'code_name' => 'react' ],
                 [ 'code_id' => '090', 'code_name' => 'windows' ],
                 [ 'code_id' => '990', 'code_name' => 'runners' ],
+            ],
+            'S06' => [
+                [ 'code_id' => '010', 'code_name' => '맑음' ],
+                [ 'code_id' => '011', 'code_name' => '맑음 (밤)' ],
+                [ 'code_id' => '020', 'code_name' => '구름조금 (낮)' ],
+                [ 'code_id' => '021', 'code_name' => '구름조금 (밤)' ],
+                [ 'code_id' => '030', 'code_name' => '구름많음 (낮)' ],
+                [ 'code_id' => '031', 'code_name' => '구름많음 (밤)' ],
+                [ 'code_id' => '040', 'code_name' => '흐림' ],
+                [ 'code_id' => '070', 'code_name' => '소나기' ],
+                [ 'code_id' => '080', 'code_name' => '비' ],
+                [ 'code_id' => '200', 'code_name' => '가끔 비, 한때 비' ],
+                [ 'code_id' => '110', 'code_name' => '눈' ],
+                [ 'code_id' => '210', 'code_name' => '가끔 눈, 한때 눈' ],
+                [ 'code_id' => '120', 'code_name' => '비 또는 눈' ],
+                [ 'code_id' => '220', 'code_name' => '가끔 비 또는 눈, 한때 비 또는 눈' ],
+                [ 'code_id' => '130', 'code_name' => '눈 또는 비' ],
+                [ 'code_id' => '230', 'code_name' => '가끔 눈또는 비, 한때 눈 또는 비' ],
+                [ 'code_id' => '140', 'code_name' => '천둥번개' ],
+                [ 'code_id' => '180', 'code_name' => '연무' ],
+                [ 'code_id' => '150', 'code_name' => '연무' ],
+                [ 'code_id' => '170', 'code_name' => '박무 (엷은 안개)' ],
+                [ 'code_id' => '160', 'code_name' => '황사' ],
             ],
 		];
 	}
