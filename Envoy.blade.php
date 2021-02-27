@@ -60,6 +60,10 @@
     php artisan migrate --force
         # --force		Required to run when in production.
 
+    # Codes Seeder
+    echo "CodesSeeder";
+    php artisan db:seed --class=CodesSeeder --force
+
     # optimize clear
     echo "optimize clear";
     php artisan optimize:clear
@@ -108,6 +112,10 @@
     echo "update database";
     php artisan migrate --force
         # --force		Required to run when in production.
+
+    # Codes Seeder
+    echo "CodesSeeder";
+    php artisan db:seed --class=CodesSeeder --force
 
     # optimize clear
     echo "optimize clear";
