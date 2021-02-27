@@ -133,7 +133,7 @@ class CodesSeeder extends Seeder
                 [ 'code_id' => '230', 'code_name' => '가끔 눈또는 비, 한때 눈 또는 비' ],
                 [ 'code_id' => '140', 'code_name' => '천둥번개' ],
                 [ 'code_id' => '180', 'code_name' => '연무' ],
-                [ 'code_id' => '150', 'code_name' => '연무' ],
+                [ 'code_id' => '150', 'code_name' => '안개' ],
                 [ 'code_id' => '170', 'code_name' => '박무 (엷은 안개)' ],
                 [ 'code_id' => '160', 'code_name' => '황사' ],
             ],
