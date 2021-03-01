@@ -20,7 +20,14 @@ class SpecialtyServices
     {
         $jsonArea = json_decode(Storage::disk('sitedata')->get('weather_area_code.json'), true);
 
-        $areaCodes = $jsonArea['area_code'];
+        $areaCodes = [];
+
+        // unit testing 코드.
+        if(env('APP_ENV') === 'testing') {
+            $areaCodes[] = $jsonArea['area_code'][0];
+        } else {
+            $areaCodes = $jsonArea['area_code'];
+        }
 
         $params = [
             "fcstDate" => Carbon::Now()->format('Ymd'),
@@ -114,7 +121,11 @@ class SpecialtyServices
     public function getCovidState()
     {
         return array_map(function($item) {
-            $covidState = $item["covid_state"];
+            $covidState = $item["covid_state"] ?? null;
+
+            if($covidState == null) {
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+            }
 
             return [
                 "title" => $item["title"],

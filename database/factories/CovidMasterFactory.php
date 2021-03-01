@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\VilageFcstinfoMaster;
+use App\Models\CovidMaster;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
-class VilageFcstinfoMasterFactory extends Factory
+class CovidMasterFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = VilageFcstinfoMaster::class;
+    protected $model = CovidMaster::class;
 
     /**
      * Define the model's default state.
@@ -23,7 +22,9 @@ class VilageFcstinfoMasterFactory extends Factory
     public function definition()
     {
         return [
-            'version' => Carbon::now()->format('Ymd')
+            'title' => 'total',
+            'gubun' => '합계',
+            'gubun_en' => 'Total',
         ];
     }
 }
