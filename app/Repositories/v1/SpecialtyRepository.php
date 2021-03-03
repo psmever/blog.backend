@@ -52,4 +52,9 @@ class SpecialtyRepository implements SpecialtyRepositoryInterface
     public function getCovidState() {
         return CovidMaster::with(['covid_state'])->get();
     }
+
+    // covid19 오늘 어제 데이터.
+    public function getCovidTodayTotal() {
+        return CovidMaster::where('title', '=', 'total')->with(['covid_total'])->first();
+    }
 }
