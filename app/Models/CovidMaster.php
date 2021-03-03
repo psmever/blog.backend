@@ -18,4 +18,10 @@ class CovidMaster extends Model
     {
         return $this->hasOne(CovidState::class, 'gubun_id' , 'id')->latest();
     }
+
+    // 현재 및 이전 데이터용.
+    public function covid_total()
+    {
+        return $this->hasMany(CovidState::class, 'gubun_id' , 'id')->orderBy('id', 'desc')->take(2);
+    }
 }

@@ -31,6 +31,7 @@ class CovidTest extends TestCase
         CovidMaster::factory()->create();
 
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/v1/specialty/covid');
+//         $response->dump();
         $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
@@ -56,25 +57,10 @@ class CovidTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure([
             [
-                "title",
-                "gubun",
-                "gubun_en",
-                "state" => [
-                  "seq",
-                  "createdt",
-                  "deathcnt",
-                  "incdec",
-                  "isolclearcnt",
-                  "qurrate",
-                  "stdday",
-                  "updatedt",
-                  "defcnt",
-                  "isolingcnt",
-                  "overflowcnt",
-                  "localocccnt",
-                  "created_at",
-                  "updated_at",
-                ]
+                "defcnt",
+                "isolclearcnt",
+                "deathcnt",
+                "incdec"
             ]
         ]);
     }
