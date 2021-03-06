@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CovidMaster whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CovidMaster whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @mixin \Illuminate\Database\Eloquent\Builder
  */
 class CovidMaster extends Model
 {
