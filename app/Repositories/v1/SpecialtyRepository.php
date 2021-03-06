@@ -6,7 +6,7 @@ namespace App\Repositories\v1;
 use App\Models\VilageFcstinfoMaster;
 use App\Models\VilageFcstinfo;
 use App\Models\Weathers;
-use App\Models\CovidMaster;
+use \App\Models\CovidMaster;
 
 class SpecialtyRepository implements SpecialtyRepositoryInterface
 {
@@ -33,7 +33,7 @@ class SpecialtyRepository implements SpecialtyRepositoryInterface
     // 날짜 및 시간을 기준으로 날씨 에보 조회.
     public function getTopWeatherData($params)
     {
-        return VilageFcstinfoMaster::where('active', 'Y')->orderBy('version', 'DESC')->first()->with(['weathers' => function($query) use ($params) {
+        return (new \App\Models\VilageFcstinfoMaster)->where('active', 'Y')->orderBy('version', 'DESC')->first()->with(['weathers' => function($query) use ($params) {
                 $query->where([['area_code', $params['area_code']], ['fcstDate', ">=", $params['fcstDate']], ['fcstTime', ">=", $params['fcstTime']]]);
                 $query->limit(1)->orderBy('fcstDate', 'DESC');
             }, 'weathers.vilage'])->first();
@@ -42,7 +42,7 @@ class SpecialtyRepository implements SpecialtyRepositoryInterface
     // 날짜를 기준으로 조회.
     public function getTopWeatherDataSub($params)
     {
-        return VilageFcstinfoMaster::where('active', 'Y')->orderBy('version', 'DESC')->first()->with(['weathers' => function($query) use ($params) {
+        return (new \App\Models\VilageFcstinfoMaster)->where('active', 'Y')->orderBy('version', 'DESC')->first()->with(['weathers' => function($query) use ($params) {
                 $query->where([['area_code', $params['area_code']], ['fcstDate', ">=", $params['fcstDate']]]);
                 $query->limit(1)->orderBy('fcstDate', 'DESC');
             }, 'weathers.vilage'])->first();
