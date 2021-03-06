@@ -55,7 +55,13 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "post-update-cmd": [ "Illuminate\\Foundation\\ComposerScripts::postUpdate", "@php artisan ide-helper:generate", "@php artisan ide-helper:meta" ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:generate; fi",
+            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:generate; fi",
+            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:meta; fi",
+            "php artisan optimize"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
