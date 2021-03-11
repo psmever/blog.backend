@@ -71,6 +71,7 @@ class CodesSeeder extends Seeder
             [ 'group_id' => 'S04', 'group_name' => '상태' ],
             [ 'group_id' => 'S05', 'group_name' => '포스트 카테고리 이미지(리스트용)' ],
             [ 'group_id' => 'S06', 'group_name' => '날씨아이콘' ],
+            [ 'group_id' => 'S07', 'group_name' => '섹션 포스트 구분' ],
 	    ];
     }
 
@@ -137,6 +138,11 @@ class CodesSeeder extends Seeder
                 [ 'code_id' => '170', 'code_name' => '박무 (엷은 안개)' ],
                 [ 'code_id' => '160', 'code_name' => '황사' ],
             ],
+            'S07' => [
+                [ 'code_id' => '010', 'code_name' => '끄적끄적' ],
+                [ 'code_id' => '020', 'code_name' => '블러그 소개' ],
+                [ 'code_id' => '030', 'code_name' => '주인장은' ],
+            ]
 		];
 	}
 }
