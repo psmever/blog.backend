@@ -44,6 +44,11 @@ vendor/bin/phpunit-watcher watch --filter=test_waiting_
 
 ```
 
+## db:seed
+```
+php artisan db:seed --class=CodesSeeder --force
+```
+
 ## Browser.
 ```bash
 http://127.0.0.1:8000 || http://localhost:8000/
