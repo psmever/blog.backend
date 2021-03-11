@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\PostsController;
 use App\Http\Controllers\Api\v1\SpecialtyController;
+use App\Http\Controllers\Api\v1\SectionPostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,9 +70,19 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/tag/{search_item}/tag-search', [PostsController::class, 'tag_search'])->name('tag_search');
             Route::get('/write/waiting-list', [PostsController::class, 'waiting_list'])->name('write.waiting.list')->middleware('auth:api');
         });
+
         Route::group(['prefix' => 'specialty', 'as' => 'specialty.'], function () {
             Route::get('/weather', [SpecialtyController::class, 'weather'])->name('weather');
             Route::get('/covid', [SpecialtyController::class, 'covid'])->name('covid');
+        });
+
+        Route::group(['prefix' => 'section-post', 'as' => 'specialty.'], function () {
+            Route::get('/scribble', [SectionPostController::class, 'scribble_view'])->name('scribble.view'); // 끄적 끄적 글 정보 조회.
+            Route::post('/scribble', [SectionPostController::class, 'scribble_create'])->name('scribble.create'); // 끄적 끄적 글 등록.
+            Route::get('/blog', [SectionPostController::class, 'blogs_view'])->name('blogs.view'); // 불로그 소개 정보 조회.
+            Route::post('/blog', [SectionPostController::class, 'blogs_create'])->name('blogs.create'); // 불로그 소개 글 등록.
+            Route::get('/mingun', [SectionPostController::class, 'mingun_view'])->name('mingun.view'); // 민군은 글 보기.
+            Route::post('/mingun', [SectionPostController::class, 'mingun_create'])->name('mingun.create'); // 민군은 글 등록.
         });
     });
 });
