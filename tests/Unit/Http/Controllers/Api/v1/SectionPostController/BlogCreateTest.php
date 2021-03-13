@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class ScribbleCreateTest extends TestCase
+class BlogCreateTest extends TestCase
 {
     public function setUp(): void
     {
@@ -25,7 +25,7 @@ class ScribbleCreateTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_scribble_post_create_라우터_오류()
+    public function test_blog_post_create_라우터_오류()
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', '/api/v1/section-post');
 //        $response->dump();
@@ -41,9 +41,9 @@ class ScribbleCreateTest extends TestCase
         ]);
     }
 
-    public function test_scribble_post_create_끄적끄적_로그인_하지_않은_상태에서_요청할때()
+    public function test_blog_post_create_로그인_하지_않은_상태에서_요청할때()
     {
-        $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', '/api/v1/section-post/scribble');
+        $response = $this->withHeaders($this->getTestApiHeaders())->json('POST', '/api/v1/section-post/blog');
 //        $response->dump();
         $response->assertStatus(401);
         $response->assertJsonStructure([
@@ -57,7 +57,7 @@ class ScribbleCreateTest extends TestCase
         ]);
     }
 
-    public function test_scribble_post_create_끄적끄적_제목_없을때()
+    public function test_blog_post_create_제목_없을때()
     {
         $testBody = '{
             "title":"",
@@ -66,7 +66,7 @@ class ScribbleCreateTest extends TestCase
                 ,"text" : "# Blog.Frontend\n\n\n#### Git Clone.\n\n```\ngit clone https:\/\/github.com\/psmever\/blog.front.git blog.front\n```\n\n#### Config\n```\ncp config\/sample.environment.env config\/development.env\ncp config\/sample.environment.env config\/production.env\n```\n\n#### Node Module Install.\n```\nyarn install\n```\n\n### Local Develper\n\n```\nyarn start\nyarn start:prod\n```\n\n### Build\n```\nyarn build\nyarn build:prod\n```\n\n### Server Deploy:prod\n```\nyarn deploy:prod\n```\n\n\n## Contributing\nPull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.\n\nPlease make sure to update tests as appropriate.\n\n## License\n[MIT](https:\/\/choosealicense.com\/licenses\/mit\/)"
             }
         }';
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', '/api/v1/section-post/scribble', json_decode($testBody, true));
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', '/api/v1/section-post/blog', json_decode($testBody, true));
 //         $response->dump();
         $response->assertStatus(400);
         $response->assertJsonStructure([
@@ -80,7 +80,7 @@ class ScribbleCreateTest extends TestCase
         ]);
     }
 
-    public function test_scribble_post_create_끄적끄적_본문_없을때()
+    public function test_blog_post_create_본문_없을때()
     {
         $testBody = '{
             "title":"blog.front Readme.MD",
@@ -89,7 +89,7 @@ class ScribbleCreateTest extends TestCase
                 ,"text" : ""
             }
         }';
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', '/api/v1/section-post/scribble', json_decode($testBody, true));
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', '/api/v1/section-post/blog', json_decode($testBody, true));
         // $response->dump();
         $response->assertStatus(400);
         $response->assertJsonStructure([
@@ -103,7 +103,7 @@ class ScribbleCreateTest extends TestCase
         ]);
     }
 
-    public function test_scribble_post_create_끄적끄적_정상_요청()
+    public function test_blog_post_create_정상_요청()
     {
         $testBody = '{
             "title":"테스트 포스트 입니다.",
@@ -112,7 +112,7 @@ class ScribbleCreateTest extends TestCase
                 ,"text" : "## \uc774\ubbf8\uc9c0 \uc5c5\ub85c\ub4dc\n\n\n> \uc798 \ubcf4\uc774\ub098\uc694?\n\n\n![image](http:\/\/nicepage.media.test\/storage\/blog\/76c8f24c67684dccf2559fba407d164eace9b4da\/50475216-645d-41dc-b039-43272b15a6c1.jpeg)"
             }
         }';
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', '/api/v1/section-post/scribble', json_decode($testBody, true));
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('POST', '/api/v1/section-post/blog', json_decode($testBody, true));
         // $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
