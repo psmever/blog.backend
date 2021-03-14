@@ -67,7 +67,7 @@ class SectionPostsRepository implements SectionPostsRepositoryInterface
         return $this->SectionPosts::with(['user'])
             ->where([
                 ['active', 'Y'], ['publish', 'Y']
-            ])->where('gubun' , $gubun)
+            ])->where('gubun' , $gubun)->orderBy("id", 'desc')
             ->firstOrFail();
     }
 
