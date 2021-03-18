@@ -181,9 +181,12 @@ class PostsServices
 
         $tags = function($e) {
             return array_map(function($e){
+                // TODO: 정리 필요.
                 return [
                     'id' => $e['tag_id'],
+                    'tag_id' => $e['tag_id'],
                     'text' => $e['tag_text'],
+                    'tag_text' => $e['tag_text'],
                 ];
             }, $e);
         };
