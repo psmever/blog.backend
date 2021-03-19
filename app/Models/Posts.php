@@ -53,7 +53,7 @@ class Posts extends Model
 
     // protected $primaryKey = 'slug_title';
 
-    protected $fillable = ['id', 'title', 'user_id', 'post_uuid', 'contents_html', 'contents_text', 'slug_title'];
+    protected $fillable = ['id', 'title', 'user_id', 'post_uuid', 'contents_html', 'contents_text', 'slug_title', 'post_active', 'post_publish'];
 
     /**
      * Slug Title 처리.

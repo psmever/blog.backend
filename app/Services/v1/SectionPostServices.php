@@ -45,12 +45,10 @@ class SectionPostServices
         $user_id = Auth::user()->id;
 
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
             'contents' => 'required|array|min:2',
             'contents.*' => 'required|string|min:1',
             ],
             [
-                'title.required'=> __('default.post.title_required'),
                 'contents.required'=> __('default.post.contents_required'),
                 'contents.*.required'=> __('default.post.contents_required'),
         ]);
@@ -72,7 +70,7 @@ class SectionPostServices
             'user_id' => $user_id,
             'post_uuid' => Str::uuid(),
             'gubun' => $this->sectionGubunCode[$GubunRouteName],
-            'title' => $request->input('title'),
+            'title' => '',
             'contents_html' => $markdownHtmlContents,
             'contents_text' => $request->input('contents.text'),
             'markdown' => 'Y',
@@ -99,7 +97,6 @@ class SectionPostServices
 
 
         return [
-            'title' => $task->title,
             'post_uuid' => $task->post_uuid,
             'contents_html' => $task->contents_html,
             'contents_text' => $task->contents_text,
