@@ -58,6 +58,7 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/{page?}', [PostsController::class, 'index'])->name('index.paging');
             Route::post('/', [PostsController::class, 'create'])->name('create')->middleware('auth:api');
             Route::put('/{post_uuid}/publish', [PostsController::class, 'publish'])->name('publish')->middleware('auth:api');
+            Route::put('/{post_uuid}/hide', [PostsController::class, 'hide'])->name('hide')->middleware('auth:api');
             Route::get('/{slug_title}/detail', [PostsController::class, 'detail'])->name('detail');
             Route::get('/{post_uuid}/edit', [PostsController::class, 'edit'])->name('edit')->middleware('auth:api');
             Route::put('/{post_uuid}/update', [PostsController::class, 'update'])->name('update')->middleware('auth:api');

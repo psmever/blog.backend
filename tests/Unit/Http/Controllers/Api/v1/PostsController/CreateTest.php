@@ -162,6 +162,8 @@ class CreateTest extends TestCase
             "result" => [
                 'post_uuid',
                 'slug_title',
+                'post_active',
+                'post_publish',
             ]
         ]);
 

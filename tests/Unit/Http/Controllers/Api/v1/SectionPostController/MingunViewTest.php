@@ -71,7 +71,6 @@ class MingunViewTest extends TestCase
 //        $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            "title",
             "post_uuid",
             "contents_html",
             "contents_text",

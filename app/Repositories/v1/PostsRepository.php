@@ -94,6 +94,19 @@ class PostsRepository implements PostsRepositoryInterface
         ]);
     }
 
+    /**
+     * 글숨김.
+     *
+     * @param Array $dataObject
+     * @return void
+     */
+    public function hidePosts(Int $post_id) : bool
+    {
+        return $this->Posts::where('id', $post_id)->update([
+            'post_publish' => 'N'
+        ]);
+    }
+
     // 정상적인 공개 글이 있는지 체크
     public function postsExitsByUUID(String $post_uuid) : bool
     {
