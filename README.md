@@ -35,13 +35,19 @@ php artisan serve
 ```
 
 ## Local Unit Test.
-```
+```bash
 composer test:watch --dev
 
 php artisan test
 
-vendor/bin/phpunit-watcher watch --filter=test_waiting_
+./vendor/bin/phpunit-watcher watch --filter=test_waiting_
+./vendor/bin/phpunit-watcher watch --filter=ScribbleEditTest
 
+```
+
+## db:seed
+```
+php artisan db:seed --class=CodesSeeder --force
 ```
 
 ## Browser.

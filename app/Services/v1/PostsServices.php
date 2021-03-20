@@ -153,6 +153,26 @@ class PostsServices
     }
 
     /**
+     * 글 숨김.
+     *
+     * @param String $post_uuid
+     * @return void
+     */
+    public function hidePosts(String $post_uuid) : void
+    {
+        $postsData = $this->postsRepository->editPostsExits($post_uuid);
+        $user = Auth::user();
+
+        if($postsData->user_id != $user->id) {
+            throw new \App\Exceptions\ForbiddenErrorException();
+        }
+
+        $this->postsRepository->hidePosts($postsData->id);
+
+        return;
+    }
+
+    /**
      * 글 내용.
      *
      * @param String $slug_title
@@ -181,9 +201,12 @@ class PostsServices
 
         $tags = function($e) {
             return array_map(function($e){
+                // TODO: 정리 필요.
                 return [
                     'id' => $e['tag_id'],
+                    'tag_id' => $e['tag_id'],
                     'text' => $e['tag_text'],
+                    'tag_text' => $e['tag_text'],
                 ];
             }, $e);
         };
@@ -206,6 +229,8 @@ class PostsServices
             'markdown' => $result->markdown,
             'tags' => $tags($result->tag->toarray()),
             'view_count' => $result->view_count,
+            'post_active' => $result->post_active,
+            'post_publish' => $result->post_publish,
             'detail_created' => $detail_created($result->created_at),
             'detail_updated' => $detail_updated($result->updated_at),
         ];
@@ -254,7 +279,6 @@ class PostsServices
             'markdown' => 'Y'
         ]);
 
-        // 테그 등록.
         foreach($request->input('tags') as $element) :
             $this->postsRepository->createPostsTags([
                 'post_id' => $postTask->id,
@@ -275,9 +299,12 @@ class PostsServices
             ]);
         }
 
+        $postsData = $this->postsRepository->editPostsExits($postTask->post_uuid);
         return [
-            'post_uuid' => $postTask->post_uuid,
-            'slug_title' => $postTask->slug_title,
+            'post_uuid' => $postsData->post_uuid,
+            'slug_title' => $postsData->slug_title,
+            'post_active' => $postsData->post_active,
+            'post_publish' => $postsData->post_publish,
         ];
     }
 
@@ -357,6 +384,8 @@ class PostsServices
         return [
             'post_uuid' => $post_uuid,
             'slug_title' => $slug_title,
+            'post_active' => $postsData->post_active,
+            'post_publish' => $postsData->post_publish,
         ];
     }
 

@@ -131,6 +131,8 @@ class DetailTest extends TestCase
                 ],
             ],
             "view_count",
+            'post_active',
+            'post_publish',
             "detail_created",
             "detail_updated"
         ]);

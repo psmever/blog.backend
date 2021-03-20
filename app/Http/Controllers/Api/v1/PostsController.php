@@ -38,6 +38,12 @@ class PostsController extends ApiRootController
         return Response::success_only_message();
     }
 
+    // 글 숨김처리.
+    public function hide(String $post_uuid) {
+        $this->PostsServices->hidePosts($post_uuid);
+        return Response::success_only_message();
+    }
+
     // 글 정보(보기용).
     public function detail(String $slug_title) {
         return Response::success_only_data($this->PostsServices->detailPosts($slug_title));

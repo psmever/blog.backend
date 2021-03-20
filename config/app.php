@@ -180,6 +180,8 @@ return [
         App\Providers\RepositoryServiceProvider::class,
         App\Providers\GuitarFacadesServiceProvider::class,
 
+//        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
     ],
 
     /*
