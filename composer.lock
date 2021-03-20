@@ -1588,11 +1588,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-<<<<<<< HEAD
-            "time": "2021-03-02T14:28:44+00:00"
-=======
             "time": "2021-03-04T15:22:36+00:00"
->>>>>>> develop
         },
         {
             "name": "laravel/passport",
