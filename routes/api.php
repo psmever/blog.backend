@@ -80,13 +80,13 @@ Route::group(['as' => 'api.'], function () {
         Route::group(['prefix' => 'section-post', 'as' => 'section-post.'], function () {
             Route::get('/scribble', [SectionPostController::class, 'scribble_view'])->name('view.scribble'); // 끄적 끄적 글 정보 조회.
             Route::post('/scribble', [SectionPostController::class, 'scribble_create'])->name('create.scribble')->middleware('auth:api'); // 끄적 끄적 글 등록.
-            Route::put('/scribble/{post_uuid}/view-increment', [SectionPostController::class, 'scribble_view_increment'])->name('increment.view'); // 끄적 끄적 뷰카운트.
+            Route::put('/scribble/{post_uuid}/view-increment', [SectionPostController::class, 'scribble_view_increment'])->name('increment.view.scribble'); // 끄적 끄적 뷰카운트.
             Route::get('/blog', [SectionPostController::class, 'blog_view'])->name('view.blogs'); // 불로그 소개 정보 조회.
             Route::post('/blog', [SectionPostController::class, 'blog_create'])->name('create.blogs')->middleware('auth:api'); // 불로그 소개 글 등록.
-            Route::put('/blog/{post_uuid}/view-increment', [SectionPostController::class, 'blog_view_increment'])->name('increment.view'); // 블러그 뷰카운트.
+            Route::put('/blog/{post_uuid}/view-increment', [SectionPostController::class, 'blog_view_increment'])->name('increment.view.blog'); // 블러그 뷰카운트.
             Route::get('/mingun', [SectionPostController::class, 'mingun_view'])->name('view.mingun'); // 민군은 글 보기.
             Route::post('/mingun', [SectionPostController::class, 'mingun_create'])->name('create.mingun')->middleware('auth:api'); // 민군은 글 등록.
-            Route::put('/mingun/{post_uuid}/view-increment', [SectionPostController::class, 'mingun_view_increment'])->name('increment.view'); // 민군은 뷰카운트.
+            Route::put('/mingun/{post_uuid}/view-increment', [SectionPostController::class, 'mingun_view_increment'])->name('increment.view.mingun'); // 민군은 뷰카운트.
         });
     });
 });
