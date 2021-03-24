@@ -33,7 +33,7 @@ class SystemControllerTest extends TestCase
     {
         Storage::disk('sitedata')->delete('notice.txt');
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/system/check-notice');
-        // $response->dump();
+//         $response->dump();
         $response->assertStatus(204);
     }
 
