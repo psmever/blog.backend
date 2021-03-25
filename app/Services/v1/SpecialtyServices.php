@@ -294,8 +294,6 @@ class SpecialtyServices
             // FIXME: $vec 값이 음수로 들어올 경우가 있는데?? (db create_at: 2021-03-25 13:00:02)
             $wind = abs(floor(($vec + 22.5 * 0.5) / 22.5));
 
-            echo $wind;
-
             return [
                 "time" => Carbon::parse($weathers['fcstTime'])->format('H:i'),
                 "vilage_name" => trim("{$shortName}"),
