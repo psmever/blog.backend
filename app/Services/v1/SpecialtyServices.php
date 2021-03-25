@@ -290,8 +290,11 @@ class SpecialtyServices
                 }
             }
 
-            // 충향 계산.
-            $wind = floor(($vec + 22.5 * 0.5) / 22.5);
+            // 풍향 계산.
+            // FIXME: $vec 값이 음수로 들어올 경우가 있는데?? (db create_at: 2021-03-25 13:00:02)
+            $wind = abs(floor(($vec + 22.5 * 0.5) / 22.5));
+
+            echo $wind;
 
             return [
                 "time" => Carbon::parse($weathers['fcstTime'])->format('H:i'),
