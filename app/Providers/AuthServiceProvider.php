@@ -30,8 +30,8 @@ class AuthServiceProvider extends ServiceProvider
         Passport::enableImplicitGrant();
 
         if(env('APP_ENV') == 'production') {
-            Passport::tokensExpireIn(now()->addHour(1));
-            Passport::refreshTokensExpireIn(now()->addHour(3));
+            Passport::tokensExpireIn(now()->addHours(3));
+            Passport::refreshTokensExpireIn(now()->addHours(6));
             Passport::personalAccessTokensExpireIn(now()->addMonths(1));
         } else {
             // Test용.
