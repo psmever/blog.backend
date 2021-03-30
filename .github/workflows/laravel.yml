@@ -32,3 +32,11 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
+    - name: deploy file to server
+      uses: wlixcc/SFTP-Deploy-Action@v1.0
+      with:
+        username: 'ubuntu'
+        server: '${{ secrets.PRODUCTION_SERVER_IP }}'
+        ssh_private_key: '${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}'
+        script: ls
+        args: '-o ConnectTimeout=5'
