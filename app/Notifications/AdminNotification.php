@@ -70,7 +70,7 @@ class AdminNotification extends Notification
 
         $slackMessage->message = "{$this->task->message}";
 
-        return (new SlackMessage)->from('BlogApiServer', ':flushed:')->warning()->to('#blog_backend_notifications')->attachment(function ($attachment) use ($slackMessage) {
+        return (new SlackMessage)->from('BlogApiServer', ':flushed:')->warning()->to('#blog-backend-notice')->attachment(function ($attachment) use ($slackMessage) {
             $attachment->title(" {$slackMessage->title}")->content("({$slackMessage->env}) : {$slackMessage->message}")->color($slackMessage->hex);
         });
     }
