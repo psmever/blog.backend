@@ -52,6 +52,18 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        /**
+         * Custom Setting
+         */
+        'sitedata' => [
+            'driver' => 'local',
+            'root' => storage_path('sitedata'),
+        ],
+
+        'forlocal' => [
+            'driver' => 'local',
+            'root' => storage_path('forlocal'),
+        ],
     ],
 
     /*
