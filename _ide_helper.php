@@ -11124,6 +11124,60 @@
         {
                         return \Illuminate\Routing\ResponseFactory::hasMacro($name);
         }
+                    /**
+         * 기본 Error Render Macro.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @param mixed $statusCode
+         * @param mixed $error_message
+         * @static 
+         */ 
+        public static function error($statusCode = 401, $error_message = null)
+        {
+                        return \Illuminate\Routing\ResponseFactory::error($statusCode, $error_message);
+        }
+                    /**
+         * 기본 성공 Render Macro.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @param mixed $result
+         * @static 
+         */ 
+        public static function success($result = null)
+        {
+                        return \Illuminate\Routing\ResponseFactory::success($result);
+        }
+                    /**
+         * 성공 메시지만 처리.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @static 
+         */ 
+        public static function success_only_message()
+        {
+                        return \Illuminate\Routing\ResponseFactory::success_only_message();
+        }
+                    /**
+         * 데이터만 Render Macro.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @param mixed $response
+         * @static 
+         */ 
+        public static function success_only_data($response = null)
+        {
+                        return \Illuminate\Routing\ResponseFactory::success_only_data($response);
+        }
+                    /**
+         * 성공 No Contents Render Macro
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @static 
+         */ 
+        public static function success_no_content()
+        {
+                        return \Illuminate\Routing\ResponseFactory::success_no_content();
+        }
          
     }
             /**
@@ -15456,6 +15510,71 @@
         public static function hasValidRelativeSignature()
         {
                         return \Illuminate\Http\Request::hasValidRelativeSignature();
+        }
+         
+    }
+     
+}
+
+    namespace Illuminate\Routing { 
+            /**
+     * 
+     *
+     */ 
+        class ResponseFactory {
+                    /**
+         * 기본 Error Render Macro.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @param mixed $statusCode
+         * @param mixed $error_message
+         * @static 
+         */ 
+        public static function error($statusCode = 401, $error_message = null)
+        {
+                        return \Illuminate\Routing\ResponseFactory::error($statusCode, $error_message);
+        }
+                    /**
+         * 기본 성공 Render Macro.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @param mixed $result
+         * @static 
+         */ 
+        public static function success($result = null)
+        {
+                        return \Illuminate\Routing\ResponseFactory::success($result);
+        }
+                    /**
+         * 성공 메시지만 처리.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @static 
+         */ 
+        public static function success_only_message()
+        {
+                        return \Illuminate\Routing\ResponseFactory::success_only_message();
+        }
+                    /**
+         * 데이터만 Render Macro.
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @param mixed $response
+         * @static 
+         */ 
+        public static function success_only_data($response = null)
+        {
+                        return \Illuminate\Routing\ResponseFactory::success_only_data($response);
+        }
+                    /**
+         * 성공 No Contents Render Macro
+         *
+         * @see \App\Providers\ResponseMacroServiceProvider::boot()
+         * @static 
+         */ 
+        public static function success_no_content()
+        {
+                        return \Illuminate\Routing\ResponseFactory::success_no_content();
         }
          
     }
