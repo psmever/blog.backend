@@ -223,12 +223,13 @@ class Handler extends ExceptionHandler
         RequestIP: $request_ip
         Message: $logMessage
         Current_url: $current_url
-        RouteName: $$logRouteName
+        RouteName: $logRouteName
         RouteAction: $logRouteAction
         Header: $logHeaderInfo
         Method: $method
         Body: $logBodyInfo
 
-        EOF;
+EOF;
+        
     }
 }
