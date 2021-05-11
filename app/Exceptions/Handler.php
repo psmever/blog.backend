@@ -230,6 +230,6 @@ class Handler extends ExceptionHandler
         Body: $logBodyInfo
 
 EOF;
-        
+
     }
 }
