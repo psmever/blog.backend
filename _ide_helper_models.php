@@ -12,6 +12,33 @@
 
 namespace App\Models{
 /**
+ * App\Models\Codes
+ *
+ * @property int $id
+ * @property string $group_id
+ * @property string|null $code_id
+ * @property string|null $group_name
+ * @property string|null $code_name
+ * @property string $active 사용 상태(사용중, 비사용)
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereCodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereCodeName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereGroupName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Codes whereUpdatedAt($value)
+ */
+	class Codes extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\User
  *
  * @property int $id
@@ -27,8 +54,14 @@ namespace App\Models{
  * @property string $active 사용자 상태
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
+ * @property-read int|null $clients_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
+ * @property-read int|null $tokens_count
+ * @property-read \App\Models\Codes|null $userLevel
+ * @property-read \App\Models\Codes|null $userType
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
