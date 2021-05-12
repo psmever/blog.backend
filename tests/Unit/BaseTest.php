@@ -54,4 +54,42 @@ class BaseTest extends TestCase
         // $response->dump();
         $response->assertStatus(200);
     }
+
+    /**
+     * 마이그레이션 시드 체크
+     *
+     * @return void
+     */
+    public function test_base_server_migrate()
+    {
+        $this->assertDatabaseHas('users', [
+            'email' => 'root@gmail.com',
+        ]);
+    }
+
+    /**
+     * 클라이언트 코드 없을때
+     *
+     * @return void
+     */
+    public function test_base_server_exception_not_found_client_type_check()
+    {
+        $testHeader = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ];
+
+        $response = $this->withHeaders($testHeader)->json('GET', '/api/system/check-status');
+        // $response->dump();
+        $response->assertStatus(412);
+        $response->assertJsonStructure([
+            'error' => [
+                'error_message'
+            ]
+        ])->assertJsonFragment([
+            'error' => [
+                'error_message' => __('default.exception.clienttype')
+            ]
+        ]);
+    }
 }
