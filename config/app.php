@@ -233,6 +233,11 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /**
+         * Custom Setting
+         */
+        'GuitarClass'   =>  App\Supports\Facades\GuitarClass::class
+
     ],
 
 ];
