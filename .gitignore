@@ -18,6 +18,7 @@ storage/*.key
 storage/base_info.json
 storage/forlocal
 storage/framework
+storage/sitedata/notice.txt
 
 # Editor
 .vscode
