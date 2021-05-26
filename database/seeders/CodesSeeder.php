@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -24,8 +25,8 @@ class CodesSeeder extends Seeder
             DB::table('codes')->insert([
                 'group_id' => $group_id,
                 'group_name' => $group_name,
-                'created_at' => \Carbon\Carbon::now(),
-                'updated_at' => \Carbon\Carbon::now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
             foreach($arrayCodesList[$group_id] as $element_code):
@@ -41,8 +42,8 @@ class CodesSeeder extends Seeder
                     'code_id' => $endCodeid,
                     'code_name' => $code_name,
                     'active' => 'Y',
-                    'created_at' => \Carbon\Carbon::now(),
-                    'updated_at' => \Carbon\Carbon::now(),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ]);
 
             endforeach;
@@ -53,7 +54,7 @@ class CodesSeeder extends Seeder
      * 그룹 코드 리스트
      * @return array
      */
-    public function initGroupCodesList()
+    public function initGroupCodesList(): array
     {
         return [
             [ 'group_id' => 'S01', 'group_name' => '클라이언트 타입' ],
@@ -71,7 +72,7 @@ class CodesSeeder extends Seeder
      * 코드 리스트
      * @return array
      */
-    public function initCodesList()
+    public function initCodesList(): array
     {
         return [
             'S01' => [
