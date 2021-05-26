@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\SystemController;
+use App\Http\Controllers\Api\v1\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,5 +38,21 @@ Route::group(['as' => 'api.'], function () {
         Route::get('check-status', [SystemController::class, 'checkStatus'])->name('check.status'); // 서버 체크
         Route::get('check-notice', [SystemController::class, 'checkNotice'])->name('check.notice'); // 서버 공지사항 체크
         Route::get('base-data', [SystemController::class, 'baseData'])->name('base.data');  //
+    });
+
+    /**
+     * api
+     */
+    Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'v1.'], function () {
+        Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
+            Route::post('login', [AuthController::class, 'client_login'])->name('login');
+
+            Route::post('logout', [AuthController::class, 'client_logout'])->name('logout')->middleware('auth:api');
+            Route::get('login-check', [AuthController::class, 'client_login_check'])->name('logincheck')->middleware('auth:api');
+            Route::post('token-refresh', [AuthController::class, 'client_token_refresh'])->name('token_refresh');
+        });
+
+        Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+        });
     });
 });
