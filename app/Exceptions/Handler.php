@@ -102,7 +102,7 @@ class Handler extends ExceptionHandler
 
             Log::channel('ClientExceptionLog')->error($this->getLoggerMessage($error_message));
 
-            return Response::error(412, $$error_message);
+            return Response::error(412, $error_message);
         });
 
         /**
@@ -219,15 +219,15 @@ class Handler extends ExceptionHandler
 
         return <<<EOF
 
-        ID: $logID
-        RequestIP: $request_ip
-        Message: $logMessage
-        Current_url: $current_url
-        RouteName: $logRouteName
-        RouteAction: $logRouteAction
-        Header: $logHeaderInfo
-        Method: $method
-        Body: $logBodyInfo
+ID: $logID
+RequestIP: $request_ip
+Message: $logMessage
+Current_url: $current_url
+RouteName: $logRouteName
+RouteAction: $logRouteAction
+Header: $logHeaderInfo
+Method: $method
+Body: $logBodyInfo
 
 EOF;
 
