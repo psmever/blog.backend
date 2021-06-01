@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\PostsController;
 use App\Http\Controllers\Api\v1\SectionPostController;
+use App\Http\Controllers\Api\v1\SpecialtyController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\TestController;
@@ -84,6 +85,11 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/mingun', [SectionPostController::class, 'mingun_view'])->name('view.mingun'); // 민군은 글 보기.
             Route::post('/mingun', [SectionPostController::class, 'mingun_create'])->name('create.mingun')->middleware('auth:api'); // 민군은 글 등록.
             Route::put('/mingun/{post_uuid}/view-increment', [SectionPostController::class, 'mingun_view_increment'])->name('increment.view.mingun'); // 민군은 뷰카운트.
+        });
+
+        Route::group(['prefix' => 'specialty', 'as' => 'specialty.'], function () {
+            Route::get('/weather', [SpecialtyController::class, 'weather'])->name('weather');
+            Route::get('/covid', [SpecialtyController::class, 'covid'])->name('covid');
         });
     });
 });
