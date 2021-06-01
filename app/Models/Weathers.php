@@ -45,6 +45,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Weathers whereVVV($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Weathers whereWSD($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\WeathersFactory factory(...$parameters)
  */
 class Weathers extends Model
 {

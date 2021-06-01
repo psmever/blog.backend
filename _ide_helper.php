@@ -15167,7 +15167,89 @@
      
 }
 
-        namespace Facade\Ignition\Facades { 
+        namespace App\Supports\Facades { 
+            /**
+     * 
+     *
+     */ 
+        class GuitarClass {
+                    /**
+         * 테스트용.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function GuitarTest()
+        {
+                        /** @var \App\Repositories\GuitarClass $instance */
+                        return $instance->GuitarTest();
+        }
+                    /**
+         * 한글 슬러그
+         * https://blog.asamaru.net/2016/11/21/php-hangul-slug/
+         * 소스 복붙. 약간 수정. 감사합니다 (__)
+         *
+         * @param string $str
+         * @param array $options
+         * @return string 
+         * @static 
+         */ 
+        public static function convertSlugString($str, $options = [])
+        {
+                        /** @var \App\Repositories\GuitarClass $instance */
+                        return $instance->convertSlugString($str, $options);
+        }
+                    /**
+         * 
+         *
+         * @param $text
+         * @return string 
+         * @static 
+         */ 
+        public static function convertHangulToEnglish($text)
+        {
+                        return \App\Repositories\GuitarClass::convertHangulToEnglish($text);
+        }
+                    /**
+         * 
+         *
+         * @param $str
+         * @return array 
+         * @static 
+         */ 
+        public static function convertUtf8ToUnicode($str)
+        {
+                        return \App\Repositories\GuitarClass::convertUtf8ToUnicode($str);
+        }
+                    /**
+         * 시간은 문자열로 변환
+         *
+         * @param string|null $timestamp
+         * @return string 
+         * @static 
+         */ 
+        public static function convertTimeToString($timestamp = null)
+        {
+                        return \App\Repositories\GuitarClass::convertTimeToString($timestamp);
+        }
+                    /**
+         * 랜덤 넘버 UUID 생성.
+         * 
+         * 34930722151-50988287951-1690522742
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function randomNumberUUID()
+        {
+                        return \App\Repositories\GuitarClass::randomNumberUUID();
+        }
+         
+    }
+     
+}
+
+    namespace Facade\Ignition\Facades { 
             /**
      * Class Flare.
      *
@@ -18778,6 +18860,7 @@ namespace  {
             class URL extends \Illuminate\Support\Facades\URL {}
             class Validator extends \Illuminate\Support\Facades\Validator {}
             class View extends \Illuminate\Support\Facades\View {}
+            class GuitarClass extends \App\Supports\Facades\GuitarClass {}
             class Flare extends \Facade\Ignition\Facades\Flare {}
      
 }

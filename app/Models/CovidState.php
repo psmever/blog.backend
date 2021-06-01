@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CovidState whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CovidState whereUpdatedt($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\CovidStateFactory factory(...$parameters)
  */
 class CovidState extends Model
 {

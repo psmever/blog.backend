@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|SectionPosts whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SectionPosts whereViewCount($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\SectionPostsFactory factory(...$parameters)
  */
 class SectionPosts extends Model
 {

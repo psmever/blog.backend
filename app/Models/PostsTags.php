@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PostsTags whereTagText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostsTags whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\PostsTagsFactory factory(...$parameters)
  */
 class PostsTags extends Model
 {
