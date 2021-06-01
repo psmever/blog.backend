@@ -142,9 +142,9 @@ class PostsRepository implements PostsRepositoryInterface
     /**
      * 글 목록(페이징처리).
      * @param Int $pages
-     * @return array
+     * @return object
      */
-    public function posts_list(Int $pages) : array
+    public function posts_list(Int $pages) : object
     {
         return $this->Posts::with(['user', 'tag', 'thumb.file'])
             ->where([
