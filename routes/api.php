@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\v1\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\v1\PostsController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\TestController;
@@ -53,6 +53,24 @@ Route::group(['as' => 'api.'], function () {
         });
 
         Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+        });
+
+        Route::group(['prefix' => 'post', 'as' => 'post.'], function () {
+            Route::get('/{page?}', [PostsController::class, 'index'])->name('index.paging');
+            Route::post('/', [PostsController::class, 'create'])->name('create')->middleware('auth:api');
+            Route::put('/{post_uuid}/publish', [PostsController::class, 'publish'])->name('publish')->middleware('auth:api');
+            Route::put('/{post_uuid}/hide', [PostsController::class, 'hide'])->name('hide')->middleware('auth:api');
+            Route::get('/{slug_title}/detail', [PostsController::class, 'detail'])->name('detail');
+            Route::get('/{post_uuid}/edit', [PostsController::class, 'edit'])->name('edit')->middleware('auth:api');
+            Route::put('/{post_uuid}/update', [PostsController::class, 'update'])->name('update')->middleware('auth:api');
+            Route::put('/{post_uuid}/view-increment', [PostsController::class, 'view_increment'])->name('view.increment');
+            Route::delete('/{post_uuid}/destroy', [PostsController::class, 'destroy'])->name('destroy')->middleware('auth:api');
+            Route::post('/create-image', [PostsController::class, 'create_image'])->name('image.create')->middleware('auth:api');
+            Route::get('/{search_item}/search', [PostsController::class, 'search'])->name('search');
+
+            Route::get('/tag/tag-list', [PostsController::class, 'tag_list'])->name('tag_list');
+            Route::get('/tag/{search_item}/tag-search', [PostsController::class, 'tag_search'])->name('tag_search');
+            Route::get('/write/waiting-list', [PostsController::class, 'waiting_list'])->name('write.waiting.list')->middleware('auth:api');
         });
     });
 });

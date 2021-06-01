@@ -54,6 +54,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|VilageFcstinfo whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VilageFcstinfo whereVersionId($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\VilageFcstinfoFactory factory(...$parameters)
  */
 class VilageFcstinfo extends Model
 {

@@ -179,6 +179,7 @@ return [
          * Custom Service Providers
          */
         App\Providers\ResponseMacroServiceProvider::class,
+        App\Providers\GuitarFacadesServiceProvider::class,
 
     ],
 

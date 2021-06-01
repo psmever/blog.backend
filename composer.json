@@ -13,7 +13,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/passport": "^10.1",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "parsedown/laravel": "^1.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.9",
@@ -63,6 +64,9 @@
         ],
         "app-clear": [
             "composer dump-autoload",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:models",
+            "php artisan ide-helper:meta",
             "php artisan optimize:clear"
         ],
         "app-test:watch": [

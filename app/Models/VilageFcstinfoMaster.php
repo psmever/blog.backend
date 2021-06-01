@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|VilageFcstinfoMaster whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VilageFcstinfoMaster whereVersion($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\VilageFcstinfoMasterFactory factory(...$parameters)
  */
 class VilageFcstinfoMaster extends Model
 {

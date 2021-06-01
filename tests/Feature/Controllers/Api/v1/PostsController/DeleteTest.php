@@ -24,7 +24,7 @@ class DeleteTest extends TestCase
     // 글 삭제.
     public function test_post_delete_post_uuid_없이_요청(){
         $response = $this->withHeaders($this->getTestApiHeaders())->json('DELETE', "/api/v1/post//destroy", []);
-        // $response->dump();
+//        $response->dump();
         $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
@@ -38,7 +38,7 @@ class DeleteTest extends TestCase
     }
     public function test_post_delete_로그인_안한_상태(){
         $response = $this->withHeaders($this->getTestApiHeaders())->json('DELETE', "/api/v1/post/asdasd/destroy", []);
-        // $response->dump();
+//        $response->dump();
         $response->assertStatus(401);
         $response->assertJsonStructure([
             'error' => [
@@ -51,10 +51,8 @@ class DeleteTest extends TestCase
         ]);
     }
     public function test_post_delete_등록_되지않은_글_요청(){
-        $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
-        $testPostUuid = $randPost->post_uuid;
-        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('DELETE', "/api/v1/post/11111111111111111${testPostUuid}/destroy", []);
-        // $response->dump();
+        $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('DELETE', "/api/v1/post/11111111111111111/destroy", []);
+//        $response->dump();
         $response->assertStatus(404);
         $response->assertJsonStructure([
             'error' => [
@@ -71,7 +69,7 @@ class DeleteTest extends TestCase
         $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestGuestAccessTokenHeader())->json('DELETE', "/api/v1/post/${testPostUuid}/destroy", []);
-        // $response->dump();
+//         $response->dump();
         $response->assertStatus(403);
         $response->assertJsonStructure([
             'error' => [
@@ -88,7 +86,7 @@ class DeleteTest extends TestCase
         $randPost = \App\Models\Posts::select("post_uuid")->inRandomOrder()->first();
         $testPostUuid = $randPost->post_uuid;
         $response = $this->withHeaders($this->getTestAccessTokenHeader())->json('DELETE', "/api/v1/post/${testPostUuid}/destroy", []);
-        // $response->dump();
+//      $response->dump();
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'message' => __('default.server.result_success')

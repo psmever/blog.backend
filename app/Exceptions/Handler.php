@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use PDOException;
 use Throwable;
 
@@ -12,11 +14,6 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-//use App\Exceptions\CustomException;
-//use App\Exceptions\ClientErrorException;
-//use App\Exceptions\ServerErrorException;
-//use App\Exceptions\ForbiddenErrorException;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -59,7 +56,6 @@ class Handler extends ExceptionHandler
         /**
          * CustomException
          */
-
         $this->renderable(function (CustomException $e) {
 
             $error_message = $e->getMessage() ?: __('default.server.error');
@@ -70,10 +66,21 @@ class Handler extends ExceptionHandler
         });
 
         /**
+         * ModelNotFoundException
+         *
+         * ModelNotFoundException 를 캐치 못하고 NotFoundHttpException 로 처리 되는 증상이 있어서
+         * 아래 render 함수 추가 해줌.
+         */
+//        $this->renderable(function (ModelNotFoundException $e) {
+//            echo "ModelNotFoundException";
+//            $error_message = $e->getMessage() ?: __('default.exception.model_not_found_exception');
+//            return Response::error(404, $error_message);
+//        });
+
+        /**
          * NotFoundHttpException
          */
         $this->renderable(function (NotFoundHttpException $e) {
-
             $error_message = $e->getMessage() ?: __('default.exception.notfound');
 
             Log::channel('NotFoundHttpLog')->error($this->getLoggerMessage($error_message));
@@ -126,7 +133,7 @@ class Handler extends ExceptionHandler
 
             Log::channel('CustomExceptionLog')->error($this->getLoggerMessage($error_message));
 
-            return Response::error(430, $error_message);
+            return Response::error(403, $error_message);
         });
 
         /**
@@ -134,7 +141,7 @@ class Handler extends ExceptionHandler
          */
         $this->renderable(function (AuthenticationException $e) {
 
-            $error_message = ($e->getMessage()) ?: __('default.login.unauthorized');
+            $error_message = __('default.login.unauthorized') ?: $e;
 
             Log::channel('authenticationlog')->error($this->getLoggerMessage($error_message));
 
@@ -169,16 +176,6 @@ class Handler extends ExceptionHandler
         });
 
         /**
-         * ModelNotFoundException
-         */
-        $this->renderable(function (ModelNotFoundException $e) {
-            return Response::error(
-                404,
-                $e->getMessage() ?: __('default.exception.model_not_found_exception'),
-            );
-        });
-
-        /**
          * EtcException
          */
         $this->renderable(function (Throwable $e) {
@@ -198,6 +195,29 @@ class Handler extends ExceptionHandler
         });
 
     }
+
+    /**
+     * 예외 renderable
+     *
+     * @param Request $request
+     * @param Throwable $e
+     * @return JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        /**
+         * renderable 에서 ModelNotFoundException 를 캐치 못해서 render 함수에 추가.
+         * laravel 이전 버전에서 가지고 옴.
+         */
+        if ($e instanceof ModelNotFoundException) {
+            $error_message = __('default.exception.model_not_found_exception');
+            return Response::error(404, $error_message);
+        }
+
+        return parent::render($request, $e);
+    }
+
 
     /**
      * 로그할 메시지 생성.
