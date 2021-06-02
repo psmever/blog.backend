@@ -42,7 +42,7 @@ class DevWorks extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle() : int
     {
         $works = $this->argument('works');
 
