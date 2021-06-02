@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Codes;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,11 @@ class CodesSeeder extends Seeder
      */
     public function run()
     {
+        if (env('APP_ENV') != "testing") {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            Codes::truncate();
+        }
+
         $arrayGroupCodesList = $this->initGroupCodesList();
         $arrayCodesList = $this->initCodesList();
 
@@ -48,6 +54,10 @@ class CodesSeeder extends Seeder
 
             endforeach;
         endforeach;
+
+        if (env('APP_ENV') != "testing") {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
     }
 
     /**
