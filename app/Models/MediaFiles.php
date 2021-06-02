@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\MediaFiles
@@ -35,5 +35,18 @@ class MediaFiles extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'dest_path', 'file_name', 'original_name', 'file_type', 'file_size', 'file_extension'];
+    /**
+     * fillable
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'id',
+        'dest_path',
+        'file_name',
+        'original_name',
+        'file_type',
+        'file_size',
+        'file_extension'
+    ];
 }

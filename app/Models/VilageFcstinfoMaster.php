@@ -27,26 +27,48 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|VilageFcstinfoMaster whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|VilageFcstinfoMaster whereVersion($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\VilageFcstinfoMasterFactory factory(...$parameters)
  */
 class VilageFcstinfoMaster extends Model
 {
     use HasFactory;
 
+    /**
+     * 테이블명
+     * @var string
+     */
     protected $table = "vilage_fcstinfo_master";
 
-    protected $fillable = ['id', 'version'];
+    /**
+     * fillable
+     * @var string[]
+     */
+    protected $fillable = [
+        'id',
+        'version'
+    ];
 
-    public function vilage_fcstinfos()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function vilage_fcstinfos(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(VilageFcstinfo::class, 'version_id', 'id');
     }
 
-    public function vilage_fcstinfo()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function vilage_fcstinfo(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(VilageFcstinfo::class, 'version_id', 'id');
     }
 
-    public function weathers() {
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function weathers(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
 
         return $this->hasManyThrough(
             Weathers::class,

@@ -4,11 +4,12 @@ namespace Database\Factories;
 
 use App\Models\PostsTags;
 use App\Models\Posts;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Supports\Facades\GuitarClass;
 
+/**
+ * Class PostsTagsFactory
+ * @package Database\Factories
+ */
 class PostsTagsFactory extends Factory
 {
     /**
@@ -23,7 +24,7 @@ class PostsTagsFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition() : array
     {
         $posts =  Posts::select("id")->inRandomOrder()->first();
 
@@ -36,4 +37,3 @@ class PostsTagsFactory extends Factory
         ];
     }
 }
-

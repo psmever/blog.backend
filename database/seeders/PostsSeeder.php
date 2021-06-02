@@ -2,7 +2,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Posts;
 use App\Models\PostsTags;
 

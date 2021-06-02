@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
@@ -26,18 +26,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        /**
+         * Custom Setting
+         */
         Passport::routes();
         Passport::enableImplicitGrant();
-
-        if(env('APP_ENV') == 'production') {
-            Passport::tokensExpireIn(now()->addHours(3));
-            Passport::refreshTokensExpireIn(now()->addHours(6));
-            Passport::personalAccessTokensExpireIn(now()->addMonths(1));
-        } else {
-            // Test용.
-            Passport::tokensExpireIn(now()->addHour(3));
-            Passport::refreshTokensExpireIn(now()->addHour(6));
-            Passport::personalAccessTokensExpireIn(now()->addDay(1));
-        }
     }
 }

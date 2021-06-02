@@ -2,9 +2,14 @@
 
 namespace App\Providers;
 
+use App\Repositories\GuitarClass;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\App;
 
+
+/**
+ * Class GuitarFacadesServiceProvider
+ * @package App\Providers
+ */
 class GuitarFacadesServiceProvider extends ServiceProvider
 {
     /**
@@ -16,7 +21,7 @@ class GuitarFacadesServiceProvider extends ServiceProvider
     {
         $this->app->bind('guitarclass', function() {
 
-            return new \App\Repositories\v1\GuitarClass();
+            return new GuitarClass();
 
         });
     }

@@ -44,12 +44,38 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CovidState whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CovidState whereUpdatedt($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\CovidStateFactory factory(...$parameters)
  */
 class CovidState extends Model
 {
     use HasFactory;
 
+    /**
+     * 테이블 명.
+     *
+     * @var string
+     */
     protected $table = "covid_state";
 
-    protected $fillable = ['id', 'gubun_id', 'seq', 'createdt', 'deathcnt', 'incdec', 'isolclearcnt', 'qurrate', 'stdday', 'updatedt', 'defcnt', 'isolingcnt', 'overflowcnt', 'localocccnt'];
+    /**
+     * fillable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'id',
+        'gubun_id',
+        'seq',
+        'createdt',
+        'deathcnt',
+        'incdec',
+        'isolclearcnt',
+        'qurrate',
+        'stdday',
+        'updatedt',
+        'defcnt',
+        'isolingcnt',
+        'overflowcnt',
+        'localocccnt'
+    ];
 }
