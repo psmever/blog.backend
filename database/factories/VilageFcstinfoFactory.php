@@ -5,6 +5,10 @@ namespace Database\Factories;
 use App\Models\VilageFcstinfo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * Class VilageFcstinfoFactory
+ * @package Database\Factories
+ */
 class VilageFcstinfoFactory extends Factory
 {
     /**
@@ -19,7 +23,7 @@ class VilageFcstinfoFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition() : array
     {
         return [
             'version_id' => '1',

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Dev;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 use \App\Imports\FcsInfoXlsxImport;
@@ -13,7 +14,6 @@ use App\Models\VilageFcstinfo;
 
 class DevWeatherExcel extends Command
 {
-
     private $xlsxFileName = "apis_data_go_kr_latitude_longitude.xlsx";
 
     /**
@@ -59,15 +59,20 @@ class DevWeatherExcel extends Command
         return 0;
     }
 
+    /**
+     *
+     * php artisan dev:weatherexcel new 20210106
+     *
+     * @return int
+     */
     public function newWorks()
     {
-
         if(!Storage::disk('forlocal')->exists($this->xlsxFileName)) {
             echo "xlsx file not found";
             return 0;
         }
 
-        $version = $this->argument('version') ? $this->argument('version') : \Carbon\Carbon::createFromFormat('Ymd');
+        $version = $this->argument('version') ? $this->argument('version') : Carbon::createFromFormat('Ymd');
 
 //        Schema::disableForeignKeyConstraints();
 //        VilageFcstinfoMaster::truncate();

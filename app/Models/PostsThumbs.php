@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\PostsThumbs
@@ -28,12 +28,26 @@ class PostsThumbs extends Model
 {
     use HasFactory;
 
+    /**
+     * 테이블명.
+     * @var string
+     */
     protected $table = "posts_thumbs";
 
-    protected $fillable = ['post_id', 'media_file_id'];
+    /**
+     * fillable
+     * @var string[]
+     */
+    protected $fillable = [
+        'post_id',
+        'media_file_id'
+    ];
 
-    // 미디어 파일
-    public function file()
+    /**
+     * 미디어 파일
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function file(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(MediaFiles::class, 'id', 'media_file_id');
     }

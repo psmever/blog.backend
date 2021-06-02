@@ -6,6 +6,10 @@ use App\Models\VilageFcstinfoMaster;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
+/**
+ * Class VilageFcstinfoMasterFactory
+ * @package Database\Factories
+ */
 class VilageFcstinfoMasterFactory extends Factory
 {
     /**
@@ -20,7 +24,7 @@ class VilageFcstinfoMasterFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition() : array
     {
         return [
             'version' => Carbon::now()->format('Ymd')

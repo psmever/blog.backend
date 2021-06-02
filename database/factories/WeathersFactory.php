@@ -6,6 +6,10 @@ use App\Models\Weathers;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
+/**
+ * Class WeathersFactory
+ * @package Database\Factories
+ */
 class WeathersFactory extends Factory
 {
     /**
@@ -20,7 +24,7 @@ class WeathersFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition() : array
     {
         return [
             'area_code_id' => '1',

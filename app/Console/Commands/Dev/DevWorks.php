@@ -25,7 +25,7 @@ class DevWorks extends Command
      *
      * @var string
      */
-    protected $description = 'developer works command';
+    protected $description = 'Local Developer Works Command';
 
     /**
      * Create a new command instance.

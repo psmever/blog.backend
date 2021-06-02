@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Imports;
+
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -18,16 +20,16 @@ class FcsInfoXlsxImport implements ToModel, WithProgressBar
     use Importable;
 
     /**
-    * @param Collection $collection
-    */
+     * @param Collection $collection
+     */
     public function collection(Collection $collection)
     {
         //
     }
 
     /**
-    * @param array $row
-    */
+     * @param array $row
+     */
     public function model(array $row)
     {
         $id = VilageFcstinfoMaster::latest()->first()->id;

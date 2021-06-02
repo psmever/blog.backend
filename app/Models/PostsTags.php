@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\PostsTags
@@ -25,17 +25,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder|PostsTags whereTagText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostsTags whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\PostsTagsFactory factory(...$parameters)
  */
 class PostsTags extends Model
 {
     use HasFactory;
 
+    /**
+     * 테이블명
+     * @var string
+     */
     protected $table = "posts_tags";
 
-    protected $fillable = ['post_id', 'tag_id', 'tag_text'];
+    /**
+     * fillable
+     * @var string[]
+     */
+    protected $fillable = [
+        'post_id',
+        'tag_id',
+        'tag_text'
+    ];
 
-    // 글 테그.
-    public function posts()
+    /**
+     * 글 테그.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function posts(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Posts::class, 'id', 'post_id');
     }

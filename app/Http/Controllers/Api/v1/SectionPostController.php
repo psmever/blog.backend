@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Exceptions\CustomException;
 use App\Http\Controllers\Api\ApiRootController;
 use Illuminate\Http\Request;
-use App\Services\v1\SectionPostServices;
+use App\Exceptions\CustomException;
+use App\Services\SectionPostServices;
 use Illuminate\Support\Facades\Response;
 
 /**
@@ -17,7 +17,7 @@ class SectionPostController extends ApiRootController
     /**
      * @var SectionPostServices
      */
-    protected $SectionPostServices;
+    protected SectionPostServices $SectionPostServices;
 
     public function __construct(SectionPostServices $sectionPostServices)
     {
@@ -119,5 +119,4 @@ class SectionPostController extends ApiRootController
         $this->SectionPostServices->incrementPostsViewCount($post_uuid);
         return Response::success_only_message();
     }
-
 }
