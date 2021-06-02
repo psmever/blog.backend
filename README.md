@@ -33,10 +33,9 @@ php artisan serve
 
 ## Local Unit Test.
 ```bash
-composer app-test:watch --dev
-
-
 php artisan test
+
+composer app-test:watch
 
 ./vendor/bin/phpunit-watcher watch --filter=test_waiting_
 ./vendor/bin/phpunit-watcher watch --filter=ScribbleEditTest
