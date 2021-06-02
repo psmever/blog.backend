@@ -180,6 +180,7 @@ return [
          */
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\GuitarFacadesServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -237,7 +238,8 @@ return [
         /**
          * Custom Setting
          */
-        'GuitarClass'   =>  App\Supports\Facades\GuitarClass::class
+        'GuitarClass'   =>  App\Supports\Facades\GuitarClass::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
     ],
 
