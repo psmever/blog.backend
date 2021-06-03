@@ -181,6 +181,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
         App\Providers\GuitarFacadesServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
     ],
 
