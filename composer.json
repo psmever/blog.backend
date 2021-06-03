@@ -52,9 +52,9 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:generate; fi",
-            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:models; fi",
-            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:meta; fi",
+            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:generate; fi",
+            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:models -W; fi",
+            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:meta; fi",
             "php artisan optimize"
         ],
         "app-reset": [
@@ -65,9 +65,9 @@
         ],
         "app-clear": [
             "composer dump-autoload",
-            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:generate; fi",
-            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:models; fi",
-            "if [ $COMPOSER_DEV_MODE -eq 1 ]; then php artisan ide-helper:meta; fi",
+            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:generate; fi",
+            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:models -W; fi",
+            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:meta; fi",
             "php artisan optimize:clear"
         ],
         "app-test:watch": [
