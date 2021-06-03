@@ -15,10 +15,10 @@
         "laravel/passport": "^10.1",
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
-        "parsedown/laravel": "^1.2"
+        "parsedown/laravel": "^1.2",
+        "barryvdh/laravel-ide-helper": "^2.9"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.9",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
