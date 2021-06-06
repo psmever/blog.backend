@@ -310,9 +310,9 @@ class SpecialtyServices
 
             return [
                 "time" => Carbon::parse($weathers['fcstTime'])->format('H:i'),
-                "vilage_name" => trim("{string $shortName}"),
+                "vilage_name" => trim("{$shortName}"),
                 "sky_icon" => env('MEDIA_URL').'/storage/icon/weathers/'.$skyIconCode.'.png',
-                "temperature" => "{string $t1h}°C",
+                "temperature" => "{$t1h}°C",
                 "sky" => $skyString,
                 "wind" => "{$this->windCode[$wind]['kr']} {$wsd}m/s",
                 "humidity" => $reh.'%',
