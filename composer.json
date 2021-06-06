@@ -13,6 +13,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/passport": "^10.1",
+        "laravel/slack-notification-channel": "^2.3",
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
         "parsedown/laravel": "^1.2"
