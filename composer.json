@@ -16,7 +16,9 @@
         "laravel/slack-notification-channel": "^2.3",
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
-        "parsedown/laravel": "^1.2"
+        "parsedown/laravel": "^1.2",
+        "ext-simplexml": "*",
+        "ext-libxml": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
