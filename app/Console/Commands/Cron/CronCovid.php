@@ -4,10 +4,9 @@ namespace App\Console\Commands\Cron;
 
 use Illuminate\Console\Command;
 
+use App\Exceptions\CustomException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Carbon;
-
-use Illuminate\Support\Facades\Schema;
 use App\Models\CovidMaster;
 use App\Models\CovidState;
 
@@ -63,10 +62,10 @@ class CronCovid extends Command
         $startCreateDt = Carbon::now()->subHours()->format('Ymd');
         $endCreateDt = Carbon::now()->subHours()->format('Ymd');
 
-    //    Schema::disableForeignKeyConstraints();
-    //    CovidMaster::truncate();
-    //    CovidState::truncate();
-    //    Schema::enableForeignKeyConstraints();
+        //    Schema::disableForeignKeyConstraints();
+        //    CovidMaster::truncate();
+        //    CovidState::truncate();
+        //    Schema::enableForeignKeyConstraints();
 
         try {
 
@@ -77,7 +76,7 @@ class CronCovid extends Command
 
             if($response->successful())
             {
-                $xml = simplexml_load_string($response->body(),'SimpleXMLElement',LIBXML_NOCDATA);
+                $xml = simplexml_load_string($response->body(),'SimpleXMLElement', LIBXML_NOCDATA);
                 $json = json_encode($xml);
                 $resultArray = json_decode($json, true);
 
@@ -89,7 +88,7 @@ class CronCovid extends Command
                         'createDt' => $createDt,                    // 등록일시분초
                         'deathCnt' => $deathCnt,                    // 사망자 수
                         'gubun' => $gubun,                          // 시도명(한글)
-                        'gubunCn' => $gubunCn,                      // 시도명(중국어)
+//                        'gubunCn' => $gubunCn,                      // 시도명(중국어)
                         'gubunEn' => $gubunEn,                      // 시도명(영어)
                         'incDec' => $incDec,                        // 전일대비 증감 수
                         'isolClearCnt' => $isolClearCnt,            // 격리 해제 수
@@ -144,12 +143,14 @@ class CronCovid extends Command
             }
 
         } catch (\Exception $e) {
-            $s = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
             $job = new ServerSlackNotice((object) [
                 'type' => 'exception',
                 'message' => '코로나 정보를 가지고 오지 못했습니다(001).'
             ]);
             dispatch($job);
+
+            $exceptionMessage = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
+            throw new CustomException($exceptionMessage);
         }
     }
 }

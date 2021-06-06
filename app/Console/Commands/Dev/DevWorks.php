@@ -25,7 +25,7 @@ class DevWorks extends Command
      *
      * @var string
      */
-    protected $description = 'developer works command';
+    protected $description = 'Local Developer Works Command';
 
     /**
      * Create a new command instance.
@@ -42,7 +42,7 @@ class DevWorks extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle() : int
     {
         $works = $this->argument('works');
 

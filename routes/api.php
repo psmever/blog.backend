@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\PostsController;
-use App\Http\Controllers\Api\v1\SpecialtyController;
 use App\Http\Controllers\Api\v1\SectionPostController;
+use App\Http\Controllers\Api\v1\SpecialtyController;
+use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\Api\TestController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,17 +21,21 @@ use App\Http\Controllers\Api\v1\SectionPostController;
 |
 */
 
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
 Route::group(['as' => 'api.'], function () {
     /**
      * Api Test 용 컨트롤러.
      */
     Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
-        Route::post('index', [TestController::class, 'index'])->name('index');
-        Route::post('slack', [TestController::class, 'slack'])->name('slack');
-        Route::post('factory', [TestController::class, 'factory'])->name('factory');
-        Route::post('base-user', [TestController::class, 'base_user'])->name('base.user');
+        Route::post('default', [TestController::class, 'default'])->name('default');
     });
 
+    /**
+     * 시스템용
+     */
     Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
         Route::get('check-status', [SystemController::class, 'checkStatus'])->name('check.status'); // 서버 체크
         Route::get('check-notice', [SystemController::class, 'checkNotice'])->name('check.notice'); // 서버 공지사항 체크
@@ -39,9 +43,8 @@ Route::group(['as' => 'api.'], function () {
     });
 
     /**
-     * Api V1 Route Group.
+     * api
      */
-    // FIXME 2020-09-02 21:05 auth:api middleware 정책 수립?
     Route::group(['namespace' => 'v1', 'prefix' => 'v1', 'as' => 'v1.'], function () {
         Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
             Route::post('login', [AuthController::class, 'client_login'])->name('login');
@@ -72,11 +75,6 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/write/waiting-list', [PostsController::class, 'waiting_list'])->name('write.waiting.list')->middleware('auth:api');
         });
 
-        Route::group(['prefix' => 'specialty', 'as' => 'specialty.'], function () {
-            Route::get('/weather', [SpecialtyController::class, 'weather'])->name('weather');
-            Route::get('/covid', [SpecialtyController::class, 'covid'])->name('covid');
-        });
-
         Route::group(['prefix' => 'section-post', 'as' => 'section-post.'], function () {
             Route::get('/scribble', [SectionPostController::class, 'scribble_view'])->name('view.scribble'); // 끄적 끄적 글 정보 조회.
             Route::post('/scribble', [SectionPostController::class, 'scribble_create'])->name('create.scribble')->middleware('auth:api'); // 끄적 끄적 글 등록.
@@ -88,9 +86,10 @@ Route::group(['as' => 'api.'], function () {
             Route::post('/mingun', [SectionPostController::class, 'mingun_create'])->name('create.mingun')->middleware('auth:api'); // 민군은 글 등록.
             Route::put('/mingun/{post_uuid}/view-increment', [SectionPostController::class, 'mingun_view_increment'])->name('increment.view.mingun'); // 민군은 뷰카운트.
         });
+
+        Route::group(['prefix' => 'specialty', 'as' => 'specialty.'], function () {
+            Route::get('/weather', [SpecialtyController::class, 'weather'])->name('weather');
+            Route::get('/covid', [SpecialtyController::class, 'covid'])->name('covid');
+        });
     });
 });
-
-
-
-

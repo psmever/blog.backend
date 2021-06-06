@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands\Cron;
 
+use App\Exceptions\CustomException;
 use App\Models\Weathers;
 use Illuminate\Console\Command;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Carbon;
 
@@ -43,7 +45,7 @@ class CronWeather extends Command
      *
      * @return int
      */
-    public function handle() : int
+    public function handle(): int
     {
         $option = $this->argument('option');
 
@@ -55,11 +57,10 @@ class CronWeather extends Command
     }
 
     /**
-     * 기상청 초단기예보 가지고 오기.
-     *
-     * @return void
+     * @throws FileNotFoundException
+     * @throws CustomException
      */
-    public function getWeather()
+    public function getWeather(): int
     {
 
         if(!Storage::disk('sitedata')->exists("weather_area_code.json")) {
@@ -114,7 +115,7 @@ class CronWeather extends Command
 
                     // 12 시 넘어 갈때 시간 체크 에러..
                     if(!array_key_exists('body' , $collection->toArray()['response'])) {
-                        return;
+                        return 0;
                     }
 
                     $item = $collection->toArray()['response']['body']['items']['item'];
@@ -172,12 +173,15 @@ class CronWeather extends Command
             }
 
         } catch (\Exception $e) {
-            $s = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
             $job = new ServerSlackNotice((object) [
                 'type' => 'exception',
                 'message' => '날씨 정보를 가지고 오는데 실패 했습니다.(001)'
             ]);
             dispatch($job);
+
+            $exceptionMessage = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
+            throw new CustomException($exceptionMessage);
+
         }
     }
 }

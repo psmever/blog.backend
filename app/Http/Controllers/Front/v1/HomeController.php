@@ -2,28 +2,20 @@
 
 namespace App\Http\Controllers\Front\v1;
 
-use App\Http\Controllers\Front\WebRootController;
+use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class HomeController extends WebRootController
+class HomeController extends Controller
 {
     /**
-     * 기본 인덱스.
-     *
-     * @return void
+     * 기본 랜딩 페이지.
+     * @return Application|Factory|View
      */
     public function index()
     {
         return view('landing');
-    }
-
-    /**
-     * admin 로그인 페이지.
-     *
-     * @return void
-     */
-    public function login()
-    {
-        return view('v1/login');
     }
 }

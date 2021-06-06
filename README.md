@@ -2,9 +2,6 @@
 
 ## psmever's Blog Back-End Source.
 
-### Git First Push.
-Use the package manager [composer](https://getcomposer.org/) to install foobar.
-
 ## Git Clone.
 
 ```bash
@@ -36,16 +33,16 @@ php artisan serve
 
 ## Local Unit Test.
 ```bash
-composer test:watch --dev
-
 php artisan test
+
+composer app-test:watch
 
 ./vendor/bin/phpunit-watcher watch --filter=test_waiting_
 ./vendor/bin/phpunit-watcher watch --filter=ScribbleEditTest
 
 ```
 
-## db:seed
+## db:seed.
 ```
 php artisan db:seed --class=CodesSeeder --force
 ```
@@ -55,7 +52,7 @@ php artisan db:seed --class=CodesSeeder --force
 http://127.0.0.1:8000 || http://localhost:8000/
 ```
 
-## Ex Site..
+## Ex Site.
 ```bash
 repository-pattern
 https://medium.com/dev-genius/laravel-api-repository-pattern-make-your-code-more-structured-the-simple-guide-5b770da766d7
@@ -72,31 +69,31 @@ https://github.com/cryptlex/rest-api-response-format
 
 ```
 
-## CustomException
+## CustomException.
 ```
 throw new \App\Exceptions\CustomException('Something Went Wrong.');
 
 ```
 
-## App Clear Script
+## App Manager Script.
 ```
-composer app:clear
-composer test:clear
+composer app-clear
+composer app-test:watch
+composer app-test:clear
 ```
 
-## Server Deploy
+## Server Deploy.
+
+* Production Deploy Git Main Repositories Push
 ```
 > composer global require laravel/envoy
 
-envoy run deploy:prod
 envoy run deploy:stage
 
 ```
 
-## etc message
-github actions test
+## Etc.
 ```
-
 SlackMessage notifications
 https://medium.com/@olayinka.omole/sending-slack-notifications-from-your-laravel-app-1bdb6e4e4127
 https://www.lesstif.com/php-and-laravel/sending-slack-notifications-from-laravel-36209045.html

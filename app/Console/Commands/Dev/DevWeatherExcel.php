@@ -2,19 +2,16 @@
 
 namespace App\Console\Commands\Dev;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Maatwebsite\Excel\Facades\Excel;
-use \App\Imports\FcsInfoXlsxImport;
+use App\Imports\FcsInfoXlsxImport;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Schema;
 
 use App\Models\VilageFcstinfoMaster;
-use App\Models\VilageFcstinfo;
 
 class DevWeatherExcel extends Command
 {
-
-    private $xlsxFileName = "apis_data_go_kr_latitude_longitude.xlsx";
+    private string $xlsxFileName = "apis_data_go_kr_latitude_longitude.xlsx";
 
     /**
      * The name and signature of the console command.
@@ -47,7 +44,7 @@ class DevWeatherExcel extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle() : int
     {
         $works = $this->argument('works');
 
@@ -59,15 +56,20 @@ class DevWeatherExcel extends Command
         return 0;
     }
 
-    public function newWorks()
+    /**
+     *
+     * php artisan dev:weatherexcel new 20210106
+     *
+     * @return int
+     */
+    public function newWorks() : int
     {
-
         if(!Storage::disk('forlocal')->exists($this->xlsxFileName)) {
             echo "xlsx file not found";
             return 0;
         }
 
-        $version = $this->argument('version') ? $this->argument('version') : \Carbon\Carbon::createFromFormat('Ymd');
+        $version = $this->argument('version') ? $this->argument('version') : Carbon::createFromFormat('Ymd');
 
 //        Schema::disableForeignKeyConstraints();
 //        VilageFcstinfoMaster::truncate();
@@ -86,5 +88,7 @@ class DevWeatherExcel extends Command
         $filePath = Storage::disk('forlocal')->getAdapter()->applyPathPrefix($this->xlsxFileName);
         (new FcsInfoXlsxImport)->withOutput($this->output)->import($filePath);
         $this->output->success('Import successful');
+
+        return 0;
     }
 }

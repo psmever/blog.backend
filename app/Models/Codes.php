@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Codes
@@ -33,7 +33,22 @@ class Codes extends Model
 {
     use HasFactory;
 
+    /**
+     * 공통 코드 테이블
+     * @var string
+     */
     protected $table = "codes";
 
-    protected $fillable = ['id', 'group_id', 'code_id', 'group_name', 'code_name'];
+    /**
+     * fillable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'id',
+        'group_id',
+        'code_id',
+        'group_name',
+        'code_name'
+    ];
 }

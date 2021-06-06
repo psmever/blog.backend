@@ -2,17 +2,30 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Exceptions\ClientErrorException;
+use App\Exceptions\CustomException;
+use App\Exceptions\ServerErrorException;
 use App\Http\Controllers\Api\ApiRootController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Auth;
 
-use App\Services\v1\AuthServices;
+use App\Services\AuthServices;
 
+/**
+ * Class AuthController
+ * @package App\Http\Controllers\Api\v1
+ */
 class AuthController extends ApiRootController
 {
-    protected $AuthServices;
+    /**
+     * @var AuthServices
+     */
+    protected AuthServices $AuthServices;
 
+    /**
+     * AuthController constructor.
+     * @param AuthServices $authServices
+     */
     public function __construct(AuthServices $authServices)
     {
         $this->AuthServices = $authServices;
@@ -21,9 +34,11 @@ class AuthController extends ApiRootController
     /**
      * 로그인
      *
-     * @return void
+     * @return mixed
+     * @throws CustomException
+     * @throws ServerErrorException
      */
-    public function client_login(Request $request)
+    public function client_login()
     {
         $task = $this->AuthServices->attemptLogin();
 
@@ -33,9 +48,8 @@ class AuthController extends ApiRootController
     /**
      * 로그아웃
      *
-     * FIXME passport 를 이용 로그아웃 처리.
-     *
-     * @return void
+     * @param Request $request
+     * @return mixed
      */
     public function client_logout(Request $request)
     {
@@ -47,7 +61,7 @@ class AuthController extends ApiRootController
     /**
      * 로그인 체크 및 로그인 사용자 정보.
      *
-     * @return void
+     * @return mixed
      */
     public function client_login_check()
     {
@@ -57,7 +71,10 @@ class AuthController extends ApiRootController
     /**
      * 로그인 사용자 토큰 새로고침.
      *
-     * @return void
+     * @return mixed
+     * @throws CustomException
+     * @throws ServerErrorException
+     * @throws ClientErrorException
      */
     public function client_token_refresh()
     {

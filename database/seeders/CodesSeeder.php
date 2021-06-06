@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Codes;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,41 +18,41 @@ class CodesSeeder extends Seeder
     {
         if (env('APP_ENV') != "testing") {
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            \App\Models\Codes::truncate();
+            Codes::truncate();
         }
 
         $arrayGroupCodesList = $this->initGroupCodesList();
-	    $arrayCodesList = $this->initCodesList();
+        $arrayCodesList = $this->initCodesList();
 
-	    foreach ($arrayGroupCodesList as $element) :
-		    $group_id = trim($element['group_id']);
-		    $group_name = trim($element['group_name']);
+        foreach ($arrayGroupCodesList as $element) :
+            $group_id = trim($element['group_id']);
+            $group_name = trim($element['group_name']);
 
-		    DB::table('codes')->insert([
-			    'group_id' => $group_id,
-			    'group_name' => $group_name,
-			    'created_at' => \Carbon\Carbon::now(),
-			    'updated_at' => \Carbon\Carbon::now(),
-		    ]);
+            DB::table('codes')->insert([
+                'group_id' => $group_id,
+                'group_name' => $group_name,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
 
-		    foreach($arrayCodesList[$group_id] as $element_code):
+            foreach($arrayCodesList[$group_id] as $element_code):
 
-		        $code_id = trim($element_code['code_id']);
-		        $code_name = trim($element_code['code_name']);
+                $code_id = trim($element_code['code_id']);
+                $code_name = trim($element_code['code_name']);
 
-		        $endCodeid = $group_id.$code_id;
+                $endCodeid = $group_id.$code_id;
 
-			    DB::table('codes')->insert([
-				    'group_id' => $group_id,
-				    'group_name' => NULL,
-				    'code_id' => $endCodeid,
+                DB::table('codes')->insert([
+                    'group_id' => $group_id,
+                    'group_name' => NULL,
+                    'code_id' => $endCodeid,
                     'code_name' => $code_name,
                     'active' => 'Y',
-				    'created_at' => \Carbon\Carbon::now(),
-				    'updated_at' => \Carbon\Carbon::now(),
-			    ]);
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
 
-			endforeach;
+            endforeach;
         endforeach;
 
         if (env('APP_ENV') != "testing") {
@@ -59,31 +61,31 @@ class CodesSeeder extends Seeder
     }
 
     /**
-	 * 그룹 코드 리스트
-	 * @return array
-	 */
-	public function initGroupCodesList()
+     * 그룹 코드 리스트
+     * @return array
+     */
+    public function initGroupCodesList(): array
     {
-	    return [
-		    [ 'group_id' => 'S01', 'group_name' => '클라이언트 타입' ],
+        return [
+            [ 'group_id' => 'S01', 'group_name' => '클라이언트 타입' ],
             [ 'group_id' => 'S02', 'group_name' => '사용자 레벨' ],
             [ 'group_id' => 'S03', 'group_name' => '사용자 상태' ],
             [ 'group_id' => 'S04', 'group_name' => '상태' ],
             [ 'group_id' => 'S05', 'group_name' => '포스트 카테고리 이미지(리스트용)' ],
             [ 'group_id' => 'S06', 'group_name' => '날씨아이콘' ],
             [ 'group_id' => 'S07', 'group_name' => '섹션 포스트 구분' ],
-	    ];
+        ];
     }
 
 
-	/**
-	 * 코드 리스트
-	 * @return array
-	 */
-	public function initCodesList()
-	{
-		return [
-			'S01' => [
+    /**
+     * 코드 리스트
+     * @return array
+     */
+    public function initCodesList(): array
+    {
+        return [
+            'S01' => [
                 [ 'code_id' => '010', 'code_name' => 'Front' ],
                 [ 'code_id' => '020', 'code_name' => 'iOS' ],
                 [ 'code_id' => '030', 'code_name' => 'Android' ],
@@ -143,6 +145,6 @@ class CodesSeeder extends Seeder
                 [ 'code_id' => '020', 'code_name' => '블러그 소개' ],
                 [ 'code_id' => '030', 'code_name' => '주인장은' ],
             ]
-		];
-	}
+        ];
+    }
 }
