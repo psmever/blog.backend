@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\ClientErrorException;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,14 +13,17 @@ class ApiBeforeMiddleware
      * Handle an incoming request.
      *
      * @param Request $request
-     * @param Closure  $next
+     * @param Closure $next
      * @return mixed
+     * @throws ClientErrorException
      */
     public function handle(Request $request, Closure $next)
     {
-        // ajax가 아닐때.
+        /**
+         * ajax 아닐때.
+         */
         if($request->wantsJson() == false) {
-            throw new \App\Exceptions\ClientErrorException(__('정상적인 요청이 아닙니다.'));
+            throw new ClientErrorException(__('정상적인 요청이 아닙니다.'));
         }
 
         // 클라이언트 체크 예외 라우터.
@@ -30,7 +34,7 @@ class ApiBeforeMiddleware
 
         if (!in_array(Route::currentRouteName(), $exceptionRouteName)) {
             if(empty($clientType) || !($clientType == env('FRONT_CLIENT_CODE') || $clientType == env('IOS_CLIENT_CODE') || $clientType == env('ANDROID_CLIENT_CODE'))) {
-                throw new \App\Exceptions\ClientErrorException(__('default.exception.clienttype'));
+                throw new ClientErrorException(__('default.exception.clienttype'));
             }
         }
 
