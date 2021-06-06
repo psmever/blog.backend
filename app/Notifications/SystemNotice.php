@@ -57,10 +57,6 @@ class SystemNotice extends Notification
     public function toSlack($notifiable)
     {
 
-        if(env('APP_ENV') !== 'production') {
-            return;
-        }
-
         $slackMessage = new stdClass();
         $slackMessage->env = env('APP_ENV');
 
@@ -75,7 +71,7 @@ class SystemNotice extends Notification
 
         $slackMessage->message = "{$this->task->message}";
 
-        return (new SlackMessage)->from('BlogApiServer', ':flushed:')->warning()->to('#blog-backend-notice')->attachment(function ($attachment) use ($slackMessage) {
+        return (new SlackMessage)->from('BlogApiServer', ':flushed:')->warning()->attachment(function ($attachment) use ($slackMessage) {
             $attachment->title(" {$slackMessage->title}")->content("({$slackMessage->env}) : {$slackMessage->message}")->color($slackMessage->hex);
         });
     }

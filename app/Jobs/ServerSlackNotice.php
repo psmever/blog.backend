@@ -34,6 +34,10 @@ class ServerSlackNotice implements ShouldQueue
      */
     public function handle()
     {
+        if(env('APP_ENV') !== 'production') {
+            return;
+        }
+
         Notification::route('slack', env('NOTICE_SLACK_WEBHOOK_URL'))->notify(new SystemNotice((object) [
             'type' => $this->task->type,
             'message' => $this->task->message
