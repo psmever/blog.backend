@@ -3,11 +3,15 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Supports\Facades\GuitarClass;
 use App\Models\Posts;
 
+/**
+ * Class PostsFactory
+ * @package Database\Factories
+ */
 class PostsFactory extends Factory
 {
     /**
@@ -22,7 +26,7 @@ class PostsFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition() : array
     {
         $text = $this->faker->unique()->text();
         $title = $this->faker->unique()->company;
@@ -37,9 +41,8 @@ class PostsFactory extends Factory
             'markdown' => 'Y',
             'post_publish' => 'Y',
             'post_active' => 'Y',
-            'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ];
     }
 }
-

@@ -19,7 +19,7 @@ class CovidStateFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition() : array
     {
         return [
             'gubun_id' => '1',

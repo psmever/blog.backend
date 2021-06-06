@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+//use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\AdminNotification;
+use App\Notifications\SystemNotice;
 
 class ServerSlackNotice implements ShouldQueue
 {
@@ -34,7 +34,11 @@ class ServerSlackNotice implements ShouldQueue
      */
     public function handle()
     {
-        Notification::route('slack', env('SLACK_WEBHOOK_URL'))->notify(new AdminNotification((object) [
+        if(env('APP_ENV') !== 'production') {
+            return;
+        }
+
+        Notification::route('slack', env('NOTICE_SLACK_WEBHOOK_URL'))->notify(new SystemNotice((object) [
             'type' => $this->task->type,
             'message' => $this->task->message
         ]));

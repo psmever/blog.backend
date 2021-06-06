@@ -1,7 +1,9 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -15,7 +17,9 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        //테스트 일떄만 생성.
+        /**
+         * test 용 seeder
+         */
         if(env('APP_ENV') == "testing") {
             DB::table('users')->insert([
                 'user_uuid' => Str::uuid()->toString(),

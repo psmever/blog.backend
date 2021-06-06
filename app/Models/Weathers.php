@@ -45,26 +45,45 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Weathers whereVVV($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Weathers whereWSD($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\WeathersFactory factory(...$parameters)
  */
 class Weathers extends Model
 {
     use HasFactory;
 
+    /**
+     * 테이블 명
+     * @var string
+     */
     protected $table = "weathers";
 
-    protected $fillable = ['area_code_id', 'fcstDate', 'fcstTime', 'T1H', 'RN1', 'SKY', 'UUU', 'VVV', 'REH', 'PTY', 'LGT', 'VEC', 'WSD'];
-
-    // protected $dateFormat = 'U';
+    /**
+     * fillable
+     * @var string[]
+     */
+    protected $fillable = [
+        'area_code_id',
+        'fcstDate',
+        'fcstTime',
+        'T1H',
+        'RN1',
+        'SKY',
+        'UUU',
+        'VVV',
+        'REH',
+        'PTY',
+        'LGT',
+        'VEC',
+        'WSD'
+    ];
 
     /**
      * Get the vilage that owns the Weathers
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function vilage()
+    public function vilage(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo('App\Models\VilageFcstinfo', 'area_code_id', 'id')->select('id', 'gubun', 'area_code', 'step1', 'step2', 'step3');
     }
 }
-
-

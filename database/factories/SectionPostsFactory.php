@@ -7,6 +7,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * Class SectionPostsFactory
+ * @package Database\Factories
+ */
 class SectionPostsFactory extends Factory
 {
     /**
@@ -21,7 +25,7 @@ class SectionPostsFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition() : array
     {
         $text = $this->faker->unique()->text();
         $title = $this->faker->unique()->company;

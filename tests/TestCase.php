@@ -3,19 +3,18 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Passport\Passport;
 
 abstract class TestCase extends BaseTestCase
 {
+
     use CreatesApplication;
-    // use DatabaseMigrations;
     use RefreshDatabase;
+
+    use CreatesApplication;
 
     protected function setUp() : void
     {
@@ -26,31 +25,51 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('db:seed',['-vvv' => true]);
     }
 
-    public static function getTestTotalTablesList()
+    /**
+     * 전체 테이블 리스트.
+     * 
+     * @return array
+     */
+    public static function getTestTotalTablesList() : array
     {
         return DB::select("SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name NOT LIKE 'sqlite_%' UNION ALL SELECT name FROM sqlite_temp_master WHERE type IN ('table', 'view') ORDER BY 1");
     }
 
-    public static function printrTotalTableList()
+    /**
+     * 전체 테이블 리스트.
+     */
+    public static function printTotalTableList() : void
     {
         echo PHP_EOL.PHP_EOL;
         $tables = DB::select("SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name NOT LIKE 'sqlite_%' UNION ALL SELECT name FROM sqlite_temp_master WHERE type IN ('table', 'view') ORDER BY 1");
 
         foreach($tables as $table)
         {
-            echo $table->name.PHP_EOL;
-            print_r(DB::getSchemaBuilder()->getColumnListing($table->name));
+            echo "table-name: ".$table->name.PHP_EOL;
+            echo "(".PHP_EOL;
+            foreach(DB::getSchemaBuilder()->getColumnListing($table->name) as $columnName) {
+                echo "\t".$columnName.PHP_EOL;
+            }
+            echo ")".PHP_EOL.PHP_EOL;
         }
         echo PHP_EOL;
     }
 
-    public static function getTableColumnList($tableName = "")
+    /**
+     * 해당 테이블 컬럼 리스트.
+     * @param string $tableName
+     * @return array
+     */
+    public static function getTableColumnList(string $tableName = "") : array
     {
         return DB::getSchemaBuilder()->getColumnListing($tableName);
     }
 
-
-    public static function getTestApiHeaders()
+    /**
+     * Request Header.
+     * @return string[]
+     */
+    public static function getTestApiHeaders() : array
     {
         return [
             'Request-Client-Type' => 'S01010',
@@ -60,7 +79,11 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    protected function getTestAccessTokenHeader()
+    /**
+     * 관리자 테스트용 토큰 포함 해더.
+     * @return string[]
+     */
+    protected function getTestAccessTokenHeader() : array
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
             "email" => \App\Models\User::where('user_level', 'S02900')->orderBy('id', 'ASC')->first()->email,
@@ -74,7 +97,11 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    protected function getTestGuestAccessTokenHeader()
+    /**
+     * 일반 로그인 사용자 테스트용 헤더.
+     * @return string[]
+     */
+    protected function getTestGuestAccessTokenHeader() : array
     {
         $response = $this->withHeaders($this->getTestApiHeaders())->postjson('/api/v1/auth/login', [
             "email" => \App\Models\User::where('user_level', 'S02010')->orderBy('id', 'ASC')->first()->email,
@@ -88,7 +115,11 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    public static function getDefaultErrorJsonType()
+    /**
+     * 기본 에러 Response.
+     * @return \string[][]
+     */
+    public static function getDefaultErrorJsonType() : array
     {
         return [
             'error' => [
@@ -97,7 +128,11 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    public static function getDefaultSuccessJsonType()
+    /**
+     * Default 성공 Response.
+     * @return string[]
+     */
+    public static function getDefaultSuccessJsonType() : array
     {
         return [
             "message" ,
@@ -105,7 +140,11 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    public static function getSuccessJsonType()
+    /**
+     * 기본 성공 Response.
+     * @return array
+     */
+    public static function getSuccessJsonType() : array
     {
         return [
             "message" => __('default.server.success')

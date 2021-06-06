@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $view_count 뷰 카운트.
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|SectionPosts newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SectionPosts newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SectionPosts query()
@@ -38,30 +39,42 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|SectionPosts whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SectionPosts whereViewCount($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\SectionPostsFactory factory(...$parameters)
  */
 class SectionPosts extends Model
 {
     use HasFactory;
 
     /**
+     * 테이블명.
      * @var string
      */
     protected $table = "section_posts";
 
     /**
+     * fillable
      * @var string[]
      */
-    protected $fillable = ['id', 'user_id', 'post_uuid', 'gubun', 'title', 'markdown', 'contents_html', 'contents_text', 'publish', 'active', 'view_count'];
-
-    // 글 등록자.
+    protected $fillable = [
+        'id',
+        'user_id',
+        'post_uuid',
+        'gubun',
+        'title',
+        'markdown',
+        'contents_html',
+        'contents_text',
+        'publish',
+        'active',
+        'view_count'
+    ];
 
     /**
+     * 글 등록자.
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 }
-
-

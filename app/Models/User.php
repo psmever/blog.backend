@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Codes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\User
@@ -31,8 +31,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
  * @property-read int|null $tokens_count
- * @property-read Codes|null $userLevel
- * @property-read Codes|null $userType
+ * @property-read \App\Models\Codes|null $userLevel
+ * @property-read \App\Models\Codes|null $userType
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
@@ -53,9 +54,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class User extends Authenticatable
 {
-    use HasFactory;
-
-    use Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -63,7 +62,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -72,7 +73,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -84,35 +86,35 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $with = ['userType', 'userLevel'];
+    /**
+     * Custom Setting
+     */
 
     /**
-     * Specify Slack Webhook URL to route notifications to
-     *
-     * @return void
+     * Eloquent: Relationships
+     * @var string[]
      */
-    public function routeNotificationForSlack()
-    {
-        return env('SLACK_WEBHOOK_URL');
-    }
+    protected $with = ['userType', 'userLevel'];
 
     /**
      * 사용자 타입 코드 가지고 오기.
      *
-     * @return void
+     * @return HasOne
      */
-    public function userType()
+    public function userType(): HasOne
     {
-		return $this->hasOne(Codes::class, 'code_id', 'user_type');
+        return $this->hasOne(Codes::class, 'code_id', 'user_type');
     }
 
     /**
      * 사용자 레벨 타입 코드 가지고 오기.
      *
-     * @return void
+     * @return HasOne
      */
-    public function userLevel()
+    public function userLevel(): HasOne
     {
-		return $this->hasOne(Codes::class, 'code_id', 'user_level');
+        return $this->hasOne(Codes::class, 'code_id', 'user_level');
     }
+
+
 }
