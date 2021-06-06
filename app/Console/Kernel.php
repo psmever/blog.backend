@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         'App\Console\Commands\Dev\DevWorks',
+        'App\Console\Commands\Cron\CronWeather',
     ];
 
     /**
@@ -25,6 +26,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('cron:weather get')->hourly();
+        $schedule->command('cron:covid get')->cron('1 08-23 * * *');
     }
 
     /**
