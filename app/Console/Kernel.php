@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'App\Console\Commands\Dev\DevWorks',
         'App\Console\Commands\Cron\CronWeather',
+        'App\Console\Commands\Cron\CronCovid'
     ];
 
     /**
