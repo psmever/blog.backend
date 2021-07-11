@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('cron:weather get')->hourly();
         $schedule->command('cron:covid get')->cron('1 08-23 * * *');
+        $schedule->command('cron:send-schema-data')->cron('1 10 * * *');
     }
 
     /**
