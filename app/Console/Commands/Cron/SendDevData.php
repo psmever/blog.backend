@@ -39,21 +39,22 @@ class SendDevData extends Command
      */
     public function handle()
     {
+        DB::connection('dev_mysql')->statement('SET FOREIGN_KEY_CHECKS=0;');
+
         $this->truncateTableDevServer();
 
         $this->sendProdData();
+
+        DB::connection('dev_mysql')->statement('SET FOREIGN_KEY_CHECKS=1;');
 
         return 0;
     }
 
     public function truncateTableDevServer()
     {
-        DB::connection('dev_mysql')->statement('SET FOREIGN_KEY_CHECKS=0;');
         foreach ($this->prodTables as $table):
             DB::connection('dev_mysql')->table($table)->truncate();
         endforeach;
-
-        DB::connection('dev_mysql')->statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     public function sendProdData()
