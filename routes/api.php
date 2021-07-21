@@ -85,6 +85,13 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/mingun', [SectionPostController::class, 'mingun_view'])->name('view.mingun'); // 민군은 글 보기.
             Route::post('/mingun', [SectionPostController::class, 'mingun_create'])->name('create.mingun')->middleware('auth:api'); // 민군은 글 등록.
             Route::put('/mingun/{post_uuid}/view-increment', [SectionPostController::class, 'mingun_view_increment'])->name('increment.view.mingun'); // 민군은 뷰카운트.
+
+            Route::put('/manage/{post_uuid}/hidden', [SectionPostController::class, 'manage_display_hidden'])->name('hidden.display.manage')->middleware('auth:api'); // 리스트 안보이게 처리.
+            Route::put('/manage/{post_uuid}/display', [SectionPostController::class, 'manage_display'])->name('display.manage')->middleware('auth:api'); // 리스트 보이게 처리.
+
+            Route::get('/{gubun}/history/{page?}', [SectionPostController::class, 'history_list'])->name('history.list'); // 섹션 포스트 히스토리.
+            Route::get('/{gubun}/{post_uuid}/history', [SectionPostController::class, 'history_view'])->name('history.view'); // 섹션 포스트 히스토리 보기.
+
         });
 
         Route::group(['prefix' => 'specialty', 'as' => 'specialty.'], function () {
