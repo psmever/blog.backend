@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\SectionPosts
@@ -66,15 +67,25 @@ class SectionPosts extends Model
         'contents_text',
         'publish',
         'active',
+        'display_flag',
         'view_count'
     ];
 
     /**
      * 글 등록자.
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function user(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    /**
+     * 구분 정보.
+     * @return HasOne
+     */
+    public function gubun(): HasOne
+    {
+        return $this->hasOne(Codes::class, 'code_id', 'gubun');
     }
 }
