@@ -11,16 +11,6 @@ class ListTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
-
     // 글 리스트 테스트
     public function test_post_list_포스트_리스트_요청_테스트_없을떄()
     {
