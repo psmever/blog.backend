@@ -155,10 +155,6 @@ class SectionPostServices
             'current_page' => $task['current_page'],
             'hasmore' => !((count($task['data']) < env('DEFAULT_PAGEING_COUNT', 15))),
             'historys' => array_map(function($item) {
-
-//                print_r($item);
-
-
                 $smallContents = function($contents) {
                     $text = Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
                     $textArray = array_filter(explode("\n", $text), fn($value) => !empty($value));
@@ -201,6 +197,41 @@ class SectionPostServices
             'contents_text' => $task->contents_text,
             'markdown' => $task->markdown,
             'created' => $detail_created($task->created_at),
+        ];
+    }
+
+    public function sectionPostTotalHistorys(String $gubun = 'S07010', Int $page = 1 ) : array
+    {
+        $task = collect($this->sectionPostsRepository->sectionPostHistoryTotalList($gubun, $page))->toArray();
+        return [
+            'per_page' => $task['per_page'],
+            'current_page' => $task['current_page'],
+            'hasmore' => !((count($task['data']) < env('DEFAULT_PAGEING_COUNT', 15))),
+            'historys' => array_map(function($item) {
+                $smallContents = function($contents) {
+                    $text = Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
+                    $textArray = array_filter(explode("\n", $text), fn($value) => !empty($value));
+                    return $textArray[0];
+                };
+
+                $created_time = function($timestamp) {
+                    return GuitarClass::convertTimeToString(strtotime($timestamp));
+                };
+
+                return [
+                    'post_uuid' => $item['post_uuid'],
+                    'gubun' => [
+                        'code_id' => $item['gubun']['code_id'],
+                        'code_name' => $item['gubun']['code_name'],
+                    ],
+                    'smal_content' => $smallContents($item['contents_html']),
+                    'publish' => $item['publish'],
+                    'active' => $item['active'],
+                    'display_flag' => $item['display_flag'],
+                    'created_at' => Carbon::parse($item['created_at'])->format('Y년 m월 d일'),
+                    'created_time' => $created_time($item['created_at'])
+                ];
+            } , $task['data'])
         ];
     }
 }
