@@ -92,7 +92,7 @@ Route::group(['as' => 'api.'], function () {
             Route::get('/{gubun}/history/{page?}', [SectionPostController::class, 'history_list'])->name('history.list'); // 섹션 포스트 히스토리.
             Route::get('/{gubun}/{post_uuid}/history', [SectionPostController::class, 'history_view'])->name('history.view'); // 섹션 포스트 히스토리 보기.
 
-            Route::get('/{gubun}/history-list-total/{page?}', [SectionPostController::class, 'history_list_total'])->name('total.history.list'); // 섹션 포스트 전체(구분) 히스토리.
+            Route::get('/{gubun}/history-list-total/{page?}', [SectionPostController::class, 'history_list_total'])->name('total.history.list')->middleware('auth:api'); // 섹션 포스트 전체(구분) 히스토리.
 
         });
 
