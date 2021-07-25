@@ -169,6 +169,11 @@ class SectionPostController extends ApiRootController
         return Response::success_only_data($this->SectionPostServices->sectionHistoryView($gubun, $post_uuid));
     }
 
+    /**
+     * @param String $gubun
+     * @param Int $page
+     * @return mixed
+     */
     public function history_list_total(String $gubun, Int $page = 1)
     {
         $result = $this->SectionPostServices->sectionPostTotalHistorys($gubun, $page);

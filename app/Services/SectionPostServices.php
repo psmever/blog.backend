@@ -200,6 +200,12 @@ class SectionPostServices
         ];
     }
 
+    /**
+     * 히스토리 구분 전체 리스트.
+     * @param String $gubun
+     * @param Int $page
+     * @return array
+     */
     public function sectionPostTotalHistorys(String $gubun = 'S07010', Int $page = 1 ) : array
     {
         $task = collect($this->sectionPostsRepository->sectionPostHistoryTotalList($gubun, $page))->toArray();

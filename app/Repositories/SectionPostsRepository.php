@@ -150,6 +150,12 @@ class SectionPostsRepository implements SectionPostsRepositoryInterface
             ])->orderBy('created_at','DESC')->simplePaginate(env('DEFAULT_PAGEING_COUNT', 15), ['*'], 'page', $pages);
     }
 
+    /**
+     * 히스토리 구분 전체.
+     * @param String $gubun
+     * @param Int $pages
+     * @return object
+     */
     public function sectionPostHistoryTotalList(String $gubun, Int $pages) : object
     {
         return $this->SectionPosts::with(['user', 'gubun'])
