@@ -114,9 +114,9 @@ class Handler extends ExceptionHandler
 
             Log::channel('NotFoundHttpLog')->error($loggerMessage['file']);
 
-            if (env('APP_ENV') != "testing") {
-                Log::channel('slack')->debug($loggerMessage['slack']);
-            }
+//            if (env('APP_ENV') != "testing") {
+//                Log::channel('slack')->debug($loggerMessage['slack']);
+//            }
 
             return Response::error(404, $error_message);
         });
