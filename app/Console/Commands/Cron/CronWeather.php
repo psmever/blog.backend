@@ -28,7 +28,7 @@ class CronWeather extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = '기상청 날씨 데이터 업데이트.';
 
     /**
      * Create a new command instance.

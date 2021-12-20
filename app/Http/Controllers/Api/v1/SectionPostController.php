@@ -119,4 +119,69 @@ class SectionPostController extends ApiRootController
         $this->SectionPostServices->incrementPostsViewCount($post_uuid);
         return Response::success_only_message();
     }
+
+    /**
+     * 히스토리 보이게 처리.
+     * @param String $post_uuid
+     * @return mixed
+     */
+    public function manage_display(String $post_uuid)
+    {
+        $this->SectionPostServices->updateDisplaySectionPostDisplayFlag($post_uuid);
+        return Response::success_only_message();
+    }
+
+    /**
+     * 히스토리 안보이게 처리.
+     * @param String $post_uuid
+     * @return mixed
+     */
+    public function manage_display_hidden(String $post_uuid)
+    {
+        $this->SectionPostServices->updateHideSectionPostDisplayFlag($post_uuid);
+        return Response::success_only_message();
+    }
+
+    /**
+     * 히스토리 목록.
+     * @param String $gubun
+     * @param Int $page
+     * @return mixed
+     */
+    public function history_list(String $gubun, Int $page = 1)
+    {
+        $result = $this->SectionPostServices->sectionPostHistorys($gubun, $page);
+        if(empty($result['historys'])) {
+            return Response::success_no_content();
+        } else {
+            return Response::success_only_data($result);
+        }
+    }
+
+    /**
+     * 히스토리 보기.
+     * @param String $gubun
+     * @param String $post_uuid
+     * @return mixed
+     */
+    public function history_view(String $gubun, String $post_uuid)
+    {
+        return Response::success_only_data($this->SectionPostServices->sectionHistoryView($gubun, $post_uuid));
+    }
+
+    /**
+     * @param String $gubun
+     * @param Int $page
+     * @return mixed
+     */
+    public function history_list_total(String $gubun, Int $page = 1)
+    {
+        $result = $this->SectionPostServices->sectionPostTotalHistorys($gubun, $page);
+        if(empty($result['historys'])) {
+            return Response::success_no_content();
+        } else {
+            return Response::success_only_data($result);
+        }
+    }
+
 }

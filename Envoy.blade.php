@@ -1,4 +1,4 @@
-@servers(['prod' => 'oracle_api', 'stage' => 'local_server'])
+@servers(['prod' => 'oracle_api', 'stage' => 'home-server'])
 
 @setup
     $stage_root_directory = "/var/www/site/blog/stage.backend";

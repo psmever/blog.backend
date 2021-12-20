@@ -500,7 +500,7 @@ class PostsServices
             if ($request->file('image')->isValid()) {
 
                 $validator = Validator::make($request->all(), [
-                    'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                    'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
                 ],
                     [
                         'image.required' => __('default.post.image_required'),

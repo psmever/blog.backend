@@ -371,13 +371,20 @@ class SpecialtyServices
             throw new ModelNotFoundException();
         }
 
-        return array_map(function($item) {
-            return [
-                'defcnt' => $item['defcnt'], // 확진자수.
-                'isolclearcnt' => $item['isolclearcnt'], // 격리해제.
-                'deathcnt' => $item['deathcnt'], // 사망수.
-                'incdec' => $item['incdec'], // 전일대비 증감.
-            ];
-        } , $covid_totals);
+        return [
+            'covid_date' => $covid_totals[0]['stdday'],
+            'today' => [
+                'defcnt' => $covid_totals[0]['defcnt'], // 확진자수.
+                'isolclearcnt' => $covid_totals[0]['isolclearcnt'], // 격리해제.
+                'deathcnt' => $covid_totals[0]['deathcnt'], // 사망수.
+                'incdec' => $covid_totals[0]['incdec'], // 전일대비 증감.
+            ],
+            'yesterday' => [
+                'defcnt' => $covid_totals[1]['defcnt'], // 확진자수.
+                'isolclearcnt' => $covid_totals[1]['isolclearcnt'], // 격리해제.
+                'deathcnt' => $covid_totals[1]['deathcnt'], // 사망수.
+                'incdec' => $covid_totals[1]['incdec'], // 전일대비 증감.
+            ]
+        ];
     }
 }

@@ -26,7 +26,7 @@ class CronCovid extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = '코로나 데이터 업데이트.';
 
     /**
      * Create a new command instance.
