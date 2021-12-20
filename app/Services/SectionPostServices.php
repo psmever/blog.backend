@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Exceptions\CustomException;
 use App\Supports\Facades\GuitarClass;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Repositories\SectionPostsRepository;
@@ -119,5 +120,124 @@ class SectionPostServices
         if(!$this->sectionPostsRepository->incrementPostsViewCount($post_uuid)) {
             throw new CustomException(__('default.exception.pdo_exception'));
         }
+    }
+
+    /**
+     * @param String $post_uuid
+     */
+    public function updateHideSectionPostDisplayFlag(String $post_uuid) : void
+    {
+        if(!$this->sectionPostsRepository->updatePostsDisplayFlagHidden($post_uuid)) {
+            throw new ModelNotFoundException('');
+        }
+    }
+
+    /**
+     * @param String $post_uuid
+     */
+    public function updateDisplaySectionPostDisplayFlag(String $post_uuid) : void
+    {
+        if(!$this->sectionPostsRepository->updatePostsDisplayFlagDisplay($post_uuid)) {
+            throw new ModelNotFoundException('');
+        }
+    }
+
+    /**
+     * @param String $gubun
+     * @param Int $page
+     * @return array
+     */
+    public function sectionPostHistorys(String $gubun = 'S07010', Int $page = 1) : array
+    {
+        $task = collect($this->sectionPostsRepository->sectionPostHistoryList($gubun, $page))->toArray();
+        return [
+            'per_page' => $task['per_page'],
+            'current_page' => $task['current_page'],
+            'hasmore' => !((count($task['data']) < env('DEFAULT_PAGEING_COUNT', 15))),
+            'historys' => array_map(function($item) {
+                $smallContents = function($contents) {
+                    $text = Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
+                    $textArray = array_filter(explode("\n", $text), fn($value) => !empty($value));
+                    return $textArray[0];
+                };
+
+                $created_time = function($timestamp) {
+                    return GuitarClass::convertTimeToString(strtotime($timestamp));
+                };
+
+                return [
+                    'post_uuid' => $item['post_uuid'],
+                    'gubun' => [
+                        'code_id' => $item['gubun']['code_id'],
+                        'code_name' => $item['gubun']['code_name'],
+                    ],
+                    'smal_content' => $smallContents($item['contents_html']),
+                    'created_at' => Carbon::parse($item['created_at'])->format('Y년 m월 d일'),
+                    'created_time' => $created_time($item['created_at'])
+                ];
+            } , $task['data'])
+        ];
+    }
+
+    /**
+     * @param String $gubun
+     * @param String $post_uuid
+     * @return array
+     */
+    public function sectionHistoryView(String $gubun, String $post_uuid) : array
+    {
+        $task = $this->sectionPostsRepository->sectionPostHistoryView($gubun, $post_uuid);
+        $detail_created = function($timestamp) {
+            return GuitarClass::convertTimeToString(strtotime($timestamp));
+        };
+
+        return [
+            'post_uuid' => $task->post_uuid,
+            'contents_html' => $task->contents_html,
+            'contents_text' => $task->contents_text,
+            'markdown' => $task->markdown,
+            'created' => $detail_created($task->created_at),
+        ];
+    }
+
+    /**
+     * 히스토리 구분 전체 리스트.
+     * @param String $gubun
+     * @param Int $page
+     * @return array
+     */
+    public function sectionPostTotalHistorys(String $gubun = 'S07010', Int $page = 1 ) : array
+    {
+        $task = collect($this->sectionPostsRepository->sectionPostHistoryTotalList($gubun, $page))->toArray();
+        return [
+            'per_page' => $task['per_page'],
+            'current_page' => $task['current_page'],
+            'hasmore' => !((count($task['data']) < env('DEFAULT_PAGEING_COUNT', 15))),
+            'historys' => array_map(function($item) {
+                $smallContents = function($contents) {
+                    $text = Str::limit(strip_tags(htmlspecialchars_decode($contents)), 400);
+                    $textArray = array_filter(explode("\n", $text), fn($value) => !empty($value));
+                    return $textArray[0];
+                };
+
+                $created_time = function($timestamp) {
+                    return GuitarClass::convertTimeToString(strtotime($timestamp));
+                };
+
+                return [
+                    'post_uuid' => $item['post_uuid'],
+                    'gubun' => [
+                        'code_id' => $item['gubun']['code_id'],
+                        'code_name' => $item['gubun']['code_name'],
+                    ],
+                    'smal_content' => $smallContents($item['contents_html']),
+                    'publish' => $item['publish'],
+                    'active' => $item['active'],
+                    'display_flag' => $item['display_flag'],
+                    'created_at' => Carbon::parse($item['created_at'])->format('Y년 m월 d일'),
+                    'created_time' => $created_time($item['created_at'])
+                ];
+            } , $task['data'])
+        ];
     }
 }

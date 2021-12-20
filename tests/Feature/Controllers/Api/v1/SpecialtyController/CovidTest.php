@@ -38,15 +38,23 @@ class CovidTest extends TestCase
     {
         CovidMaster::factory()->create();
         CovidState::factory()->create();
+        CovidState::factory()->create();
 
-        // print_r(CovidMaster::all()->toArray());
-        // print_r(CovidState::all()->toArray);
+//         print_r(CovidMaster::all()->toArray());
+//         print_r(CovidState::all());
 
         $response = $this->withHeaders($this->getTestApiHeaders())->json('GET', '/api/v1/specialty/covid');
-        // $response->dump();
+//         $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            [
+            'covid_date',
+            'today' => [
+                "defcnt",
+                "isolclearcnt",
+                "deathcnt",
+                "incdec"
+            ],
+            'yesterday' => [
                 "defcnt",
                 "isolclearcnt",
                 "deathcnt",
