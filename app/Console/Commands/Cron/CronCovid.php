@@ -67,7 +67,7 @@ class CronCovid extends Command
         //    CovidState::truncate();
         //    Schema::enableForeignKeyConstraints();
 
-        try {
+//        try {
 
             $response = Http::withOptions([
                 'debug' => false,
@@ -96,7 +96,7 @@ class CronCovid extends Command
                         'stdDay' => $stdDay,                        // 기준일시
                         'updateDt' => $updateDt,                    // 수정일시분초
                         'defCnt' => $defCnt,                        // 확진자 수
-                        'isolIngCnt' => $isolIngCnt,                // 격리중 환자수
+//                        'isolIngCnt' => $isolIngCnt,                // 격리중 환자수
                         'overFlowCnt' => $overFlowCnt,              // 해외유입 수
                         'localOccCnt' => $localOccCnt,              // 지역발생 수
                     ] = get_object_vars((object) $item);
@@ -121,7 +121,7 @@ class CronCovid extends Command
                             'stdday' => $stdDay,
                             'updatedt' => $updateDt,
                             'defcnt' => $defCnt,
-                            'isolingcnt' => $isolIngCnt,
+                            'isolingcnt' => 0,
                             'overflowcnt' => $overFlowCnt,
                             'localocccnt' => $localOccCnt,
                         ],
@@ -142,15 +142,15 @@ class CronCovid extends Command
                 dispatch($job);
             }
 
-        } catch (\Exception $e) {
-            $job = new ServerSlackNotice((object) [
-                'type' => 'exception',
-                'message' => '코로나 정보를 가지고 오지 못했습니다(001).'
-            ]);
-            dispatch($job);
-
-            $exceptionMessage = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
-            throw new CustomException($exceptionMessage);
-        }
+//        } catch (\Exception $e) {
+//            $job = new ServerSlackNotice((object) [
+//                'type' => 'exception',
+//                'message' => '코로나 정보를 가지고 오지 못했습니다(001).'
+//            ]);
+//            dispatch($job);
+//
+//            $exceptionMessage = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
+//            throw new CustomException($exceptionMessage);
+//        }
     }
 }
