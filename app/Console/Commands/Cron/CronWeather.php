@@ -102,9 +102,9 @@ class CronWeather extends Command
                 $ny = $gridY;
 
                 $response = Http::withOptions([
-                    'debug' => false,
+                    'debug' => true,
                     'useUrlEncoding' => false,
-                ])->get("http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtFcst?serviceKey={$serviceKey}&pageNo={$pageNo}&numOfRows={$numOfRows}&dataType={$dataType}&base_date={$base_date}&base_time={$base_time}&nx={$nx}&ny={$ny}");
+                ])->get("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey={$serviceKey}&pageNo={$pageNo}&numOfRows={$numOfRows}&dataType={$dataType}&base_date={$base_date}&base_time={$base_time}&nx={$nx}&ny={$ny}");
 
                 if($response->successful())
                 {
@@ -118,16 +118,17 @@ class CronWeather extends Command
                         return 0;
                     }
 
+
                     $item = $collection->toArray()['response']['body']['items']['item'];
-                    $pageNo = $collection->toArray()['response']['body']['pageNo'];
-                    $numOfRows = $collection->toArray()['response']['body']['numOfRows'];
+//                    $pageNo = $collection->toArray()['response']['body']['pageNo'];
+//                    $numOfRows = $collection->toArray()['response']['body']['numOfRows'];
 
                     foreach ($item as $item_element)
                     {
                         $category = $item_element['category'];
-                        $fcstDate = $item_element['fcstDate'];
-                        $fcstTime = $item_element['fcstTime'];
-                        $fcstValue = $item_element['fcstValue'];
+                        $fcstDate = $item_element['baseDate'];
+                        $fcstTime = $item_element['baseTime'];
+                        $fcstValue = $item_element['obsrValue'];
 
                         if(empty($newData[$fcstDate][$fcstTime][$category])) {
                             $newData[$fcstDate][$fcstTime][$category] = $fcstValue;
@@ -143,12 +144,12 @@ class CronWeather extends Command
                                 [
                                     'T1H' => $step2["T1H"],
                                     'RN1' => $step2["RN1"],
-                                    'SKY' => $step2["SKY"],
+                                    'SKY' => $step2["SKY"] ?? '',
                                     'UUU' => $step2["UUU"],
                                     'VVV' => $step2["VVV"],
                                     'REH' => $step2["REH"],
                                     'PTY' => $step2["PTY"],
-                                    'LGT' => $step2["LGT"],
+                                    'LGT' => $step2["LGT"] ?? '',
                                     'VEC' => $step2["VEC"],
                                     'WSD' => $step2["WSD"]
                                 ],
@@ -181,7 +182,8 @@ class CronWeather extends Command
 
             $exceptionMessage = $e->getMessage() . ' (오류코드:' . $e->getCode() . ')';
             throw new CustomException($exceptionMessage);
-
         }
+
+        return 0;
     }
 }
