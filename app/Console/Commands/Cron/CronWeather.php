@@ -102,7 +102,7 @@ class CronWeather extends Command
                 $ny = $gridY;
 
                 $response = Http::withOptions([
-                    'debug' => true,
+                    'debug' => false,
                     'useUrlEncoding' => false,
                 ])->get("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey={$serviceKey}&pageNo={$pageNo}&numOfRows={$numOfRows}&dataType={$dataType}&base_date={$base_date}&base_time={$base_time}&nx={$nx}&ny={$ny}");
 
