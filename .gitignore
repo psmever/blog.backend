@@ -1,39 +1,19 @@
+/.phpunit.cache
 /node_modules
+/public/build
 /public/hot
 /public/storage
 /storage/*.key
 /vendor
 .env
 .env.backup
+.env.production
 .phpunit.result.cache
-docker-compose.override.yml
 Homestead.json
 Homestead.yaml
+auth.json
 npm-debug.log
 yarn-error.log
-
-
-# local file
-storage/*.key
-storage/base_info.json
-storage/forlocal
-storage/framework
-storage/sitedata/notice.txt
-
-# Editor
-.vscode
-.DS_Store
-.idea
-
-# Laravel Testing
-.env.testing
-
-# deploy
-deploy.sh
-
-# bootstrap file
-boots.txt
-
-# test controller
-app/Http/Controllers/Api/TestController.php
-app/Http/Controllers/Web/TestController.php
+/.fleet
+/.idea
+/.vscode
