@@ -21,7 +21,7 @@
 # docker-compose up -d
 
 * 컨테이너 접속
-# docker-compose exec nicepage-service /bin/bash
+# docker-compose exec blog-backend /bin/bash
 
 * production mysql
 /dockerfiles/*.pem 추가.
