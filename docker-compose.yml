@@ -1,0 +1,26 @@
+services:
+    blog-backend:
+        build:
+            context: './docker'
+            dockerfile: Dockerfile
+        environment:
+            TZ: "Asia/Seoul"
+        container_name: blog-backend
+        hostname: blog-backend
+        domainname: localdomain
+        ports:
+            - "8080:80"
+            - "8443:443"
+        stdin_open: true
+        tty: true
+        volumes:
+            - .:/var/www:rw
+            - ./docker/data:/tmp/data
+        command:
+            - /usr/local/bin/start.sh
+        networks:
+            - blog-networks
+
+networks:
+    blog-networks:
+        driver: bridge
