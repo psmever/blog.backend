@@ -60,8 +60,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN /bin/bash /usr/local/bin/entrypoint.sh
 
-RUN curl -sS https://getcomposer.org/installer | php
+RUN curl -s https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
+RUN composer about
 
 RUN chown www-data:www-data /var/www
 ADD ./files/nginx_default /etc/nginx/sites-available/default
