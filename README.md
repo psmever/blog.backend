@@ -19,8 +19,36 @@
 
 # psmever's Blog Back-End Source.
 
-## Docker
+## development
+```bash
 
+* docker 초기화
+
+# composer docker:prune
+
+
+* docker build
+
+# composer docker:build
+
+
+* docker shell
+
+# composer docker:shell
+
+
+* docker kill
+
+# composer docker:kill
+
+
+* app start
+
+# composer app:start
+```
+
+
+## Docker Etc Command
 ```bash
 * 빌드
 # docker-compose build --force-rm

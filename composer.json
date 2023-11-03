@@ -45,6 +45,31 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "app-reset": [
+            "composer dump-autoload",
+            "php artisan optimize:clear",
+            "php artisan migrate:refresh --seed",
+            "php artisan passport:install"
+        ],
+        "app-clear": [
+            "composer dump-autoload",
+            "php artisan optimize:clear"
+        ],
+        "docker:prune": [
+            "docker system prune -a"
+        ],
+        "docker:build": [
+            "docker-compose build --force-rm"
+        ],
+        "docker:shell": [
+            "docker-compose exec blog-backend /bin/bash"
+        ],
+        "docker:kill": [
+            "docker container kill blog-backend"
+        ],
+        "app:start": [
+            "docker-compose up"
         ]
     },
     "extra": {
