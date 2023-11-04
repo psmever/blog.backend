@@ -22,5 +22,9 @@ use App\Http\Controllers\Api\TestController;
 Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
 	Route::controller(TestController::class)->group(function () {
 		Route::get('/default', 'default')->name('default');
+        Route::get('/success-no-content', 'successNoContent')->name('success-no-content');
+        Route::get('/success', 'success')->name('success');
+        Route::get('/client-error', 'clientError')->name('client-error');
+        Route::get('/server-error', 'serverError')->name('server-error');
 	});
 });

@@ -15,7 +15,6 @@ class ApiBeforeMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-		echo "ApiBeforeMiddleware";
         return $next($request);
     }
 }
