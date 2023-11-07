@@ -2,60 +2,69 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
+use stdClass;
 
 class ResponseMacroServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
-    public function register(): void
-    {
-        //
-    }
+	/**
+	 * Register services.
+	 */
+	public function register(): void
+	{
+		//
+	}
 
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
-    {
-        /**
-         * 데이터 없을때
-         */
-        Response::macro('successNoContent', function () {
-            $response = new \stdClass();
-            return Response()->json($response, 204);
-        });
+	/**
+	 * Bootstrap services.
+	 */
+	public function boot(Request $request): void
+	{
+		/**
+		 * 성공 No Contents Render Macro
+		 */
+		Response::macro('SuccessNoContentMacro', function () {
+			$response = new stdClass();
+			return Response()->json($response, 204);
+		});
 
-        /**
-         * 정상 처리
-         */
-        Response::macro('success', function ($paramsData = null, $paramsStatusCode = null) {
-            $statusCode = $paramsStatusCode ? $paramsStatusCode : 200;
-            $responseData  = $paramsData ? $paramsData : [
-                'message' => __('response.success'),
-            ];
+		/**
+		 * 결과 커스텀 하게 사용.
+		 */
+		Response::macro('SuccessMacro', function ($paramData = NULL, $message = null, $statusCode = 200) use ($request) {
 
-            return Response()->json($responseData, $statusCode);
-        });
+			if (!$paramData) {
+				$response = [
+					'message' => $message ?: __('response.success')
+				];
+			} else {
+				$response = $paramData;
+			}
 
-        /**
-         * 클라이언트 에러
-         */
-        Response::macro('clientError', function ($message = null) {
-            return Response()->json([
-                'message' => $message ? $message : __('response.client-error')
-            ], 400);
-        });
+			return Response()->json($response, $statusCode);
+		});
 
-        /**
-         * 서버 에러
-         */
-        Response::macro('serverError', function ($message = null) {
-            return Response()->json([
-                'message' => $message ? $message : __('response.server-error')
-            ], 500);
-        });
-    }
+		/**
+		 * 기본 Error Render Macro.
+		 */
+		Response::macro('ErrorMacro', function ($message = null, $errors = NULL, $statusCode = 400) use ($request) {
+
+			$response = [
+				'message' => $message ?: __('response.error')
+			];
+
+			if (App::environment(['local', 'development']) && $errors) {
+				$response['error'] = $errors;
+			}
+
+			if ($request->wantsJson()) {
+				return Response()->json($response, $statusCode);
+			}
+
+			return Response(implode("\n", $response), $statusCode);
+		});
+	}
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\TestController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,9 +22,13 @@ use App\Http\Controllers\Api\TestController;
 Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
 	Route::controller(TestController::class)->group(function () {
 		Route::get('/default', 'default')->name('default');
-        Route::get('/success-no-content', 'successNoContent')->name('success-no-content');
-        Route::get('/success', 'success')->name('success');
-        Route::get('/client-error', 'clientError')->name('client-error');
-        Route::get('/server-error', 'serverError')->name('server-error');
+		Route::get('/success-test', 'successTest')->name('success.test');
+		Route::get('/error-test', 'errorTest')->name('error.test');
+	});
+});
+
+Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
+	Route::controller(SystemController::class)->group(function () {
+		Route::get('/status', 'SystemStatus')->name('default');
 	});
 });
