@@ -2,10 +2,11 @@
 
 service php8.2-fpm start
 
-tail -F /var/www/storage/logs/laravel.log | xargs -I {} echo "laravel.log -> {}" &
-tail -F /var/log/php8.2-fpm.log | xargs -I {} echo "php8.2-fpm.log -> {}" &
-tail -F /var/log/nginx/access.log | xargs -I {} echo "access.log -> {}" &
-tail -F /var/log/nginx/error.log | xargs -I {} echo "error.log -> {}" &
+tail -f "/var/www/storage/logs/laravel.log" | sed 's/^/laravel: /' &
+tail -f "/var/log/php8.2-fpm.log" | sed 's/^/php8.2-fpm: /' &
+tail -f "/var/log/nginx/access.log" | sed 's/^/access.log: /' &
+tail -f "/var/log/nginx/error.log" | sed 's/^/error.log: /' &
+
 
 nginx -g "daemon off;"
 
