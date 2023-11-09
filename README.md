@@ -20,6 +20,7 @@
 # psmever's Blog Back-End Source.
 
 ## development
+
 ```bash
 
 * docker 초기화
@@ -47,8 +48,8 @@
 # composer app:start
 ```
 
-
 ## Docker Etc Command
+
 ```bash
 * 빌드
 # docker-compose build --force-rm
@@ -77,12 +78,17 @@
 * production mysql
 /dockerfiles/*.pem 추가.
 # ssh -i /tmp/data/*.pem user@xxx.xxx.xxx.xxx -N -L xxxx:localhost:3306
+
+* docker 명형어 in container
+# docker exec blog-backend /bin/bash -c "cd /var/www && composer app-clear:dev"
 ```
 
 ## Contributing
+
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
 ## License
+
 [MIT](https://choosealicense.com/licenses/mit/)
