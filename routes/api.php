@@ -30,5 +30,6 @@ Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
 Route::group(['prefix' => 'system', 'as' => 'system.'], function () {
 	Route::controller(SystemController::class)->group(function () {
 		Route::get('/status', 'SystemStatus')->name('default');
+		Route::get('/notice', 'SystemNotice')->name('notice');
 	});
 });
