@@ -8,8 +8,6 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -45,95 +43,174 @@ class Handler extends ExceptionHandler
 
 		});
 
-		$this->renderable(function (ClientErrorException $e) {
-
+		$this->renderable(function (ClientErrorException $e, $request) {
+			$statusCode = 404;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.client-error');
 
 			$this->serverExceptionLog('ClientErrorException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 400);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (NotFoundHttpException $e) {
+		$this->renderable(function (NotFoundHttpException $e, $request) {
+			$statusCode = 404;
 			$errorInfo = $this->generateError($e);
 			$message = __('exception.not-found-http');
 
 			$this->serverExceptionLog('NotFoundHttpException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 404);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (MethodNotAllowedHttpException $e) {
+		$this->renderable(function (MethodNotAllowedHttpException $e, $request) {
+			$statusCode = 405;
 			$errorInfo = $this->generateError($e);
 			$message = __('exception.method-not-allowed-http');
 
 			$this->serverExceptionLog('MethodNotAllowedHttpException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 405);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (ServerErrorException $e) {
+		$this->renderable(function (ServerErrorException $e, $request) {
+			$statusCode = 500;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.server-error');
 
 			$this->serverExceptionLog('ServerErrorException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 500);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (ErrorException $e) {
+		$this->renderable(function (ErrorException $e, $request) {
+			$statusCode = 400;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.error');
 
 			$this->serverExceptionLog('ErrorException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (PDOException $e) {
+		$this->renderable(function (PDOException $e, $request) {
+			$statusCode = 500;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.server-pdo-error');
 
 			$this->serverExceptionLog('PDOException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 500);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (ForbiddenErrorException $e) {
+		$this->renderable(function (ForbiddenErrorException $e, $request) {
+			$statusCode = 403;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.forbidden-error');
 
 			$this->serverExceptionLog('ForbiddenErrorException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 403);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (AuthenticationException $e) {
+		$this->renderable(function (AuthenticationException $e, $request) {
+			$statusCode = 401;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.authentication');
 
 			$this->serverExceptionLog('AuthenticationException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 401);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (ThrottleRequestsException $e) {
+		$this->renderable(function (ThrottleRequestsException $e, $request) {
+			$statusCode = 429;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.throttle-exception');
 
 			$this->serverExceptionLog('ThrottleRequestsException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 429);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 
-		$this->renderable(function (BadMethodCallException $e) {
+		$this->renderable(function (BadMethodCallException $e, $request) {
+			$statusCode = 404;
 			$errorInfo = $this->generateError($e);
 			$message = $e->getMessage() ?: __('exception.bad-method-call');
 
 			$this->serverExceptionLog('BadMethodCallException', $message, $errorInfo);
 
-			return Response::ErrorMacro($message, $errorInfo, 404);
+			if ($request->wantsJson()) {
+				return Response::ErrorMacro($message, $errorInfo, $statusCode);
+			} else {
+				return response()->view('pages.error', [
+					'message' => $message,
+					'error' => $errorInfo
+				], $statusCode);
+			}
 		});
 	}
 
@@ -183,13 +260,7 @@ EOF
 		}
 	}
 
-	/**
-	 * @param $request
-	 * @param Throwable $e
-	 * @return JsonResponse|RedirectResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
-	 * @throws Throwable
-	 */
-	public function render($request, Throwable $e): \Illuminate\Http\Response|JsonResponse|\Symfony\Component\HttpFoundation\Response|RedirectResponse
+	public function render($request, Throwable $e)
 	{
 		/**
 		 * renderable 에서 ModelNotFoundException 를 캐치 못해서 render 함수에 추가.
