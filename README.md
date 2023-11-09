@@ -46,6 +46,9 @@
 * app start
 
 # composer app:start
+
+* app clear
+# docker exec blog-backend /bin/bash -c "cd /var/www && composer app-clear:dev"
 ```
 
 ## Docker Etc Command
@@ -78,9 +81,6 @@
 * production mysql
 /dockerfiles/*.pem 추가.
 # ssh -i /tmp/data/*.pem user@xxx.xxx.xxx.xxx -N -L xxxx:localhost:3306
-
-* docker 명형어 in container
-# docker exec blog-backend /bin/bash -c "cd /var/www && composer app-clear:dev"
 ```
 
 ## Contributing
