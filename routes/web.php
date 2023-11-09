@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\TestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('landing');
+	return view('pages.landing', ['showEnvironment' => true]);
 });
+
+Route::group(['prefix' => 'web', 'as' => 'web.'], function () {
+	Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
+		Route::controller(TestController::class)->group(function () {
+			Route::get('/default', 'default')->name('default');
+		});
+	});
+});
+

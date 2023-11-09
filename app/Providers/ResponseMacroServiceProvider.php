@@ -60,11 +60,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
 				$response['error'] = $errors;
 			}
 
-			if ($request->wantsJson()) {
-				return Response()->json($response, $statusCode);
-			}
-
-			return Response(implode("\n", $response), $statusCode);
+			return Response()->json($response, $statusCode);
 		});
 	}
 }
