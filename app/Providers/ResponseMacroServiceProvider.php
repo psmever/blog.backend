@@ -41,7 +41,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
 					'message' => $message ?: __('response.success')
 				];
 			} else {
-				$response = $paramData;
+				$response = is_array($paramData) ? $paramData : ['item' => $paramData];
 			}
 
 			return Response()->json($response, $statusCode);
