@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Http\Services;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -35,5 +35,10 @@ class SystemService
 		}
 
 		return $noticeContents;
+	}
+
+	function systemAppData(): array
+	{
+
 	}
 }
