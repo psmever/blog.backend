@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\ErrorException;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +15,7 @@ class ApiBeforeMiddleware
 	 * Handle an incoming request.
 	 *
 	 * @param Closure(Request): (Response) $next
+	 * @throws ErrorException
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
@@ -43,6 +45,19 @@ Body: $logBodyInfo
 
 EOF;
 		Log::channel('request-log')->info($log);
+		
+		if (!$request->wantsJson()) {
+			throw new ErrorException(__('exception.wants-json'));
+		}
+
+		$exceptionRouteName = [''];
+		$clientType = $request->header('client-type');
+
+		if (!in_array(Route::currentRouteName(), $exceptionRouteName)) {
+			if (empty($clientType) || !($clientType == config('appData.basic.clientCode.front') || $clientType == config('appData.basic.clientCode.front') || $clientType == config('appData.basic.clientCode.front'))) {
+				throw new ErrorException(__('exception.client-type-error'));
+			}
+		}
 
 		$request->LocalsMergeMacro('requestIndex', $requestIndex);
 
