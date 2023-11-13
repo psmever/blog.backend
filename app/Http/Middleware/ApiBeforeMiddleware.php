@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,18 +20,16 @@ class ApiBeforeMiddleware
 		$requestIndex = date('YmdHis') . '-' . mt_rand();
 
 		// request log
-		if (App::environment(['local'])) {
+		$environment = env('APP_ENV');
+		$request_ip = request()->ip();
+		$current_url = url()->current();
+		$logRouteAction = Route::currentRouteAction();
+		$logRouteName = Route::currentRouteName();
+		$method = request()->method();
+		$logHeaderInfo = json_encode(request()->header());
+		$logBodyInfo = json_encode(request()->all());
 
-			$environment = env('APP_ENV');
-			$request_ip = request()->ip();
-			$current_url = url()->current();
-			$logRouteAction = Route::currentRouteAction();
-			$logRouteName = Route::currentRouteName();
-			$method = request()->method();
-			$logHeaderInfo = json_encode(request()->header());
-			$logBodyInfo = json_encode(request()->all());
-
-			Log::channel('request-log')->info(<<<EOF
+		$log = <<<EOF
 
 REQUEST_INDEX: $requestIndex
 ENV: $environment
@@ -44,9 +41,8 @@ Method: $method
 Header: $logHeaderInfo
 Body: $logBodyInfo
 
-EOF
-			);
-		}
+EOF;
+		Log::channel('request-log')->info($log);
 
 		$request->LocalsMergeMacro('requestIndex', $requestIndex);
 
