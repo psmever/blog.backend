@@ -63,7 +63,7 @@
       "composer dump-autoload",
       "php artisan optimize:clear"
     ],
-    "app-clear:dev": [
+    "app:clear-dev": [
       "composer dump-autoload",
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:models -W -R",
@@ -84,6 +84,11 @@
     ],
     "app:start": [
       "docker-compose up"
+    ],
+    "helper:update": [
+      "@php artisan ide-helper:generate",
+      "@php artisan ide-helper:models -W -R",
+      "@php artisan ide-helper:meta"
     ]
   },
   "extra": {
