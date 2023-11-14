@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'test', 'as' => 'test.'], function () {
 	Route::controller(TestController::class)->group(function () {
 		Route::get('/default', 'default')->name('default');
+		Route::post('/test-user-create', 'testUserCreate')->name('test.user.create');
 		Route::get('/success-test', 'successTest')->name('success.test');
 		Route::get('/error-test', 'errorTest')->name('error.test');
 	});

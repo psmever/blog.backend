@@ -16,6 +16,7 @@ return [
 			'android' => '010030',
 		],
 		'normal_user_level' => '020010',
+		'admin_user_level' => '020999',
 	],
 
 	'codes' => [
