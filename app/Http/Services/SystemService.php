@@ -2,16 +2,29 @@
 
 namespace App\Http\Services;
 
+use App\Http\Repositories\CodesRepositories;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SystemService
 {
 	/**
+	 * @var Request
+	 */
+	protected Request $request;
+
+	/**
+	 * @var CodesRepositories
+	 */
+	protected CodesRepositories $codesRepositories;
+
+	/**
 	 *
 	 */
-	function __construct()
+	function __construct(Request $request, CodesRepositories $codesRepositories)
 	{
-		//
+		$this->request = $request;
+		$this->codesRepositories = $codesRepositories;
 	}
 
 	/**
@@ -37,8 +50,39 @@ class SystemService
 		return $noticeContents;
 	}
 
+	/**
+	 * 공통 데이터
+	 * @return array
+	 */
 	function systemAppData(): array
 	{
+		$codeResult = $this->codesRepositories->all();
+		return [
+			'code' => call_user_func(function () use ($codeResult) {
+				return [
+					'step1' => $codeResult->map(function ($code) {
+						return [
+							'code' => $code->code,
+							'name' => $code->code_name,
+						];
+					})->filter(function ($e) {
+						return $e['code'];
+					})->values(),
+					'step2' => call_user_func(function () use ($codeResult) {
+						$codes = array();
+						foreach ($codeResult as $element) {
+							if ($element->group && $element->code) {
+								$codes[$element->group][] = [
+									'code' => $element->code,
+									'name' => $element->code_name,
+								];
+							}
+						}
+						return $codes;
+					})
+				];
+			})
 
+		];
 	}
 }
