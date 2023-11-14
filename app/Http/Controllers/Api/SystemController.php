@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Service\SystemService;
+use App\Http\Services\SystemService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 
@@ -28,7 +28,7 @@ class SystemController extends RootController
 	}
 
 	// 시스템 공지 사항
-	public function SystemNotice()
+	public function SystemNotice(): JsonResponse
 	{
 		$notice = $this->systemService->systemNotice();
 
@@ -39,5 +39,10 @@ class SystemController extends RootController
 				'contents' => $notice
 			]);
 		}
+	}
+
+	public function SystemAppData(): JsonResponse
+	{
+		return Response::SuccessMacro($this->systemService->systemAppData());
 	}
 }
