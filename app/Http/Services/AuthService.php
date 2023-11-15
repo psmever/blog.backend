@@ -7,7 +7,6 @@ use App\Exceptions\ClientErrorException;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Validator;
 
 class AuthService
@@ -47,8 +46,8 @@ class AuthService
 			throw new ClientErrorException(__('response.auth-password-attempt'));
 		}
 
-		$accessToken = $this->currentRequest->user()->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinutes(App::environment(['local']) ? 5 : config('sanctum.expiration')))->plainTextToken;
-		$refreshToken = $this->currentRequest->user()->createToken('refresh_token', [TokenAbility::REFRESH_TOKEN->value], Carbon::now()->addMinutes(App::environment(['local']) ? 10 : config('sanctum.rt_expiration')))->plainTextToken;
+		$accessToken = $this->currentRequest->user()->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinutes(config('sanctum.expiration')))->plainTextToken;
+		$refreshToken = $this->currentRequest->user()->createToken('refresh_token', [TokenAbility::REFRESH_TOKEN->value], Carbon::now()->addMinutes(config('sanctum.rt_expiration')))->plainTextToken;
 
 		return [
 			'access_token' => $accessToken,
@@ -62,7 +61,7 @@ class AuthService
 	 */
 	public function RefreshTokenAttempt(): array
 	{
-		$accessToken = $this->currentRequest->user()->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinutes(App::environment(['local']) ? 5 : config('sanctum.expiration')))->plainTextToken;
+		$accessToken = $this->currentRequest->user()->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinutes(config('sanctum.expiration')))->plainTextToken;
 
 		return [
 			'access_token' => $accessToken,
