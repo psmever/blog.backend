@@ -165,7 +165,7 @@ class Handler extends ExceptionHandler
 		$this->renderable(function (AuthenticationException $e, $request) {
 			$statusCode = 401;
 			$errorInfo = $this->generateError($e);
-			$message = $e->getMessage() ?: __('exception.authentication');
+			$message = __('exception.authentication');
 
 			$this->serverExceptionLog('AuthenticationException', $message, $errorInfo);
 

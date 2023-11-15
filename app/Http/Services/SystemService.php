@@ -57,6 +57,7 @@ class SystemService
 	function systemAppData(): array
 	{
 		$codeResult = $this->codesRepositories->all();
+
 		return [
 			'code' => call_user_func(function () use ($codeResult) {
 				return [
