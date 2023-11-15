@@ -34,7 +34,7 @@ class UserService
 			'type' => 'required',
 			'level' => 'required',
 			'name' => 'required',
-			'email' => 'required',
+			'email' => 'required|unique:users',
 			'password' => 'required',
 		],
 			[
@@ -42,6 +42,7 @@ class UserService
 				'level.required' => '레벨을 입력해 주세요.',
 				'name.required' => '이름을 입력해 주세요.',
 				'email.required' => '이메일을 입력해 주세요.',
+				'email.unique' => '존재하는 이메일 입니다.',
 				'password.required' => '비밀번호를 입력해 주세요.',
 			]);
 
@@ -49,7 +50,6 @@ class UserService
 		if ($validator->fails()) {
 			throw new ClientErrorException($validator->errors()->first());
 		}
-
 
 		return $this->userRepositories->create([
 			'uuid' => $uuid,

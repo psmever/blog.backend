@@ -8,4 +8,6 @@ return [
 	*/
 	'success' => '정상 처리 하였습니다.',
 	'error' => '문제가 발생했습니다.',
+	'auth-password-attempt' => '패스워드를 확인해 주세요.',
+	
 ];
