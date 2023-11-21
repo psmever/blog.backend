@@ -89,6 +89,9 @@
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:models -W -R",
       "@php artisan ide-helper:meta"
+    ],
+    "deploy:dev": [
+      "ssh sm@psmever.iptime.org -p42022 -t 'bash -ic \"bash ~/Workspaces/deploy/blog.project/backend-deploy.sh\"'"
     ]
   },
   "extra": {
