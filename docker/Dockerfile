@@ -66,3 +66,4 @@ RUN composer about
 
 RUN chown www-data:www-data /var/www
 ADD ./files/nginx_default /etc/nginx/sites-available/default
+WORKDIR /var/www
