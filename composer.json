@@ -53,13 +53,13 @@
     "post-create-project-cmd": [
       "@php artisan key:generate --ansi"
     ],
-    "app-reset": [
+    "app:reset": [
       "composer dump-autoload",
       "php artisan optimize:clear",
       "php artisan migrate:refresh --seed",
       "php artisan passport:install"
     ],
-    "app-clear": [
+    "app:clear": [
       "composer dump-autoload",
       "php artisan optimize:clear"
     ],
@@ -82,10 +82,10 @@
     "docker:kill": [
       "docker container kill blog-backend"
     ],
-    "app:start": [
+    "docker:start": [
       "docker-compose up"
     ],
-    "app:stop": [
+    "docker:stop": [
       "docker-compose down"
     ],
     "helper:update": [
