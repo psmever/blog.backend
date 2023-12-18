@@ -85,6 +85,9 @@
     "app:start": [
       "docker-compose up"
     ],
+    "app:stop": [
+      "docker-compose down"
+    ],
     "helper:update": [
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:models -W -R",
