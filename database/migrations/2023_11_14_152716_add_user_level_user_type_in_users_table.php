@@ -11,7 +11,7 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::table('users', function (Blueprint $table) {
-			$table->string('uuid', 50)->after('id')->unique()->default('')->comment('사용자 uuid');
+			$table->string('uuid', 10)->after('id')->unique()->default('')->comment('사용자 uuid');
 			$table->string('type', 6)->after('uuid')->default('010010')->comment('사용자 타입');
 			$table->string('level', 6)->after('type')->default('020999')->comment('사용자 레벨');
 			$table->string('nickname', 50)->after('email')->default('')->comment('사용자 닉네임');
