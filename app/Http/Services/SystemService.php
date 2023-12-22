@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Http\Repositories\CodesRepositories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Str;
 
 class SystemService
 {
@@ -47,7 +48,7 @@ class SystemService
 			return "";
 		}
 
-		return $noticeContents;
+		return Str::of($noticeContents)->trim();
 	}
 
 	/**

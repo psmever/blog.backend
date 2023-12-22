@@ -28,7 +28,7 @@ class UserService
 	 */
 	public function testUserCreate(): array
 	{
-		$uuid = Str::uuid();
+		$uuid = Str::random(10);
 
 		$validator = Validator::make($this->request->all(), [
 			'type' => 'required',
