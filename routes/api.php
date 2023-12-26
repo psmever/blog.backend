@@ -46,6 +46,7 @@ Route::group(['prefix' => 'v1', 'as' => 'v1.'], function () {
 	Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
 		Route::controller(AuthController::class)->group(function () {
 			Route::post('/login', 'Login')->name('login');
+			Route::delete('/logout', 'Logout')->name('logout')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
 			Route::get('/token-info', 'TokenInfo')->name('token.info')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
 			Route::get('/refresh-token', 'RefreshToken')->name('refresh.token')->middleware(['auth:sanctum', 'ability:' . TokenAbility::REFRESH_TOKEN->value]);
 		});

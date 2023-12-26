@@ -50,4 +50,14 @@ class AuthController extends Controller
 		return Response::SuccessMacro($this->authService->TokenInfoAttempt());
 	}
 
+	/**
+	 * 로그아웃
+	 * @return JsonResponse
+	 */
+	public function Logout(): JsonResponse
+	{
+		$this->authService->Logout();
+		return Response::SuccessNoContentMacro();
+	}
+
 }
