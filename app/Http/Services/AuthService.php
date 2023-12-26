@@ -79,4 +79,13 @@ class AuthService
 			'level' => $this->currentRequest->user()->level
 		];
 	}
+
+	/**
+	 * 로그아웃 처리.
+	 * @return void
+	 */
+	public function Logout(): void
+	{
+		$this->currentRequest->user()->currentAccessToken()->delete();
+	}
 }
