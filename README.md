@@ -45,10 +45,17 @@
 
 * app start
 
-# composer app:start
+# composer docker:start
+
+* shell connent
+
+# composer docker:shell
 
 * app clear
 # docker exec blog-backend /bin/bash -c "cd /var/www && composer app-clear:dev"
+
+* docker make controller
+# docker exec blog-backend /bin/bash -c "php artisan "
 ```
 
 ## Docker Etc Command
