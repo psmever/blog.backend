@@ -64,6 +64,28 @@ return [
 			'root' => storage_path('system'),
 		],
 
+		'media-server' => [
+			'driver' => 'sftp',
+			'host' => env('MEDIA_SERVER_HOST'),
+			'username' => env('MEDIA_SERVER_USER'),
+			'password' => env('MEDIA_SERVER_PASSWORD'),
+			'visibility' => 'public',
+			'port' => intval(env('MEDIA_SERVER_PORT')),
+			'root' => env('MEDIA_SERVER_ROOT'),
+			'permissions' => [
+				'file' => [
+					'public' => 0664,
+					'private' => 0664,
+				],
+				'dir' => [
+					'public' => 0775,
+					'private' => 0775,
+				],
+			],
+			'privateKey' => env('APP_PRIVATE_KEY_PATH'),
+		],
+
+
 	],
 
 	/*

@@ -4,6 +4,7 @@ use App\Enums\TokenAbility;
 use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\MediaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,6 +50,13 @@ Route::group(['prefix' => 'v1', 'as' => 'v1.'], function () {
 			Route::delete('/logout', 'Logout')->name('logout')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
 			Route::get('/token-info', 'TokenInfo')->name('token.info')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
 			Route::get('/refresh-token', 'RefreshToken')->name('refresh.token')->middleware(['auth:sanctum', 'ability:' . TokenAbility::REFRESH_TOKEN->value]);
+		});
+	});
+
+	// media
+	Route::group(['prefix' => 'media', 'as' => 'media.'], function () {
+		Route::controller(MediaController::class)->group(function () {
+			Route::post('/create', 'Create')->name('create')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
 		});
 	});
 });
