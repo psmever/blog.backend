@@ -2,21 +2,20 @@
 
 namespace App\Http\Repositories;
 
-use App\Models\User;
+use App\Models\MediaFiles;
 use Illuminate\Database\Eloquent\Model;
 
-class UserRepositories extends BaseRepository
+class MediaFilesRepositories extends BaseRepository
 {
+	/**
+	 * @var MediaFiles|Model
+	 */
+	protected Model|MediaFiles $model;
 
 	/**
-	 * @var Model|User
+	 * @param MediaFiles $model
 	 */
-	protected Model|User $model;
-
-	/**
-	 * @param User $model
-	 */
-	public function __construct(User $model)
+	public function __construct(MediaFiles $model)
 	{
 		parent::__construct($model);
 
@@ -27,9 +26,8 @@ class UserRepositories extends BaseRepository
 	 * @param array $payload
 	 * @return Model|null
 	 */
-	public function create(array $payload): ?Model
+	public function create(array $payload): ?model
 	{
 		return parent::create($payload);
 	}
-
 }

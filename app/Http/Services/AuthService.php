@@ -16,10 +16,12 @@ class AuthService
 	 */
 	protected Request $currentRequest;
 
+	/**
+	 * @param Request $currentRequest
+	 */
 	function __construct(Request $currentRequest)
 	{
 		$this->currentRequest = $currentRequest;
-
 	}
 
 	/**
