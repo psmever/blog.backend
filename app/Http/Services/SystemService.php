@@ -2,7 +2,7 @@
 
 namespace App\Http\Services;
 
-use App\Http\Repositories\CodesRepositories;
+use App\Http\Repositories\CodesRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Str;
@@ -15,17 +15,17 @@ class SystemService
 	protected Request $request;
 
 	/**
-	 * @var CodesRepositories
+	 * @var CodesRepository
 	 */
-	protected CodesRepositories $codesRepositories;
+	protected CodesRepository $codesRepository;
 
 	/**
 	 *
 	 */
-	function __construct(Request $request, CodesRepositories $codesRepositories)
+	function __construct(Request $request, CodesRepository $codesRepository)
 	{
 		$this->request = $request;
-		$this->codesRepositories = $codesRepositories;
+		$this->codesRepository = $codesRepository;
 	}
 
 	/**
@@ -57,7 +57,7 @@ class SystemService
 	 */
 	function systemAppData(): array
 	{
-		$codeResult = $this->codesRepositories->all();
+		$codeResult = $this->codesRepository->all();
 
 		return [
 			'code' => call_user_func(function () use ($codeResult) {
