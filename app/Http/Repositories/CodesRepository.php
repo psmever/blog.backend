@@ -5,7 +5,7 @@ namespace App\Http\Repositories;
 use App\Models\Codes;
 use Illuminate\Database\Eloquent\Model;
 
-class CodesRepositories extends BaseRepository
+class CodesRepository extends BaseRepository
 {
 	/**
 	 * @var Model

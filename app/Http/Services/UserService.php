@@ -3,7 +3,7 @@
 namespace App\Http\Services;
 
 use App\Exceptions\ClientErrorException;
-use App\Http\Repositories\UserRepositories;
+use App\Http\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Str;
@@ -11,15 +11,14 @@ use Validator;
 
 class UserService
 {
-
 	protected Request $request;
 
-	protected UserRepositories $userRepositories;
+	protected UserRepository $userRepository;
 
-	function __construct(Request $request, UserRepositories $userRepositories)
+	function __construct(Request $request, UserRepository $userRepository)
 	{
 		$this->request = $request;
-		$this->userRepositories = $userRepositories;
+		$this->userRepository = $userRepository;
 	}
 
 
@@ -51,7 +50,7 @@ class UserService
 			throw new ClientErrorException($validator->errors()->first());
 		}
 
-		return $this->userRepositories->create([
+		return $this->userRepository->create([
 			'uuid' => $uuid,
 			'type' => $this->request->input('type'),
 			'level' => $this->request->input('level'),

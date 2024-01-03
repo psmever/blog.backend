@@ -4,7 +4,7 @@ namespace App\Http\Services;
 
 use App\Exceptions\ClientErrorException;
 use App\Exceptions\ServerErrorException;
-use App\Http\Repositories\MediaFilesRepositories;
+use App\Http\Repositories\MediaFilesRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -22,18 +22,18 @@ class MediaService
 	protected Request $currentRequest;
 
 	/**
-	 * @var MediaFilesRepositories
+	 * @var MediaFilesRepository
 	 */
-	protected MediaFilesRepositories $mediaFilesRepositories;
+	protected MediaFilesRepository $mediaFilesRepository;
 
 	/**
 	 * @param Request $currentRequest
-	 * @param MediaFilesRepositories $mediaFilesRepositories
+	 * @param MediaFilesRepository $mediaFilesRepository
 	 */
-	function __construct(Request $currentRequest, MediaFilesRepositories $mediaFilesRepositories)
+	function __construct(Request $currentRequest, MediaFilesRepository $mediaFilesRepository)
 	{
 		$this->currentRequest = $currentRequest;
-		$this->mediaFilesRepositories = $mediaFilesRepositories;
+		$this->mediaFilesRepository = $mediaFilesRepository;
 	}
 
 	/**
@@ -105,7 +105,7 @@ class MediaService
 
 		File::delete($storagePath);
 
-		$this->mediaFilesRepositories->create([
+		$this->mediaFilesRepository->create([
 			'dest_path' => $targetDirectory,
 			'file_name' => $uploadFullFileName,
 			'thumb_name' => $uploadThumbFullFileName,
