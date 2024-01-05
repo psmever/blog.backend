@@ -18476,7 +18476,18 @@
      
 }
 
-        namespace Spatie\LaravelIgnition\Facades { 
+        namespace App\Helpers { 
+            /**
+     * 
+     *
+     */ 
+        class HelperClass {
+         
+    }
+     
+}
+
+    namespace Spatie\LaravelIgnition\Facades { 
             /**
      * 
      *
@@ -22972,6 +22983,7 @@ namespace  {
             class Validator extends \Illuminate\Support\Facades\Validator {}
             class View extends \Illuminate\Support\Facades\View {}
             class Vite extends \Illuminate\Support\Facades\Vite {}
+            class HelperClass extends \App\Helpers\HelperClass {}
             class Flare extends \Spatie\LaravelIgnition\Facades\Flare {}
      
 }

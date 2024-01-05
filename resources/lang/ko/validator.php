@@ -16,4 +16,8 @@ return [
 	'media-image' => '이미지 정보가 존재 하지 않습니다. (error-code: 003)',
 	'media-mimes' => '업로드 가능한 이미지가 아닙니다. (ex. jpeg,png,jpg,gif)',
 	'media-max' => '이미지 용량이 너무 큽니다. (ex. 10240)',
+	'title-required' => '제목을 입력해 주세요.',
+	'tags-required' => '테그를 입력해 주세요.',
+	'tags-*' => '테그를 입력해 주세요.',
+	'contents-required' => '내용을 입력해 주세요.',
 ];

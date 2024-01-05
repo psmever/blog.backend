@@ -4,6 +4,7 @@ use App\Enums\TokenAbility;
 use App\Http\Controllers\Api\SystemController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ManageController;
 use App\Http\Controllers\Api\V1\MediaController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,13 @@ Route::group(['prefix' => 'v1', 'as' => 'v1.'], function () {
 	Route::group(['prefix' => 'media', 'as' => 'media.'], function () {
 		Route::controller(MediaController::class)->group(function () {
 			Route::post('/create', 'Create')->name('create')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
+		});
+	});
+
+	// 관리 관련 api
+	Route::group(['prefix' => 'manage', 'as' => 'manage.'], function () {
+		Route::controller(ManageController:: class)->group(function () {
+			Route::post('/post-create', 'PostCreate')->name('post.create')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
 		});
 	});
 });
