@@ -65,6 +65,7 @@ Route::group(['prefix' => 'v1', 'as' => 'v1.'], function () {
 	Route::group(['prefix' => 'manage', 'as' => 'manage.'], function () {
 		Route::controller(ManageController:: class)->group(function () {
 			Route::post('/post-create', 'PostCreate')->name('post.create')->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
+			Route::get('/post/{uid}/info', 'PostInfo')->name('post.create');
 		});
 	});
 });
