@@ -20,4 +20,16 @@ class ManageController extends Controller
 	{
 		return Response::SuccessMacro($this->manageService->PostCreate());
 	}
+
+	public function PostInfo(string $uid): JsonResponse
+	{
+		return Response::SuccessMacro([
+			'uid' => [
+				$uid . "1",
+				$uid . "2",
+				$uid . "3",
+			]
+		]);
+
+	}
 }
