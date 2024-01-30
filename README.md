@@ -88,6 +88,9 @@
 * production mysql
 /dockerfiles/*.pem 추가.
 # ssh -i /tmp/data/*.pem user@xxx.xxx.xxx.xxx -N -L xxxx:localhost:3306
+
+* docker 실행 프로세서(?) 보기
+# docker context ls
 ```
 
 ## Contributing
