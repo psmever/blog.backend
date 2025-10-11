@@ -16,7 +16,10 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
-/.vscode
+
+
+# PHPStan cache
+/storage/phpstan/
 
 # test controller
 app/Http/Controllers/Api/TestController.php
