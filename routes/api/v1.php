@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\HealthController;
-use App\Exceptions\ApiException;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +12,6 @@ use App\Exceptions\ApiException;
 |
 */
 
-
 // 인증 관련 (예시)
 // Route::prefix('auth')->group(function () {
 //     Route::post('login', [AuthController::class, 'login']);
@@ -25,4 +22,3 @@ use App\Exceptions\ApiException;
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::get('user/me', [UserController::class, 'me']);
 // });
-

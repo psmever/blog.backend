@@ -17,10 +17,10 @@ trait ApiResponseTrait
     ): JsonResponse {
         return response()->json([
             'message' => $message,
-            'data'    => $data,
-            'meta'    => [
-                'status'     => $status,
-                'timestamp'  => now()->toISOString(),
+            'data' => $data,
+            'meta' => [
+                'status' => $status,
+                'timestamp' => now()->toISOString(),
             ],
         ], $status);
     }
@@ -35,10 +35,10 @@ trait ApiResponseTrait
     ): JsonResponse {
         return response()->json([
             'message' => $message,
-            'errors'  => $errors,
-            'meta'    => [
-                'status'     => $status,
-                'timestamp'  => now()->toISOString(),
+            'errors' => $errors,
+            'meta' => [
+                'status' => $status,
+                'timestamp' => now()->toISOString(),
             ],
         ], $status);
     }
@@ -84,14 +84,14 @@ trait ApiResponseTrait
     {
         return response()->json([
             'message' => $message,
-            'data'    => $paginator->items(),
-            'meta'    => [
-                'status'     => Response::HTTP_OK,
-                'total'      => $paginator->total(),
-                'per_page'   => $paginator->perPage(),
-                'current'    => $paginator->currentPage(),
-                'last_page'  => $paginator->lastPage(),
-                'timestamp'  => now()->toISOString(),
+            'data' => $paginator->items(),
+            'meta' => [
+                'status' => Response::HTTP_OK,
+                'total' => $paginator->total(),
+                'per_page' => $paginator->perPage(),
+                'current' => $paginator->currentPage(),
+                'last_page' => $paginator->lastPage(),
+                'timestamp' => now()->toISOString(),
             ],
         ], Response::HTTP_OK);
     }

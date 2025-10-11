@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Web\WebBaseController;
-
 class HomeController extends WebBaseController
 {
-        public function index()
+    public function index()
     {
         return $this->responseView('home', [
-            'title' => 'Welcome · ' . config('app.name'),
+            'title' => 'Welcome · '.config('app.name'),
         ]);
     }
 
