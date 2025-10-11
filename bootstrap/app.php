@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ValidateClientType;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -31,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->appendToGroup('api', ValidateClientType::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // 헬퍼: 이 요청이 API인지?
