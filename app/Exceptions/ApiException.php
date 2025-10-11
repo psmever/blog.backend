@@ -20,9 +20,13 @@ class ApiException extends Exception
     {
         if ($request->is('api/*') || $request->expectsJson()) {
             $res = ['message' => $this->getMessage()];
-            if ($this->errors) $res['errors'] = $this->errors;
+            if ($this->errors) {
+                $res['errors'] = $this->errors;
+            }
+
             return response()->json($res, $this->status);
         }
+
         // web 요청이면 기본 처리(에러 페이지 등)로 넘김
         return null;
     }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\HealthController;
 use App\Exceptions\ApiException;
+use App\Http\Controllers\Api\HealthController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ use App\Exceptions\ApiException;
 |
 */
 Route::prefix('v1')->group(function () {
-    require __DIR__ . '/v1.php';
+    require __DIR__.'/v1.php';
 });
 
 Route::get('/health', [HealthController::class, 'index']);
@@ -32,6 +32,7 @@ Route::get('/_demo/ok', fn () => response()->json(['message' => 'ok', 'data' => 
 Route::get('/_demo/boom', fn () => throw new \Exception('boom!'));
 Route::get('/_demo/api-ex', fn () => throw new ApiException('Bad thing', 422, ['field' => ['wrong']]));
 Route::post('/_demo/validate', function (\Illuminate\Http\Request $r) {
-    $r->validate(['title' => ['required','min:3']]);
+    $r->validate(['title' => ['required', 'min:3']]);
+
     return response()->json(['message' => 'ok']);
 });
