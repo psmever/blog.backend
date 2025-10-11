@@ -7,5 +7,39 @@
     "phpstan.configFile": "${workspaceFolder}/phpstan.neon.dist",
     "phpstan.level": 5,
     "phpstan.memoryLimit": "1G",
-    "phpstan.runOnSave": true
+    "phpstan.runOnSave": true,
+    "editor.inlineSuggest.enabled": true,
+    "editor.suggest.preview": true,
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "workbench.editor.enablePreview": false,
+    "cursor.experimentalChat.enabled": true,
+    // ✨ 기본 포맷터
+
+    // 📦 PHP 포맷팅 (Laravel Pint)
+    "php-cs-fixer.executablePath": "${workspaceFolder}/vendor/bin/pint",
+    "php-cs-fixer.rules": "@Laravel",
+    "php-cs-fixer.onsave": true,
+
+    // 🧠 PHP IntelliSense
+    "intelephense.environment.phpVersion": "8.3",
+    "intelephense.format.enable": false,
+    "intelephense.diagnostics.run": "onType",
+
+    // 🧩 PHPStan 자동 검사
+
+    // 🧠 ChatGPT / Codex 연동
+    "chatgpt.apiKey": "${env:OPENAI_API_KEY}",
+    "chatgpt.model": "gpt-4-turbo",
+    "chatgpt.temperature": 0.3,
+
+    // 📜 Markdown 미리보기
+    "markdown.preview.breaks": true,
+    "markdown.preview.scrollEditorWithPreview": true,
+    "markdown.preview.openMarkdownLinks": "inPreview",
+
+    // 🧰 Terminal
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.scrollback": 5000
 }
