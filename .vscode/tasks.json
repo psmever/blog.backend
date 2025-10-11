@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "PHPStan 분석",
+            "type": "shell",
+            "command": "${workspaceFolder}/vendor/bin/phpstan",
+            "args": [
+                "analyse",
+                "--memory-limit=1G",
+                "--configuration=${workspaceFolder}/phpstan.neon.dist",
+                "--error-format=raw"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "owner": "phpstan",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "message": 3
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": true
+            }
+        }
+    ]
+}
