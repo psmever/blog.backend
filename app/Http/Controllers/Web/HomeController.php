@@ -8,7 +8,7 @@ class HomeController extends WebBaseController
 {
     public function index()
     {
-        return view('home', [   // 👈 'welcome' 대신 'home' 으로 변경
+        return $this->render('home', [
             'title' => 'Home · ' . config('app.name'),
         ]);
     }
