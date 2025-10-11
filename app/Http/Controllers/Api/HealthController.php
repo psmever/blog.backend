@@ -8,7 +8,7 @@ class HealthController extends ApiBaseController
 {
     public function index()
     {
-        return $this->success([
+        return $this->responseSuccess([
             'app'     => config('app.name'),
             'version' => app()->version(),
             'env'     => app()->environment(),

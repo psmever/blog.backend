@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\HealthController;
+use App\Exceptions\ApiException;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +14,6 @@ use App\Http\Controllers\Api\HealthController;
 |
 */
 
-Route::get('/health', [HealthController::class, 'index']);
 
 // 인증 관련 (예시)
 // Route::prefix('auth')->group(function () {
@@ -25,3 +25,4 @@ Route::get('/health', [HealthController::class, 'index']);
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::get('user/me', [UserController::class, 'me']);
 // });
+
