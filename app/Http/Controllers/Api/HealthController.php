@@ -8,13 +8,10 @@ class HealthController extends ApiBaseController
 {
     public function index()
     {
-        $info = [
-            'status' => 'ok',
-            'timestamp' => now()->toDateTimeString(),
-            'env' => config('app.env'),
+        return $this->success([
+            'app'     => config('app.name'),
             'version' => app()->version(),
-        ];
-
-        return $this->success($info);
+            'env'     => app()->environment(),
+        ]);
     }
 }
