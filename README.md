@@ -1,61 +1,222 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📘 Blog Backend (Laravel 12)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> **Next.js + Laravel Blog Project** 의 백엔드 서비스입니다.
+> Docker 환경에서 Laravel 12.x 기반으로 작동하며,
+> `Pint`, `PHPStan`, `Larastan` 을 이용해 코드 품질과 일관성을 유지합니다.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🧱 프로젝트 구조
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```
+blog.backend/
+├── app/                  # 주요 Laravel 앱 로직
+├── bootstrap/            # 초기 부트스트랩 로직
+├── config/               # 환경별 설정 파일
+├── database/             # 마이그레이션 및 시더
+├── public/               # 퍼블릭 엔드포인트
+├── routes/               # 웹 / API 라우트
+│   ├── api/
+│   │   ├── api.php
+│   │   └── v1.php
+│   └── web/
+│       ├── web.php
+│       └── admin.php
+├── storage/              # 캐시, 로그, 업로드
+│   └── phpstan/          # PHPStan 캐시 (Git 무시)
+├── tests/                # 테스트 코드
+├── .env.example          # 환경 변수 예시
+├── composer.json         # PHP 의존성
+├── phpstan.neon.dist     # PHPStan / Larastan 설정
+├── pint.json             # Laravel Pint 설정
+└── README.md             # ← 현재 문서
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ⚙️ 개발 환경
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+이 백엔드는 `blog.docker` 디렉터리의 Docker Compose 환경에서 실행됩니다.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1️⃣ 컨테이너 실행
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+cd ../blog.docker
+make up local
+```
 
-## Laravel Sponsors
+-   `php` : Laravel Backend (PHP-FPM)
+-   `mariadb` : Database
+-   `node` : Frontend / Build 용
+-   `.env.local.enc` 파일을 자동 복호화하여 환경 구성
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2️⃣ Artisan 명령어 실행
 
-### Premium Partners
+```bash
+make migrate
+make seed
+make logs
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+또는 직접 실행:
 
-## Contributing
+```bash
+./scripts/artisan.sh migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🧩 라우팅 구조
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| 구분     | 경로           | 설명                 |
+| -------- | -------------- | -------------------- |
+| Web      | `/`            | 메인 페이지          |
+| API      | `/api/health`  | Health Check         |
+| API Demo | `/api/_demo/*` | 예시용 테스트 라우트 |
 
-## Security Vulnerabilities
+라우트 캐시:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan route:cache
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🧰 코드 품질 도구
+
+### 🧹 **Laravel Pint**
+
+> Laravel 공식 코드 스타일러 (Prettier + PSR-12 기반)
+
+#### 실행
+
+```bash
+./vendor/bin/pint
+```
+
+#### VSCode 자동 실행
+
+-   저장 시 자동 포맷 (`open-southeners.laravel-pint` 확장 사용)
+-   설정: `.vscode/settings.json`
+
+---
+
+### 🧠 **PHPStan + Larastan**
+
+> 코드의 타입 안정성과 논리 오류를 정적으로 분석
+
+#### 실행
+
+```bash
+./vendor/bin/phpstan analyse
+```
+
+#### 설정 파일
+
+📄 `phpstan.neon.dist`
+
+```neon
+includes:
+  - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+  paths:
+    - app
+  level: 5
+  ignoreErrors:
+    - '#Call to an undefined method Illuminate\\.*#'
+    - '#Property .* does not exist on .*#'
+  reportUnmatchedIgnoredErrors: false
+  tmpDir: storage/phpstan
+```
+
+#### 캐시 초기화
+
+```bash
+./vendor/bin/phpstan clear-result-cache
+```
+
+---
+
+## 💻 VSCode 권장 설정
+
+📄 `.vscode/settings.json`
+
+```json
+{
+    "editor.formatOnSave": true,
+
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint"
+    },
+
+    "phpstan.executablePath": "${workspaceFolder}/vendor/bin/phpstan",
+    "phpstan.configFile": "${workspaceFolder}/phpstan.neon.dist",
+    "phpstan.runOnSave": true
+}
+```
+
+📦 주요 확장 목록:
+
+-   `open-southeners.laravel-pint` (Laravel Pint)
+-   `sanderronde.phpstan-vscode` (PHPStan)
+-   `bmewburn.vscode-intelephense-client` (PHP 인텔리전스)
+
+---
+
+## 🧑‍💻 개발 흐름 예시
+
+```bash
+# 컨테이너 시작
+make up local
+
+# DB 마이그레이션
+make migrate
+
+# 코드 자동 포맷 (Pint)
+./vendor/bin/pint
+
+# 코드 정적 분석 (PHPStan)
+./vendor/bin/phpstan analyse
+```
+
+---
+
+## 🚫 Git 제외 파일
+
+📄 `.gitignore`
+
+```gitignore
+/storage/phpstan/
+/vendor/
+/node_modules/
+/.env
+/.env.*
+```
+
+---
+
+## 🩺 헬스체크
+
+```bash
+curl http://localhost:4000/api/health
+# → { "success": true, "message": "ok", "data": { ... } }
+```
+
+---
+
+## 🏁 마무리
+
+이 백엔드는 다음을 목표로 설계되었습니다:
+
+-   Docker 기반 완전 격리 개발 환경
+-   Laravel 12.x 최신 구조 준수
+-   코드 품질 자동화 (Pint + PHPStan)
+-   VSCode에서 자동 포맷 + 실시간 분석
+
+---
+
+### 👤 Maintainer
+
+**@sm**
+📍 Development Workspace: `/Users/sm/Workspaces/Development/MyProject/blog/blog.backend`
