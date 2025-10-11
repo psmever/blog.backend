@@ -1,0 +1,11 @@
+{
+    "editor.formatOnSave": true,
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint"
+    },
+    "phpstan.executablePath": "${workspaceFolder}/vendor/bin/phpstan",
+    "phpstan.configFile": "${workspaceFolder}/phpstan.neon.dist",
+    "phpstan.level": 5,
+    "phpstan.memoryLimit": "1G",
+    "phpstan.runOnSave": true
+}
