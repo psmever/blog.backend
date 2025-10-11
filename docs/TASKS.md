@@ -29,22 +29,22 @@
 
 ---
 
-## 🧱 3. 서비스 계층 설계
+## 🔐 3. 인증 (Auth)
+
+-   [ ] Laravel Sanctum 또는 JWT 패키지 설치
+-   [ ] 로그인 / 로그아웃 API 구성
+-   [ ] 인증 미들웨어 적용
+-   [ ] `/api/v1/user` 인증 테스트
+
+---
+
+## 🧱 4. 서비스 계층 설계
 
 -   [x] 공통 코드 테이블 추가
 -   [ ] Model / Repository / Service 구조 도입
 -   [ ] Post 모델 및 마이그레이션 생성
 -   [ ] Repository 계층 설계 및 의존성 주입 확인
 -   [ ] 단위 테스트 추가 (`php artisan test`)
-
----
-
-## 🔐 4. 인증 (Auth)
-
--   [ ] Laravel Sanctum 또는 JWT 패키지 설치
--   [ ] 회원가입 / 로그인 / 로그아웃 API 구성
--   [ ] 인증 미들웨어 적용
--   [ ] `/api/v1/user` 인증 테스트
 
 ---
 
