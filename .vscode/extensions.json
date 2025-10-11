@@ -1,0 +1,25 @@
+{
+    "recommendations": [
+        // Core AI & Codex
+        "cursor.cursor",
+        "openai.chatgpt-vscode",
+        "github.copilot",
+
+        // PHP / Laravel
+        "bmewburn.vscode-intelephense-client",
+        "junstyle.php-cs-fixer",
+        "neilbrayfield.php-docblocker",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "onecentlin.laravel-blade",
+
+        // Format / Lint
+        "esbenp.prettier-vscode",
+        "tamasfe.even-better-toml",
+        "davidanson.vscode-markdownlint",
+
+        // Dev Tools
+        "streetsidesoftware.code-spell-checker",
+        "gruntfuggly.todo-tree",
+        "donjayamanne.githistory"
+    ]
+}
