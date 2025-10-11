@@ -83,7 +83,7 @@ class CommonCodeSeeder extends Seeder
                 'label' => 'Postman',
                 'description' => 'API 테스트용 Postman 클라이언트',
                 'sort_order' => 40,
-                'is_active' => false,
+                'is_active' => true,
             ],
         ];
 

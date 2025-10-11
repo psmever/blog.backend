@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 class CommonCode extends Model
 {
@@ -25,4 +26,20 @@ class CommonCode extends Model
         'is_active' => 'boolean',
         'meta' => 'array',
     ];
+
+    /**
+     * Scope a query to only include active codes.
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope a query to filter by group key.
+     */
+    public function scopeForGroup(Builder $query, string $groupKey): Builder
+    {
+        return $query->where('group_key', $groupKey);
+    }
 }
