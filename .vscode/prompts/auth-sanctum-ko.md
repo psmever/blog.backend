@@ -17,7 +17,7 @@
 
 ## 🧾 인증 유저 조회
 
-> 로그인된 사용자의 정보를 반환하는 `/api/user` 엔드포인트를 만들어줘.
+> 로그인된 사용자의 정보를 반환하는 `/api/v1/user` 엔드포인트를 만들어줘.
 > `auth:sanctum` 미들웨어를 사용하고, 유효하지 않은 토큰일 때 401 응답을 반환하도록 작성해줘.
 
 ---
@@ -35,13 +35,6 @@
 > `personal_access_tokens` 테이블에 `expires_at` 컬럼을 추가하고
 > 토큰 발급 시 `now()->addHours(2)` 형태로 만료를 설정하도록 수정해줘.
 > 만료 여부를 검사하는 `CheckTokenExpiry` 미들웨어도 함께 구현해줘.
-
----
-
-## 🧠 프론트엔드 연동 (Next.js)
-
-> Next.js에서 로그인, 로그인 유지, 로그아웃을 구현하는 axios 코드를 작성해줘.
-> 토큰은 LocalStorage에 저장하고, 모든 요청에 `Authorization: Bearer <token>` 헤더를 포함하게 해줘.
 
 ---
 
@@ -66,4 +59,4 @@
 ## 🧩 테스트 코드
 
 > Sanctum 인증 구조의 단위 테스트와 통합 테스트를 작성해줘.
-> `/api/login`, `/api/logout`, `/api/user` 가 각각 정상/에러 케이스를 통과하도록 만들어줘.
+> `/api/login`, `/api/logout`, `/api/v1/user` 가 각각 정상/에러 케이스를 통과하도록 만들어줘.
