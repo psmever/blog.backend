@@ -41,5 +41,9 @@
 
     // 🧰 Terminal
     "terminal.integrated.defaultProfile.osx": "zsh",
-    "terminal.integrated.scrollback": 5000
+    "terminal.integrated.scrollback": 5000,
+    "markdownlint.run": "onSave",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.markdownlint": "explicit"
+    }
 }
