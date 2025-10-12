@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Carbon\CarbonInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -12,7 +13,7 @@ trait ApiResponseTrait
      */
     protected function responseSuccess(
         mixed $data = null,
-        string $message = 'ok',
+        string $message = '정상 처리되었습니다',
         int $status = Response::HTTP_OK
     ): JsonResponse {
         return response()->json([
@@ -20,7 +21,7 @@ trait ApiResponseTrait
             'data' => $data,
             'meta' => [
                 'status' => $status,
-                'timestamp' => now()->toISOString(),
+                'timestamp' => $this->currentTimestamp(),
             ],
         ], $status);
     }
@@ -29,7 +30,7 @@ trait ApiResponseTrait
      * ⚠️ 일반 오류
      */
     protected function responseError(
-        string $message = 'Bad Request',
+        string $message = '잘못된 요청입니다',
         int $status = Response::HTTP_BAD_REQUEST,
         mixed $errors = null
     ): JsonResponse {
@@ -38,7 +39,7 @@ trait ApiResponseTrait
             'errors' => $errors,
             'meta' => [
                 'status' => $status,
-                'timestamp' => now()->toISOString(),
+                'timestamp' => $this->currentTimestamp(),
             ],
         ], $status);
     }
@@ -46,7 +47,7 @@ trait ApiResponseTrait
     /**
      * 🔐 인증 실패
      */
-    protected function responseUnauthorized(string $message = 'Unauthorized'): JsonResponse
+    protected function responseUnauthorized(string $message = '인증이 필요합니다'): JsonResponse
     {
         return $this->responseError($message, Response::HTTP_UNAUTHORIZED);
     }
@@ -54,7 +55,7 @@ trait ApiResponseTrait
     /**
      * 🚫 접근 거부
      */
-    protected function responseForbidden(string $message = 'Forbidden'): JsonResponse
+    protected function responseForbidden(string $message = '접근이 거부되었습니다'): JsonResponse
     {
         return $this->responseError($message, Response::HTTP_FORBIDDEN);
     }
@@ -62,7 +63,7 @@ trait ApiResponseTrait
     /**
      * 🔍 리소스 없음
      */
-    protected function responseNotFound(string $message = 'Not Found'): JsonResponse
+    protected function responseNotFound(string $message = '요청한 리소스를 찾을 수 없습니다'): JsonResponse
     {
         return $this->responseError($message, Response::HTTP_NOT_FOUND);
     }
@@ -71,7 +72,7 @@ trait ApiResponseTrait
      * 💥 서버 내부 오류
      */
     protected function responseFail(
-        string $message = 'Internal Server Error',
+        string $message = '서버 내부 오류가 발생했습니다',
         mixed $errors = null
     ): JsonResponse {
         return $this->responseError($message, Response::HTTP_INTERNAL_SERVER_ERROR, $errors);
@@ -80,7 +81,7 @@ trait ApiResponseTrait
     /**
      * 📄 페이지네이션 응답
      */
-    protected function responsePaginated($paginator, string $message = 'ok'): JsonResponse
+    protected function responsePaginated($paginator, string $message = '정상 처리되었습니다'): JsonResponse
     {
         return response()->json([
             'message' => $message,
@@ -91,8 +92,38 @@ trait ApiResponseTrait
                 'per_page' => $paginator->perPage(),
                 'current' => $paginator->currentPage(),
                 'last_page' => $paginator->lastPage(),
-                'timestamp' => now()->toISOString(),
+                'timestamp' => $this->currentTimestamp(),
             ],
         ], Response::HTTP_OK);
+    }
+
+    protected function currentTimestamp(): string
+    {
+        return $this->formatDateTimeForResponse(now()) ?? now()->toDateTimeString();
+    }
+
+    protected function formatDateTimeForResponse(?CarbonInterface $dateTime): ?string
+    {
+        if ($dateTime === null) {
+            return null;
+        }
+
+        try {
+            return $dateTime->copy()->setTimezone($this->responseTimezone())->format('Y-m-d H:i:s');
+        } catch (\Throwable) {
+            return $dateTime->toDateTimeString();
+        }
+    }
+
+    protected function responseTimezone(): \DateTimeZone
+    {
+        $timezone = config('app.display_timezone', 'Asia/Seoul');
+        $timezone = is_string($timezone) && $timezone !== '' ? $timezone : 'Asia/Seoul';
+
+        try {
+            return new \DateTimeZone($timezone);
+        } catch (\Exception) {
+            return new \DateTimeZone('UTC');
+        }
     }
 }

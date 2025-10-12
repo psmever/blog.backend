@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\ApiException;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HealthController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,9 +24,8 @@ use Illuminate\Support\Facades\Route;
 | 인증, 사용자, 헬스체크 등 API 버전별 라우트를 정의합니다.
 |
 */
-Route::prefix('v1')->group(function () {
-    require __DIR__.'/v1.php';
-});
+
+require __DIR__.'/v1.php';
 
 Route::get('/health', [HealthController::class, 'index']);
 Route::get('/_demo/ok', fn () => response()->json(['message' => 'ok', 'data' => ['at' => now()]]));
@@ -35,4 +35,22 @@ Route::post('/_demo/validate', function (\Illuminate\Http\Request $r) {
     $r->validate(['title' => ['required', 'min:3']]);
 
     return response()->json(['message' => 'ok']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+| 인증 관련 라우트는 여기서 정의합니다.
+| 로그인, 로그아웃, 토큰 갱신 등의 엔드포인트를 포함합니다.
+|--------------------------------------------------------------------------*/
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+
+    Route::middleware(['auth:sanctum', 'token.expiry'])->group(function () {
+        Route::get('me', [AuthController::class, 'me']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('logout/all', [AuthController::class, 'logoutAll']);
+    });
 });

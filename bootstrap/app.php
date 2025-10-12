@@ -32,8 +32,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'token.expiry' => \App\Http\Middleware\CheckTokenExpiry::class,
+        ]);
+
         $middleware->appendToGroup('api', ValidateClientType::class);
     })
+    ->withCommands([
+        \App\Console\Commands\PruneExpiredTokens::class,
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         // 헬퍼: 이 요청이 API인지?
         $isApi = fn (Request $r) => $r->is('api/*') || $r->expectsJson();
@@ -45,7 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return response()->json([
-                'message' => 'Validation failed',
+                'message' => '요청값이 올바르지 않습니다.',
                 'errors' => $e->errors(),
             ], 422);
         });
@@ -56,7 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => '인증 정보가 유효하지 않습니다.'], 401);
         });
 
         // 403 권한 거부
@@ -65,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => '해당 작업을 수행할 권한이 없습니다.'], 403);
         });
 
         // 404: 모델/페이지 미존재
@@ -74,7 +81,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            return response()->json(['message' => 'Not Found'], 404);
+            return response()->json(['message' => '요청하신 경로를 찾을 수 없습니다.'], 404);
         });
 
         // 405: 메서드 불가
@@ -83,7 +90,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            return response()->json(['message' => 'Method Not Allowed'], 405);
+            return response()->json(['message' => '지원하지 않는 요청 방식입니다.'], 405);
         });
 
         // 429: 레이트 리밋
@@ -92,7 +99,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            return response()->json(['message' => 'Too Many Requests'], 429);
+            return response()->json(['message' => '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.'], 429);
         });
 
         // DB 예외(메시지는 운영에서 숨김)
@@ -100,7 +107,9 @@ return Application::configure(basePath: dirname(__DIR__))
             if (! $isApi($r)) {
                 return null;
             }
-            $msg = app()->isProduction() ? 'Database error' : $e->getMessage();
+            $msg = app()->isProduction()
+                ? '데이터베이스 처리 중 오류가 발생했습니다.'
+                : $e->getMessage();
 
             return response()->json(['message' => $msg], 500);
         });
@@ -113,7 +122,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $status = $e->getStatusCode();
             $msg = $e->getMessage() ?: 'HTTP Error';
 
-            return response()->json(['message' => $msg], $status);
+            return response()->json(['message' => $msg ?: '요청 처리 중 오류가 발생했습니다.'], $status);
         });
 
         // 최종 fallback (500)
@@ -124,7 +133,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // 개발환경은 메시지/트레이스 노출, 운영은 메시지 최소화
             if (app()->isProduction()) {
-                return response()->json(['message' => 'Server error'], 500);
+                return response()->json(['message' => '서버 내부 오류가 발생했습니다.'], 500);
             }
 
             return response()->json([
