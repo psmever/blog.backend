@@ -8,7 +8,7 @@
 
 ## 🧱 프로젝트 구조
 
-```
+```text
 blog.backend/
 ├── app/                  # 주요 Laravel 앱 로직
 ├── bootstrap/            # 초기 부트스트랩 로직
@@ -45,10 +45,10 @@ cd ../blog.docker
 make up local
 ```
 
--   `php` : Laravel Backend (PHP-FPM)
--   `mariadb` : Database
--   `node` : Frontend / Build 용
--   `.env.local.enc` 파일을 자동 복호화하여 환경 구성
+- `php` : Laravel Backend (PHP-FPM)
+- `mariadb` : Database
+- `node` : Frontend / Build 용
+- `.env.local.enc` 파일을 자동 복호화하여 환경 구성
 
 ### 2️⃣ Artisan 명령어 실행
 
@@ -88,7 +88,7 @@ php artisan route:cache
 
 > Laravel 공식 코드 스타일러 (Prettier + PSR-12 기반)
 
-#### 실행
+#### 실행 (Pint)
 
 ```bash
 ./vendor/bin/pint
@@ -96,8 +96,8 @@ php artisan route:cache
 
 #### VSCode 자동 실행
 
--   저장 시 자동 포맷 (`open-southeners.laravel-pint` 확장 사용)
--   설정: `.vscode/settings.json`
+- 저장 시 자동 포맷 (`open-southeners.laravel-pint` 확장 사용)
+- 설정: `.vscode/settings.json`
 
 ---
 
@@ -105,7 +105,7 @@ php artisan route:cache
 
 > 코드의 타입 안정성과 논리 오류를 정적으로 분석
 
-#### 실행
+#### 실행 (PHPStan)
 
 ```bash
 ./vendor/bin/phpstan analyse
@@ -158,9 +158,9 @@ parameters:
 
 📦 주요 확장 목록:
 
--   `open-southeners.laravel-pint` (Laravel Pint)
--   `sanderronde.phpstan-vscode` (PHPStan)
--   `bmewburn.vscode-intelephense-client` (PHP 인텔리전스)
+- `open-southeners.laravel-pint` (Laravel Pint)
+- `sanderronde.phpstan-vscode` (PHPStan)
+- `bmewburn.vscode-intelephense-client` (PHP 인텔리전스)
 
 ---
 
@@ -209,10 +209,10 @@ curl http://localhost:4000/api/health
 
 이 백엔드는 다음을 목표로 설계되었습니다:
 
--   Docker 기반 완전 격리 개발 환경
--   Laravel 12.x 최신 구조 준수
--   코드 품질 자동화 (Pint + PHPStan)
--   VSCode에서 자동 포맷 + 실시간 분석
+- Docker 기반 완전 격리 개발 환경
+- Laravel 12.x 최신 구조 준수
+- 코드 품질 자동화 (Pint + PHPStan)
+- VSCode에서 자동 포맷 + 실시간 분석
 
 ---
 
