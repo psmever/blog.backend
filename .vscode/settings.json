@@ -46,7 +46,5 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.markdownlint": "explicit"
     },
-    "cSpell.words": [
-        "tokenable"
-    ]
+    "cSpell.words": ["tokenable"]
 }
