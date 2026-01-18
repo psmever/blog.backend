@@ -9,8 +9,7 @@ class SystemController extends ApiBaseController
 {
     public function __construct(
         private readonly SystemService $systemService
-    ) {
-    }
+    ) {}
 
     public function index()
     {
