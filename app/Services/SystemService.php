@@ -8,8 +8,7 @@ class SystemService
 {
     public function __construct(
         private readonly CommonCodeRepositoryInterface $commonCodes
-    ) {
-    }
+    ) {}
 
     public function getBaseData(): array
     {

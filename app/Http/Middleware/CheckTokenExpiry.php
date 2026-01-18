@@ -16,7 +16,6 @@ class CheckTokenExpiry
     {
         $token = $request->user()?->currentAccessToken();
         /** @var PersonalAccessToken|TransientToken|null $token */
-
         if (! $token) {
             return response()->json(['message' => '인증 정보가 유효하지 않습니다.'], 401);
         }
