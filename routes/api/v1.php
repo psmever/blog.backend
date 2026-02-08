@@ -10,9 +10,13 @@
 |
 */
 
+use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\SystemController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('base-data', [SystemController::class, 'index']);
+    Route::middleware(['auth:sanctum', 'token.expiry'])->group(function () {
+        Route::post('posts', [PostController::class, 'store']);
+    });
 });
