@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiBaseController;
+use App\Models\Tag;
 use App\Models\User;
 use App\Services\PostService;
 use Illuminate\Http\Request;
@@ -30,12 +31,19 @@ class PostController extends ApiBaseController
 
         $post = $this->postService->create($user, $payload);
 
+        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags */
+        $tags = $post->tags;
+
         return $this->responseSuccess([
             'id' => $post->getKey(),
             'title' => $post->title,
             'slug' => $post->slug,
-            'tags' => $post->tags
-                ->map(fn ($tag) => ['key' => $tag->key, 'label' => $tag->label])
+            'tags' => $tags
+
+
+
+
+                ->map(fn (Tag $tag) => ['key' => $tag->key, 'label' => $tag->label])
                 ->values()
                 ->all(),
             'body' => $post->body,
