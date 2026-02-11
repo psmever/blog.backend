@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiBaseController;
-use App\Models\Tag;
 use App\Models\User;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 class PostController extends ApiBaseController
 {
@@ -29,26 +29,12 @@ class PostController extends ApiBaseController
             'body' => ['required', 'string'],
         ]);
 
+        $payload['uuid'] = (string) Str::uuid();
+
         $post = $this->postService->create($user, $payload);
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags */
-        $tags = $post->tags;
-
         return $this->responseSuccess([
-            'id' => $post->getKey(),
-            'title' => $post->title,
-            'slug' => $post->slug,
-            'tags' => $tags
-
-
-
-
-                ->map(fn (Tag $tag) => ['key' => $tag->key, 'label' => $tag->label])
-                ->values()
-                ->all(),
-            'body' => $post->body,
-            'created_at' => $this->formatDateTimeForResponse($post->created_at),
-            'updated_at' => $this->formatDateTimeForResponse($post->updated_at),
+            'uuid' => $post->uuid,
         ], '정상 처리되었습니다', Response::HTTP_CREATED);
     }
 }
