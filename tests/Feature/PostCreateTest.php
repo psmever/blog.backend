@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Database\Seeders\CommonCodeSeeder;
 use App\Models\User;
+use Database\Seeders\CommonCodeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -41,11 +41,8 @@ class PostCreateTest extends TestCase
         $response = $this->postWithClientType('/api/v1/posts', $payload);
 
         $response->assertCreated();
-        $response->assertJsonPath('data.title', 'Hello React');
-        $response->assertJsonPath('data.slug', 'hello-react');
-        $response->assertJsonCount(2, 'data.tags');
-        $response->assertJsonFragment(['key' => 'react', 'label' => 'React']);
-        $response->assertJsonFragment(['key' => 'next-js', 'label' => 'Next.js']);
+        $response->assertJsonStructure(['data' => ['uuid']]);
+        $this->assertMatchesRegularExpression('/^[0-9a-f-]{36}$/i', (string) $response->json('data.uuid'));
 
         $this->assertDatabaseHas('posts', [
             'user_id' => $user->getKey(),

@@ -30,6 +30,7 @@ class PostService
             $slug = $this->makeUniqueSlug($user->getKey(), $payload['title']);
 
             $post = $this->posts->create([
+                'uuid' => $payload['uuid'] ?? (string) Str::uuid(),
                 'user_id' => $user->getKey(),
                 'title' => $payload['title'],
                 'slug' => $slug,
