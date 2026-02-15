@@ -5,8 +5,10 @@ namespace App\Providers;
 use App\Repositories\CommonCodeRepositoryInterface;
 use App\Repositories\Eloquent\EloquentCommonCodeRepository;
 use App\Repositories\Eloquent\EloquentPostRepository;
+use App\Repositories\Eloquent\EloquentPostStatusHistoryRepository;
 use App\Repositories\Eloquent\EloquentTagRepository;
 use App\Repositories\PostRepositoryInterface;
+use App\Repositories\PostStatusHistoryRepositoryInterface;
 use App\Repositories\TagRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             PostRepositoryInterface::class,
             EloquentPostRepository::class
+        );
+        $this->app->bind(
+            PostStatusHistoryRepositoryInterface::class,
+            EloquentPostStatusHistoryRepository::class
         );
         $this->app->bind(
             TagRepositoryInterface::class,

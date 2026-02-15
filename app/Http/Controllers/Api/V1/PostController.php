@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiBaseController;
+use App\Models\Tag;
 use App\Models\User;
 use App\Services\PostService;
 use Illuminate\Http\Request;
@@ -23,10 +24,10 @@ class PostController extends ApiBaseController
         }
 
         $payload = $request->validate([
-            'title' => ['required', 'string', 'max:200'],
-            'tags' => ['required', 'array', 'min:1'],
+            'title' => ['nullable', 'string', 'max:200'],
+            'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'min:1', 'max:30', 'regex:/^[\pL\pN][\pL\pN\s\-\.\+#_]*$/u'],
-            'body' => ['required', 'string'],
+            'body' => ['nullable', 'string'],
         ]);
 
         $payload['uuid'] = (string) Str::uuid();
@@ -36,5 +37,77 @@ class PostController extends ApiBaseController
         return $this->responseSuccess([
             'uuid' => $post->uuid,
         ], '정상 처리되었습니다', Response::HTTP_CREATED);
+    }
+
+    public function show(Request $request, string $uuid)
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return $this->responseUnauthorized();
+        }
+
+        $post = $this->postService->findByUuid($user, $uuid);
+        if (! $post) {
+            return $this->responseNotFound('게시글을 찾을 수 없습니다.');
+        }
+
+        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags */
+        $tags = $post->tags;
+
+        return $this->responseSuccess([
+            'uuid' => $post->uuid,
+            'title' => $post->title,
+            'slug' => $post->slug,
+            'status' => $post->status,
+            'published_at' => $this->formatDateTimeForResponse($post->published_at),
+            'tags' => $tags
+                ->map(fn (Tag $tag) => ['key' => $tag->key, 'label' => $tag->label])
+                ->values()
+                ->all(),
+            'body' => $post->body,
+            'created_at' => $this->formatDateTimeForResponse($post->created_at),
+            'updated_at' => $this->formatDateTimeForResponse($post->updated_at),
+        ]);
+    }
+
+    public function save(Request $request, string $uuid)
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return $this->responseUnauthorized();
+        }
+
+        $payload = $request->validate([
+            'title' => ['sometimes', 'nullable', 'string', 'max:200'],
+            'tags' => ['sometimes', 'array'],
+            'tags.*' => ['string', 'min:1', 'max:30', 'regex:/^[\pL\pN][\pL\pN\s\-\.\+#_]*$/u'],
+            'body' => ['sometimes', 'nullable', 'string'],
+        ]);
+
+        $post = $this->postService->saveByUuid($user, $uuid, $payload);
+        if (! $post) {
+            return $this->responseNotFound('게시글을 찾을 수 없습니다.');
+        }
+
+        return $this->responseSuccess([
+            'uuid' => $post->uuid,
+        ], '임시 저장되었습니다.');
+    }
+
+    public function publish(Request $request, string $uuid)
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return $this->responseUnauthorized();
+        }
+
+        $post = $this->postService->publishByUuid($user, $uuid);
+        if (! $post) {
+            return $this->responseNotFound('게시글을 찾을 수 없습니다.');
+        }
+
+        return $this->responseSuccess([
+            'uuid' => $post->uuid,
+        ], '개시되었습니다.');
     }
 }
