@@ -17,4 +17,16 @@ class EloquentCommonCodeRepository implements CommonCodeRepositoryInterface
             ->orderBy('code')
             ->get($columns);
     }
+
+    public function findActiveByGroupAndCode(
+        string $groupKey,
+        string $code,
+        array $columns = ['*']
+    ): ?CommonCode {
+        return CommonCode::query()
+            ->forGroup($groupKey)
+            ->active()
+            ->where('code', $code)
+            ->first($columns);
+    }
 }
