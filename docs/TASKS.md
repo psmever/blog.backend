@@ -1,7 +1,7 @@
 # ✅ Blog Backend Development Checklist
 
 > Laravel 12 기반 Blog Backend 개발 진행표
-> Last Updated: 2025-10-12
+> Last Updated: 2026-04-19
 
 ---
 
@@ -35,15 +35,15 @@
 - [x] 로그인 / 로그아웃 API 구성
 - [x] 인증 미들웨어 적용
 - [x] 인증 테스트
-- [ ] Model / Repository / Service 구조 도입
+- [x] Model / Repository / Service 구조 도입
 
 ---
 
 ## 🧱 4. 서비스 계층 설계
 
 - [x] 공통 코드 테이블 추가
-- [ ] Post 모델 및 마이그레이션 생성
-- [ ] Repository 계층 설계 및 의존성 주입 확인
+- [x] Post 모델 및 마이그레이션 생성
+- [x] Repository 계층 설계 및 의존성 주입 확인
 - [ ] 단위 테스트 추가 (`php artisan test`)
 
 ---
@@ -68,8 +68,8 @@
 
 ## 📊 진행 현황
 
-> ✅ 완료: 21 / 31 항목
-> 🔄 진행률: **68%**
+> ✅ 완료: 24 / 31 항목
+> 🔄 진행률: **77%**
 
 ---
 
@@ -81,3 +81,4 @@
 | 2025-10-11 | API Trait 및 예외 처리 구조 완료      |
 | 2025-10-12 | 인증 라우트 정비 및 응답 메시지 현지화 |
 | 2025-10-12 | 인증 테스트 케이스 작성 및 통과        |
+| 2026-04-19 | 인증 Repository/Service 계층 도입 및 게시글 계층 반영 상태 갱신 |
