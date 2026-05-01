@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Models\Post;
 use App\Models\User;
 use App\Repositories\CommonCodeRepositoryInterface;
+use App\Repositories\PostImageRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
 use App\Repositories\PostStatusHistoryRepositoryInterface;
 use App\Repositories\TagRepositoryInterface;
@@ -23,10 +24,20 @@ class PostService
 
     public function __construct(
         private readonly CommonCodeRepositoryInterface $commonCodes,
+        private readonly PostImageRepositoryInterface $postImages,
         private readonly PostRepositoryInterface $posts,
         private readonly PostStatusHistoryRepositoryInterface $postStatusHistories,
         private readonly TagRepositoryInterface $tags
     ) {}
+
+    public function issueUuid(): string
+    {
+        do {
+            $uuid = (string) Str::uuid();
+        } while ($this->posts->uuidExists($uuid));
+
+        return $uuid;
+    }
 
     public function create(User $user, array $payload): Post
     {
@@ -53,6 +64,11 @@ class PostService
             if ($tagModels->isNotEmpty()) {
                 $post->tags()->sync($tagModels->pluck('id')->unique()->all());
             }
+            $this->postImages->attachStagedImagesToPost(
+                (string) $post->uuid,
+                (int) $user->getKey(),
+                (int) $post->getKey()
+            );
             $post->load('tags');
 
             $this->recordStatusHistory(
@@ -89,7 +105,15 @@ class PostService
         return DB::transaction(function () use ($user, $uuid, $payload) {
             $post = $this->posts->findByUuidForUser($user->getKey(), $uuid);
             if (! $post) {
-                return null;
+                if ($this->posts->uuidExists($uuid)) {
+                    return null;
+                }
+
+                $payload['uuid'] = $uuid;
+                $post = $this->create($user, $payload);
+                $this->postImages->attachStagedImagesToPost($uuid, (int) $user->getKey(), (int) $post->getKey());
+
+                return $post->load(['coverImage', 'tags']);
             }
 
             $attributes = [];

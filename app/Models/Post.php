@@ -23,6 +23,7 @@ class Post extends Model
         'slug',
         'status',
         'published_at',
+        'cover_image_id',
         'body',
     ];
 
@@ -43,5 +44,15 @@ class Post extends Model
     public function statusHistories(): HasMany
     {
         return $this->hasMany(PostStatusHistory::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(PostImage::class);
+    }
+
+    public function coverImage(): BelongsTo
+    {
+        return $this->belongsTo(PostImage::class, 'cover_image_id');
     }
 }

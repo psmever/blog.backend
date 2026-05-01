@@ -5,11 +5,13 @@ namespace App\Providers;
 use App\Repositories\CommonCodeRepositoryInterface;
 use App\Repositories\Eloquent\EloquentCommonCodeRepository;
 use App\Repositories\Eloquent\EloquentPersonalAccessTokenRepository;
+use App\Repositories\Eloquent\EloquentPostImageRepository;
 use App\Repositories\Eloquent\EloquentPostRepository;
 use App\Repositories\Eloquent\EloquentPostStatusHistoryRepository;
 use App\Repositories\Eloquent\EloquentTagRepository;
 use App\Repositories\Eloquent\EloquentUserRepository;
 use App\Repositories\PersonalAccessTokenRepositoryInterface;
+use App\Repositories\PostImageRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
 use App\Repositories\PostStatusHistoryRepositoryInterface;
 use App\Repositories\TagRepositoryInterface;
@@ -38,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             PostRepositoryInterface::class,
             EloquentPostRepository::class
+        );
+        $this->app->bind(
+            PostImageRepositoryInterface::class,
+            EloquentPostImageRepository::class
         );
         $this->app->bind(
             PostStatusHistoryRepositoryInterface::class,

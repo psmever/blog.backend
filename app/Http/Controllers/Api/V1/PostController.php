@@ -4,18 +4,34 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Models\Post;
+use App\Models\PostImage;
 use App\Models\Tag;
 use App\Models\User;
+use App\Services\PostImageService;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PostController extends ApiBaseController
 {
     public function __construct(
-        private readonly PostService $postService
+        private readonly PostService $postService,
+        private readonly PostImageService $postImageService
     ) {}
+
+    public function issueUuid(Request $request)
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return $this->responseUnauthorized();
+        }
+
+        return $this->responseSuccess([
+            'uuid' => $this->postService->issueUuid(),
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -25,13 +41,14 @@ class PostController extends ApiBaseController
         }
 
         $payload = $request->validate([
+            'uuid' => ['sometimes', 'uuid', Rule::unique('posts', 'uuid')],
             'title' => ['nullable', 'string', 'max:200'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'min:1', 'max:30', 'regex:/^[\pL\pN][\pL\pN\s\-\.\+#_]*$/u'],
             'body' => ['nullable', 'string'],
         ]);
 
-        $payload['uuid'] = (string) Str::uuid();
+        $payload['uuid'] = $payload['uuid'] ?? (string) Str::uuid();
 
         $post = $this->postService->create($user, $payload);
 
@@ -92,6 +109,7 @@ class PostController extends ApiBaseController
             'slug' => $post->slug,
             'status' => $post->status,
             'published_at' => $this->formatDateTimeForResponse($post->published_at),
+            'cover_image' => $this->formatImageForResponse($post->coverImage),
             'tags' => $tags
                 ->map(fn (Tag $tag) => ['key' => $tag->key, 'label' => $tag->label])
                 ->values()
@@ -126,6 +144,52 @@ class PostController extends ApiBaseController
         ], '임시 저장되었습니다.');
     }
 
+    public function uploadImage(Request $request, string $uuid)
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return $this->responseUnauthorized();
+        }
+
+        $payload = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:5120'],
+            'purpose' => ['required', 'string', 'in:'.PostImage::PURPOSE_BODY.','.PostImage::PURPOSE_COVER],
+        ]);
+
+        $image = $this->postImageService->uploadForPost($user, $uuid, $payload['image'], $payload['purpose']);
+        if (! $image) {
+            return $this->responseNotFound('게시글을 찾을 수 없습니다.');
+        }
+
+        return $this->responseSuccess(
+            $this->formatImageForResponse($image),
+            '이미지가 업로드되었습니다.',
+            Response::HTTP_CREATED
+        );
+    }
+
+    public function setCoverImage(Request $request, string $uuid)
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return $this->responseUnauthorized();
+        }
+
+        $payload = $request->validate([
+            'image_uuid' => ['required', 'uuid'],
+        ]);
+
+        $post = $this->postImageService->setCoverImage($user, $uuid, $payload['image_uuid']);
+        if (! $post) {
+            return $this->responseNotFound('이미지를 찾을 수 없습니다.');
+        }
+
+        return $this->responseSuccess([
+            'uuid' => $post->uuid,
+            'cover_image' => $this->formatImageForResponse($post->coverImage),
+        ], '대표 이미지가 설정되었습니다.');
+    }
+
     public function publish(Request $request, string $uuid)
     {
         $user = $request->user();
@@ -141,5 +205,21 @@ class PostController extends ApiBaseController
         return $this->responseSuccess([
             'uuid' => $post->uuid,
         ], '개시되었습니다.');
+    }
+
+    private function formatImageForResponse(?PostImage $image): ?array
+    {
+        if (! $image) {
+            return null;
+        }
+
+        return [
+            'uuid' => $image->uuid,
+            'purpose' => $image->purpose,
+            'url' => $image->url,
+            'width' => $image->width,
+            'height' => $image->height,
+            'size' => $image->size,
+        ];
     }
 }

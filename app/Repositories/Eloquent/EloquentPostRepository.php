@@ -38,10 +38,17 @@ class EloquentPostRepository implements PostRepositoryInterface
             ->exists();
     }
 
+    public function uuidExists(string $uuid): bool
+    {
+        return Post::query()
+            ->where('uuid', $uuid)
+            ->exists();
+    }
+
     public function findByUuidForUser(int $userId, string $uuid): ?Post
     {
         return Post::query()
-            ->with('tags')
+            ->with(['coverImage', 'tags'])
             ->where('user_id', $userId)
             ->where('uuid', $uuid)
             ->first();
