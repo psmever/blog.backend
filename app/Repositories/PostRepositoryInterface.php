@@ -15,6 +15,8 @@ interface PostRepositoryInterface
 
     public function slugExistsForUserExceptPost(int $userId, string $slug, int $postId): bool;
 
+    public function uuidExists(string $uuid): bool;
+
     public function findByUuidForUser(int $userId, string $uuid): ?Post;
 
     /**
