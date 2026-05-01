@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Post;
+use Illuminate\Support\Collection;
 
 interface PostRepositoryInterface
 {
@@ -15,4 +16,9 @@ interface PostRepositoryInterface
     public function slugExistsForUserExceptPost(int $userId, string $slug, int $postId): bool;
 
     public function findByUuidForUser(int $userId, string $uuid): ?Post;
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function listForUserByStatus(int $userId, string $status, int $limit): Collection;
 }

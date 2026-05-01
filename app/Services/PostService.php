@@ -9,6 +9,7 @@ use App\Repositories\CommonCodeRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
 use App\Repositories\PostStatusHistoryRepositoryInterface;
 use App\Repositories\TagRepositoryInterface;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -69,6 +70,18 @@ class PostService
     public function findByUuid(User $user, string $uuid): ?Post
     {
         return $this->posts->findByUuidForUser($user->getKey(), $uuid);
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function listByStatus(User $user, string $status, int $limit): Collection
+    {
+        return $this->posts->listForUserByStatus(
+            $user->getKey(),
+            $status,
+            $limit
+        );
     }
 
     public function saveByUuid(User $user, string $uuid, array $payload): ?Post
