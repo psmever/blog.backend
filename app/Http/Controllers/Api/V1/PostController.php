@@ -152,7 +152,7 @@ class PostController extends ApiBaseController
         }
 
         $payload = $request->validate([
-            'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:5120'],
+            'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:204800'],
             'purpose' => ['required', 'string', 'in:'.PostImage::PURPOSE_BODY.','.PostImage::PURPOSE_COVER],
         ]);
 
