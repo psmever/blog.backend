@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiBaseController;
+use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\PostService;
@@ -37,6 +38,37 @@ class PostController extends ApiBaseController
         return $this->responseSuccess([
             'uuid' => $post->uuid,
         ], '정상 처리되었습니다', Response::HTTP_CREATED);
+    }
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return $this->responseUnauthorized();
+        }
+
+        $payload = $request->validate([
+            'status' => ['sometimes', 'string', 'in:'.Post::STATUS_DRAFT.','.Post::STATUS_PUBLISHED],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $status = (string) ($payload['status'] ?? Post::STATUS_PUBLISHED);
+        $limit = (int) ($payload['limit'] ?? 20);
+        $posts = $this->postService->listByStatus($user, $status, $limit);
+
+        return $this->responseSuccess(
+            $posts
+                ->map(fn (Post $post) => [
+                    'uuid' => $post->uuid,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'status' => $post->status,
+                    'published_at' => $this->formatDateTimeForResponse($post->published_at),
+                    'updated_at' => $this->formatDateTimeForResponse($post->updated_at),
+                ])
+                ->values()
+                ->all()
+        );
     }
 
     public function show(Request $request, string $uuid)

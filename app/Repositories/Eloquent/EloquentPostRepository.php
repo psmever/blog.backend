@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Post;
 use App\Repositories\PostRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class EloquentPostRepository implements PostRepositoryInterface
 {
@@ -44,5 +45,19 @@ class EloquentPostRepository implements PostRepositoryInterface
             ->where('user_id', $userId)
             ->where('uuid', $uuid)
             ->first();
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function listForUserByStatus(int $userId, string $status, int $limit): Collection
+    {
+        return Post::query()
+            ->where('user_id', $userId)
+            ->where('status', $status)
+            ->orderByDesc('published_at')
+            ->orderByDesc('updated_at')
+            ->limit($limit)
+            ->get();
     }
 }

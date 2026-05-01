@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
     Route::get('base-data', [SystemController::class, 'index']);
     Route::middleware(['auth:sanctum', 'token.expiry'])->group(function () {
         Route::post('posts', [PostController::class, 'store']);
+        Route::get('posts', [PostController::class, 'index']);
         Route::get('posts/{uuid}', [PostController::class, 'show'])->whereUuid('uuid');
         Route::post('posts/{uuid}/save', [PostController::class, 'save'])->whereUuid('uuid');
         Route::post('posts/{uuid}/publish', [PostController::class, 'publish'])->whereUuid('uuid');
