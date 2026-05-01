@@ -49,7 +49,7 @@ class PostImageService
                 'purpose' => $purpose,
                 'disk' => $disk,
                 'path' => $path,
-                'url' => Storage::disk($disk)->url($path),
+                'url' => $this->publicUrl($disk, $path),
                 'original_name' => $image->getClientOriginalName(),
                 'mime_type' => $image->getMimeType() ?: 'application/octet-stream',
                 'size' => $image->getSize() ?: 0,
@@ -57,6 +57,11 @@ class PostImageService
                 'height' => $height,
             ]);
         });
+    }
+
+    public function urlForImage(PostImage $image): string
+    {
+        return $this->publicUrl($image->disk, $image->path);
     }
 
     public function setCoverImage(User $user, string $postUuid, string $imageUuid): ?Post
@@ -94,6 +99,31 @@ class PostImageService
         $disk = config('filesystems.media_disk', 'public');
 
         return is_string($disk) && $disk !== '' ? $disk : 'public';
+    }
+
+    private function publicUrl(string $disk, string $path): string
+    {
+        $storageUrl = Storage::disk($disk)->url($path);
+        $appUrl = rtrim((string) config('app.url', ''), '/');
+
+        if ($appUrl === '') {
+            return $storageUrl;
+        }
+
+        $urlPath = parse_url($storageUrl, PHP_URL_PATH);
+        $urlQuery = parse_url($storageUrl, PHP_URL_QUERY);
+        $urlFragment = parse_url($storageUrl, PHP_URL_FRAGMENT);
+
+        if (! is_string($urlPath) || $urlPath === '') {
+            $urlPath = '/'.ltrim($storageUrl, '/');
+        } elseif (! str_starts_with($urlPath, '/')) {
+            $urlPath = '/'.$urlPath;
+        }
+
+        return $appUrl
+            .$urlPath
+            .(is_string($urlQuery) && $urlQuery !== '' ? '?'.$urlQuery : '')
+            .(is_string($urlFragment) && $urlFragment !== '' ? '#'.$urlFragment : '');
     }
 
     /**
