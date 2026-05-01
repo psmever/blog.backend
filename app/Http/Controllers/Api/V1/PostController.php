@@ -216,7 +216,7 @@ class PostController extends ApiBaseController
         return [
             'uuid' => $image->uuid,
             'purpose' => $image->purpose,
-            'url' => $image->url,
+            'url' => $this->postImageService->urlForImage($image),
             'width' => $image->width,
             'height' => $image->height,
             'size' => $image->size,

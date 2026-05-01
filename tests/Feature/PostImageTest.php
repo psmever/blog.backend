@@ -21,6 +21,7 @@ class PostImageTest extends TestCase
     {
         parent::setUp();
         $this->seed(CommonCodeSeeder::class);
+        config(['app.url' => 'https://api.test.local']);
         config(['filesystems.media_disk' => 'public']);
         Storage::fake('public');
     }
@@ -60,6 +61,10 @@ class PostImageTest extends TestCase
 
         /** @var PostImage $image */
         $image = PostImage::query()->where('uuid', $response->json('data.uuid'))->firstOrFail();
+        $expectedUrl = rtrim((string) config('app.url'), '/').'/storage/'.$image->path;
+
+        $response->assertJsonPath('data.url', $expectedUrl);
+        $this->assertSame($expectedUrl, $image->url);
         Storage::disk('public')->assertExists($image->path);
     }
 
