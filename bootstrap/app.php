@@ -39,7 +39,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('api', ValidateClientType::class);
     })
     ->withCommands([
+        \App\Console\Commands\ExportPostmanCollection::class,
         \App\Console\Commands\PruneExpiredTokens::class,
+        \App\Console\Commands\TruncatePostTables::class,
     ])
     ->withExceptions(function (Exceptions $exceptions) {
         // 헬퍼: 이 요청이 API인지?
