@@ -12,8 +12,6 @@ class PostImage extends Model
 
     public const PURPOSE_BODY = 'body';
 
-    public const PURPOSE_COVER = 'cover';
-
     protected $fillable = [
         'uuid',
         'post_id',

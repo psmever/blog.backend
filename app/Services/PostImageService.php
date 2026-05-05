@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\User;
 use App\Repositories\PostImageRepositoryInterface;
@@ -19,9 +18,9 @@ class PostImageService
         private readonly PostImageRepositoryInterface $postImages
     ) {}
 
-    public function uploadForPost(User $user, string $postUuid, UploadedFile $image, string $purpose): ?PostImage
+    public function uploadForPost(User $user, string $postUuid, UploadedFile $image): ?PostImage
     {
-        return DB::transaction(function () use ($user, $postUuid, $image, $purpose) {
+        return DB::transaction(function () use ($user, $postUuid, $image) {
             $post = $this->posts->findByUuidForUser($user->getKey(), $postUuid);
             if (! $post && $this->posts->uuidExists($postUuid)) {
                 return null;
@@ -30,7 +29,7 @@ class PostImageService
             $imageUuid = (string) Str::uuid();
             $extension = $image->extension() ?: $image->guessExtension() ?: 'bin';
             $disk = $this->mediaDisk();
-            $path = sprintf('posts/%s/%s/%s.%s', $postUuid, $purpose, $imageUuid, $extension);
+            $path = sprintf('posts/%s/%s/%s.%s', $postUuid, PostImage::PURPOSE_BODY, $imageUuid, $extension);
 
             Storage::disk($disk)->putFileAs(
                 dirname($path),
@@ -46,7 +45,7 @@ class PostImageService
                 'post_id' => $post ? (int) $post->getKey() : null,
                 'user_id' => (int) $user->getKey(),
                 'post_uuid' => $postUuid,
-                'purpose' => $purpose,
+                'purpose' => PostImage::PURPOSE_BODY,
                 'disk' => $disk,
                 'path' => $path,
                 'url' => $this->publicUrl($disk, $path),
@@ -62,36 +61,6 @@ class PostImageService
     public function urlForImage(PostImage $image): string
     {
         return $this->publicUrl($image->disk, $image->path);
-    }
-
-    public function setCoverImage(User $user, string $postUuid, string $imageUuid): ?Post
-    {
-        return DB::transaction(function () use ($user, $postUuid, $imageUuid) {
-            $post = $this->posts->findByUuidForUser($user->getKey(), $postUuid);
-            if (! $post) {
-                return null;
-            }
-
-            $this->postImages->attachStagedImagesToPost(
-                $postUuid,
-                (int) $user->getKey(),
-                (int) $post->getKey()
-            );
-
-            $image = $this->postImages->findByUuidForPostUuidAndUser(
-                $postUuid,
-                (int) $user->getKey(),
-                $imageUuid
-            );
-
-            if (! $image || $image->purpose !== PostImage::PURPOSE_COVER) {
-                return null;
-            }
-
-            return $this->posts->update($post, [
-                'cover_image_id' => $image->getKey(),
-            ])->load('coverImage');
-        });
     }
 
     private function mediaDisk(): string
