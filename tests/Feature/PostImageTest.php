@@ -118,31 +118,84 @@ class PostImageTest extends TestCase
         $this->assertNotNull($image->post_id);
     }
 
-    public function test_set_cover_image_and_show_post(): void
+    public function test_save_uses_first_body_image_as_cover_image(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $postUuid = $this->createPost();
+        $issued = $this->postWithClientType('/api/v1/posts/uuid', [])->assertOk();
+        $postUuid = (string) $issued->json('data.uuid');
 
-        $upload = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
-            'purpose' => PostImage::PURPOSE_COVER,
-            'image' => $this->fakePng('cover.png'),
+        $firstUpload = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => PostImage::PURPOSE_BODY,
+            'image' => $this->fakePng('first.png'),
         ])->assertCreated();
 
-        $imageUuid = (string) $upload->json('data.uuid');
+        $secondUpload = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => PostImage::PURPOSE_BODY,
+            'image' => $this->fakePng('second.png'),
+        ])->assertCreated();
 
-        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/cover-image', [
-            'image_uuid' => $imageUuid,
-        ])->assertOk()
-            ->assertJsonPath('data.uuid', $postUuid)
-            ->assertJsonPath('data.cover_image.uuid', $imageUuid);
+        $firstUrl = (string) $firstUpload->json('data.url');
+        $secondUrl = (string) $secondUpload->json('data.url');
+        $firstImageUuid = (string) $firstUpload->json('data.uuid');
+
+        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/save', [
+            'title' => 'Saved Later',
+            'tags' => ['laravel'],
+            'body' => sprintf("![first](%s)\n\n![second](%s)", $firstUrl, $secondUrl),
+        ])->assertOk();
 
         $this->withHeader('Client-Type', self::CLIENT_TYPE)
             ->getJson('/api/v1/posts/'.$postUuid)
             ->assertOk()
-            ->assertJsonPath('data.cover_image.uuid', $imageUuid)
-            ->assertJsonPath('data.cover_image.purpose', PostImage::PURPOSE_COVER);
+            ->assertJsonPath('data.cover_image.uuid', $firstImageUuid)
+            ->assertJsonPath('data.cover_image.purpose', PostImage::PURPOSE_BODY);
+    }
+
+    public function test_save_updates_cover_image_when_first_body_image_changes(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $issued = $this->postWithClientType('/api/v1/posts/uuid', [])->assertOk();
+        $postUuid = (string) $issued->json('data.uuid');
+
+        $firstUpload = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => PostImage::PURPOSE_BODY,
+            'image' => $this->fakePng('first.png'),
+        ])->assertCreated();
+
+        $secondUpload = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => PostImage::PURPOSE_BODY,
+            'image' => $this->fakePng('second.png'),
+        ])->assertCreated();
+
+        $firstUrl = (string) $firstUpload->json('data.url');
+        $secondUrl = (string) $secondUpload->json('data.url');
+        $firstImageUuid = (string) $firstUpload->json('data.uuid');
+        $secondImageUuid = (string) $secondUpload->json('data.uuid');
+
+        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/save', [
+            'title' => 'Saved Later',
+            'tags' => ['laravel'],
+            'body' => sprintf("![first](%s)\n\n![second](%s)", $firstUrl, $secondUrl),
+        ])->assertOk();
+
+        $this->withHeader('Client-Type', self::CLIENT_TYPE)
+            ->getJson('/api/v1/posts/'.$postUuid)
+            ->assertOk()
+            ->assertJsonPath('data.cover_image.uuid', $firstImageUuid);
+
+        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/save', [
+            'body' => sprintf("![second](%s)\n\n![first](%s)", $secondUrl, $firstUrl),
+        ])->assertOk();
+
+        $this->withHeader('Client-Type', self::CLIENT_TYPE)
+            ->getJson('/api/v1/posts/'.$postUuid)
+            ->assertOk()
+            ->assertJsonPath('data.cover_image.uuid', $secondImageUuid)
+            ->assertJsonPath('data.cover_image.purpose', PostImage::PURPOSE_BODY);
     }
 
     public function test_upload_image_returns_not_found_for_other_user_post(): void
@@ -160,21 +213,19 @@ class PostImageTest extends TestCase
         ])->assertNotFound();
     }
 
-    public function test_set_cover_image_requires_cover_purpose(): void
+    public function test_upload_image_ignores_non_body_purpose_payload(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
         $postUuid = $this->createPost();
 
-        $upload = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
-            'purpose' => PostImage::PURPOSE_BODY,
+        $response = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => 'cover',
             'image' => $this->fakePng('body.png'),
         ])->assertCreated();
 
-        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/cover-image', [
-            'image_uuid' => (string) $upload->json('data.uuid'),
-        ])->assertNotFound();
+        $response->assertJsonPath('data.purpose', PostImage::PURPOSE_BODY);
     }
 
     public function test_upload_image_validates_file_type(): void

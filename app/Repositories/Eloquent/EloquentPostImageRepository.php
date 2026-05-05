@@ -12,21 +12,12 @@ class EloquentPostImageRepository implements PostImageRepositoryInterface
         return PostImage::query()->create($attributes);
     }
 
-    public function findByUuidForPostAndUser(int $postId, int $userId, string $uuid): ?PostImage
-    {
-        return PostImage::query()
-            ->where('post_id', $postId)
-            ->where('user_id', $userId)
-            ->where('uuid', $uuid)
-            ->first();
-    }
-
-    public function findByUuidForPostUuidAndUser(string $postUuid, int $userId, string $uuid): ?PostImage
+    public function findByUrlForPostUuidAndUser(string $postUuid, int $userId, string $url): ?PostImage
     {
         return PostImage::query()
             ->where('post_uuid', $postUuid)
             ->where('user_id', $userId)
-            ->where('uuid', $uuid)
+            ->where('url', $url)
             ->first();
     }
 

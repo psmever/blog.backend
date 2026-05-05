@@ -69,6 +69,7 @@ class PostService
                 (int) $user->getKey(),
                 (int) $post->getKey()
             );
+            $post = $this->syncCoverImageFromBody($post, (int) $user->getKey());
             $post->load('tags');
 
             $this->recordStatusHistory(
@@ -156,6 +157,7 @@ class PostService
                 ]);
             }
 
+            $post = $this->syncCoverImageFromBody($post, (int) $user->getKey());
             $post->load('tags');
 
             $this->recordStatusHistory(
@@ -257,6 +259,50 @@ class PostService
             ->unique()
             ->values()
             ->all();
+    }
+
+    private function syncCoverImageFromBody(Post $post, int $userId): Post
+    {
+        $coverImageId = null;
+
+        foreach ($this->extractImageUrlsFromBody((string) $post->body) as $url) {
+            $image = $this->postImages->findByUrlForPostUuidAndUser((string) $post->uuid, $userId, $url);
+            if (! $image) {
+                continue;
+            }
+
+            $coverImageId = (int) $image->getKey();
+            break;
+        }
+
+        if ($post->cover_image_id !== $coverImageId) {
+            $post = $this->posts->update($post, [
+                'cover_image_id' => $coverImageId,
+            ]);
+        }
+
+        return $post->load('coverImage');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function extractImageUrlsFromBody(string $body): array
+    {
+        if ($body === '') {
+            return [];
+        }
+
+        preg_match_all('/!\[[^\]]*]\((<[^>]+>|[^)\s]+)(?:\s+"[^"]*")?\)/u', $body, $matches);
+        /** @var array{0: list<string>, 1: list<string>} $matches */
+
+        return array_values(array_filter(
+            array_map(
+                static fn (string $url): string => trim($url, '<>'),
+                $matches[1]
+            ),
+            static fn (string $url): bool => $url !== ''
+        ));
     }
 
     private function resolveStatusCode(string $statusCode): string

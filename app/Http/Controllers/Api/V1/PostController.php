@@ -153,10 +153,9 @@ class PostController extends ApiBaseController
 
         $payload = $request->validate([
             'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:204800'],
-            'purpose' => ['required', 'string', 'in:'.PostImage::PURPOSE_BODY.','.PostImage::PURPOSE_COVER],
         ]);
 
-        $image = $this->postImageService->uploadForPost($user, $uuid, $payload['image'], $payload['purpose']);
+        $image = $this->postImageService->uploadForPost($user, $uuid, $payload['image']);
         if (! $image) {
             return $this->responseNotFound('게시글을 찾을 수 없습니다.');
         }
@@ -166,28 +165,6 @@ class PostController extends ApiBaseController
             '이미지가 업로드되었습니다.',
             Response::HTTP_CREATED
         );
-    }
-
-    public function setCoverImage(Request $request, string $uuid)
-    {
-        $user = $request->user();
-        if (! $user instanceof User) {
-            return $this->responseUnauthorized();
-        }
-
-        $payload = $request->validate([
-            'image_uuid' => ['required', 'uuid'],
-        ]);
-
-        $post = $this->postImageService->setCoverImage($user, $uuid, $payload['image_uuid']);
-        if (! $post) {
-            return $this->responseNotFound('이미지를 찾을 수 없습니다.');
-        }
-
-        return $this->responseSuccess([
-            'uuid' => $post->uuid,
-            'cover_image' => $this->formatImageForResponse($post->coverImage),
-        ], '대표 이미지가 설정되었습니다.');
     }
 
     public function publish(Request $request, string $uuid)
