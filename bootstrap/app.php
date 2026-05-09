@@ -41,6 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([
         \App\Console\Commands\ExportPostmanCollection::class,
         \App\Console\Commands\PruneExpiredTokens::class,
+        \App\Console\Commands\RepairLocalMigrationRegistry::class,
         \App\Console\Commands\TruncatePostTables::class,
     ])
     ->withExceptions(function (Exceptions $exceptions) {
