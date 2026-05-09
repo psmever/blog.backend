@@ -20,7 +20,7 @@ class AuthController extends ApiBaseController
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => $this->loginEmailRules(),
             'password' => ['required', 'string'],
         ]);
 
@@ -30,6 +30,18 @@ class AuthController extends ApiBaseController
         }
 
         return $this->responseSuccess($this->formatTokenPair($tokens));
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function loginEmailRules(): array
+    {
+        if (app()->environment(['local', 'development'])) {
+            return ['required', 'string'];
+        }
+
+        return ['required', 'email'];
     }
 
     /**
