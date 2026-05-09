@@ -85,4 +85,36 @@ class PostSaveTest extends TestCase
             'action' => 'save',
         ]);
     }
+
+    public function test_save_uses_globally_unique_slug_when_title_changes(): void
+    {
+        $firstUser = User::factory()->create();
+        Sanctum::actingAs($firstUser);
+
+        $this->postWithClientType('/api/v1/posts', [
+            'title' => 'Shared Title',
+            'tags' => ['react'],
+            'body' => 'body',
+        ])->assertCreated();
+
+        $secondUser = User::factory()->create();
+        Sanctum::actingAs($secondUser);
+
+        $created = $this->postWithClientType('/api/v1/posts', [
+            'title' => 'Another Title',
+            'tags' => ['laravel'],
+            'body' => 'body',
+        ])->assertCreated();
+
+        $uuid = (string) $created->json('data.uuid');
+
+        $this->postWithClientType('/api/v1/posts/'.$uuid.'/save', [
+            'title' => 'Shared Title',
+        ])->assertOk();
+
+        $this->assertDatabaseHas('posts', [
+            'uuid' => $uuid,
+            'slug' => 'shared-title-2',
+        ]);
+    }
 }

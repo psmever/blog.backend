@@ -21,18 +21,16 @@ class EloquentPostRepository implements PostRepositoryInterface
         return $post->refresh();
     }
 
-    public function slugExistsForUser(int $userId, string $slug): bool
+    public function slugExists(string $slug): bool
     {
         return Post::query()
-            ->where('user_id', $userId)
             ->where('slug', $slug)
             ->exists();
     }
 
-    public function slugExistsForUserExceptPost(int $userId, string $slug, int $postId): bool
+    public function slugExistsExceptPost(string $slug, int $postId): bool
     {
         return Post::query()
-            ->where('user_id', $userId)
             ->where('slug', $slug)
             ->whereKeyNot($postId)
             ->exists();
@@ -54,6 +52,22 @@ class EloquentPostRepository implements PostRepositoryInterface
             ->first();
     }
 
+    public function findPublishedBySlug(string $slug): ?Post
+    {
+        return Post::query()
+            ->with(['coverImage', 'tags', 'user'])
+            ->where('slug', $slug)
+            ->where('status', Post::STATUS_PUBLISHED)
+            ->first();
+    }
+
+    public function incrementViewCount(Post $post): void
+    {
+        Post::query()
+            ->whereKey($post->getKey())
+            ->increment('view_count');
+    }
+
     /**
      * @return Collection<int, Post>
      */
@@ -64,6 +78,32 @@ class EloquentPostRepository implements PostRepositoryInterface
             ->where('status', $status)
             ->orderByDesc('published_at')
             ->orderByDesc('updated_at')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function listPublishedBeforeCursor(?string $publishedAt, ?int $id, int $limit): Collection
+    {
+        $query = Post::query()
+            ->with(['coverImage', 'tags', 'user'])
+            ->where('status', Post::STATUS_PUBLISHED);
+
+        if ($publishedAt !== null && $id !== null) {
+            $query->where(function ($builder) use ($publishedAt, $id) {
+                $builder->where('published_at', '<', $publishedAt)
+                    ->orWhere(function ($nested) use ($publishedAt, $id) {
+                        $nested->where('published_at', $publishedAt)
+                            ->where('id', '<', $id);
+                    });
+            });
+        }
+
+        return $query
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
             ->limit($limit)
             ->get();
     }

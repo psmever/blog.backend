@@ -61,16 +61,21 @@ class PostmanExportCommandTest extends TestCase
         $this->assertContains('auth', $folders);
         $this->assertContains('health', $folders);
         $this->assertContains('v1/posts', $folders);
+        $this->assertContains('v1/public', $folders);
         $this->assertContains('v1/base-data', $folders);
         $this->assertArrayNotHasKey('GET /api/_demo/ok', $requestMap->all());
 
         $login = $requestMap->get('POST /api/auth/login');
         $postsIndex = $requestMap->get('GET /api/v1/posts');
+        $publicPostsIndex = $requestMap->get('GET /api/v1/public/posts');
+        $publicPostShow = $requestMap->get('GET /api/v1/public/posts/:slug');
         $uploadImage = $requestMap->get('POST /api/v1/posts/:postUuid/images');
         $showPost = $requestMap->get('GET /api/v1/posts/:postUuid');
 
         $this->assertNotNull($login);
         $this->assertNotNull($postsIndex);
+        $this->assertNotNull($publicPostsIndex);
+        $this->assertNotNull($publicPostShow);
         $this->assertNotNull($uploadImage);
         $this->assertNotNull($showPost);
 
@@ -109,6 +114,12 @@ class PostmanExportCommandTest extends TestCase
 
         $this->assertSame('published', $this->findQuery($postsIndex['request']['url']['query'], 'status'));
         $this->assertSame('1', $this->findQuery($postsIndex['request']['url']['query'], 'limit'));
+        $this->assertSame('1', $this->findQuery($publicPostsIndex['request']['url']['query'], 'limit'));
+        $this->assertSame('샘플 텍스트', $this->findQuery($publicPostsIndex['request']['url']['query'], 'cursor'));
+        $this->assertArrayNotHasKey('auth', $publicPostsIndex['request']);
+        $this->assertArrayNotHasKey('auth', $publicPostShow['request']);
+        $this->assertSame('{{blog_api_base_url}}/api/v1/public/posts/:slug', $publicPostShow['request']['url']['raw']);
+        $this->assertSame('{{slug}}', $publicPostShow['request']['url']['variable'][0]['value']);
 
         $this->assertSame('formdata', $uploadImage['request']['body']['mode']);
         $this->assertSame('file', $uploadImage['request']['body']['formdata'][0]['type']);

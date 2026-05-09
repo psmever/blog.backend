@@ -97,6 +97,29 @@ trait ApiResponseTrait
         ], Response::HTTP_OK);
     }
 
+    /**
+     * @param  array<int, mixed>  $items
+     */
+    protected function responseCursorPaginated(
+        array $items,
+        int $limit,
+        ?string $nextCursor,
+        bool $hasMore,
+        string $message = '정상 처리되었습니다'
+    ): JsonResponse {
+        return response()->json([
+            'message' => $message,
+            'data' => $items,
+            'meta' => [
+                'status' => Response::HTTP_OK,
+                'timestamp' => $this->currentTimestamp(),
+                'limit' => $limit,
+                'next_cursor' => $nextCursor,
+                'has_more' => $hasMore,
+            ],
+        ], Response::HTTP_OK);
+    }
+
     protected function currentTimestamp(): string
     {
         return $this->formatDateTimeForResponse(now()) ?? now()->toDateTimeString();

@@ -46,7 +46,7 @@ class PostService
             $body = (string) ($payload['body'] ?? '');
             $tagNames = $this->normalizeTagNames($payload['tags'] ?? []);
 
-            $slug = $this->makeUniqueSlug($user->getKey(), $title !== '' ? $title : 'post');
+            $slug = $this->makeUniqueSlug($title !== '' ? $title : 'post');
 
             $draftStatus = $this->resolveStatusCode(self::POST_STATUS_DRAFT);
 
@@ -125,7 +125,6 @@ class PostService
 
                 if ($post->title !== $title) {
                     $attributes['slug'] = $this->makeUniqueSlug(
-                        $user->getKey(),
                         $title !== '' ? $title : 'post',
                         (int) $post->getKey()
                     );
@@ -223,7 +222,7 @@ class PostService
         });
     }
 
-    private function makeUniqueSlug(int $userId, string $title, ?int $exceptPostId = null): string
+    private function makeUniqueSlug(string $title, ?int $exceptPostId = null): string
     {
         $base = Str::slug($title);
         if ($base === '') {
@@ -233,7 +232,7 @@ class PostService
         $slug = $base;
         $suffix = 2;
 
-        while ($this->slugExistsForUser($userId, $slug, $exceptPostId)) {
+        while ($this->slugExists($slug, $exceptPostId)) {
             $slug = $base.'-'.$suffix;
             $suffix++;
         }
@@ -241,13 +240,13 @@ class PostService
         return $slug;
     }
 
-    private function slugExistsForUser(int $userId, string $slug, ?int $exceptPostId = null): bool
+    private function slugExists(string $slug, ?int $exceptPostId = null): bool
     {
         if ($exceptPostId === null) {
-            return $this->posts->slugExistsForUser($userId, $slug);
+            return $this->posts->slugExists($slug);
         }
 
-        return $this->posts->slugExistsForUserExceptPost($userId, $slug, $exceptPostId);
+        return $this->posts->slugExistsExceptPost($slug, $exceptPostId);
     }
 
     private function normalizeTagNames(array $tags): array
