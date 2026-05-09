@@ -81,6 +81,34 @@ class AuthTest extends TestCase
             ->assertJsonPath('message', '이메일 또는 비밀번호가 올바르지 않습니다.');
     }
 
+    public function test_login_allows_non_email_identifier_in_local_environment(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        User::factory()->create([
+            'email' => 'local',
+            'password' => Hash::make('password'),
+        ]);
+
+        $this->postWithClientType('/api/auth/login', [
+            'email' => 'local',
+            'password' => 'password',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.user.email', 'local');
+    }
+
+    public function test_login_requires_email_format_outside_local_environment(): void
+    {
+        $this->postWithClientType('/api/auth/login', [
+            'email' => 'local',
+            'password' => 'password',
+        ])
+            ->assertStatus(422)
+            ->assertJsonPath('message', '요청값이 올바르지 않습니다.')
+            ->assertJsonValidationErrors(['email']);
+    }
+
     public function test_refresh_rotates_access_and_refresh_tokens(): void
     {
         User::factory()->create([
