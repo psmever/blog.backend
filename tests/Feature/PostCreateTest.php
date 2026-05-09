@@ -60,7 +60,7 @@ class PostCreateTest extends TestCase
         ]);
     }
 
-    public function test_slug_is_unique_per_user(): void
+    public function test_slug_is_globally_unique(): void
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -89,7 +89,7 @@ class PostCreateTest extends TestCase
 
         $this->assertDatabaseHas('posts', [
             'user_id' => $other->getKey(),
-            'slug' => 'same-title',
+            'slug' => 'same-title-3',
         ]);
     }
 }

@@ -11,11 +11,24 @@
 */
 
 use App\Http\Controllers\Api\V1\PostController;
+use App\Http\Controllers\Api\V1\PublicPostController;
 use App\Http\Controllers\Api\V1\SystemController;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('base-data', [SystemController::class, 'index']);
+    Route::prefix('public')->group(function () {
+        Route::get('posts', [PublicPostController::class, 'index']);
+        Route::get('posts/{slug}', [PublicPostController::class, 'show'])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+            ]);
+    });
     Route::middleware(['auth:sanctum', 'token.expiry'])->group(function () {
         Route::post('posts/uuid', [PostController::class, 'issueUuid']);
         Route::post('posts', [PostController::class, 'store']);

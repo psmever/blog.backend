@@ -24,11 +24,13 @@ class Post extends Model
         'status',
         'published_at',
         'cover_image_id',
+        'view_count',
         'body',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'view_count' => 'integer',
     ];
 
     public function user(): BelongsTo
