@@ -23,7 +23,7 @@ class RepairLocalMigrationRegistry extends Command
         $migrationTable = (string) config('database.migrations.table', 'migrations');
 
         if (! Schema::hasTable($migrationTable)) {
-            $this->callSilent('migrate:install', ['--force' => true]);
+            $this->callSilent('migrate:install');
         }
 
         $repository = DB::table($migrationTable);
