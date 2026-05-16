@@ -241,11 +241,35 @@ class PostImageTest extends TestCase
         ])->assertUnprocessable();
     }
 
-    private function fakePng(string $name): UploadedFile
+    public function test_upload_image_validates_file_size(): void
     {
+        config(['posts.image_upload_max_kb' => 1]);
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $postUuid = $this->createPost();
+
+        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => PostImage::PURPOSE_BODY,
+            'image' => $this->fakePng('large.png', 2048),
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('image');
+
+        $this->assertDatabaseCount('post_images', 0);
+    }
+
+    private function fakePng(string $name, int $minBytes = 0): UploadedFile
+    {
+        $contents = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=') ?: '';
+
+        if ($minBytes > strlen($contents)) {
+            $contents .= str_repeat('0', $minBytes - strlen($contents));
+        }
+
         return UploadedFile::fake()->createWithContent(
             $name,
-            base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=') ?: ''
+            $contents
         );
     }
 }

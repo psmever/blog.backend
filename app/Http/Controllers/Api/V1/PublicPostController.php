@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Models\Post;
-use App\Models\PostImage;
 use App\Models\Tag;
-use App\Services\PostImageService;
 use App\Services\PublicPostService;
+use App\Support\PostImageResponseFormatter;
 use Illuminate\Http\Request;
 
 class PublicPostController extends ApiBaseController
 {
     public function __construct(
         private readonly PublicPostService $publicPosts,
-        private readonly PostImageService $postImageService
+        private readonly PostImageResponseFormatter $postImageFormatter
     ) {}
 
     public function index(Request $request)
@@ -59,7 +58,7 @@ class PublicPostController extends ApiBaseController
             'title' => $post->title,
             'excerpt' => $this->publicPosts->excerptFromBody($post->body),
             'published_at' => $this->formatDateTimeForResponse($post->published_at),
-            'cover_image' => $this->formatImageForResponse($post->coverImage),
+            'cover_image' => $this->postImageFormatter->format($post->coverImage),
             'author' => [
                 'name' => $post->user?->name ?? '',
             ],
@@ -78,7 +77,7 @@ class PublicPostController extends ApiBaseController
             'title' => $post->title,
             'excerpt' => $this->publicPosts->excerptFromBody($post->body),
             'published_at' => $this->formatDateTimeForResponse($post->published_at),
-            'cover_image' => $this->formatImageForResponse($post->coverImage),
+            'cover_image' => $this->postImageFormatter->format($post->coverImage),
             'author' => [
                 'name' => $post->user?->name ?? '',
             ],
@@ -112,25 +111,6 @@ class PublicPostController extends ApiBaseController
         return [
             'key' => $tag->key,
             'label' => $tag->label,
-        ];
-    }
-
-    /**
-     * @return array<string, int|string>|null
-     */
-    private function formatImageForResponse(?PostImage $image): ?array
-    {
-        if (! $image) {
-            return null;
-        }
-
-        return [
-            'uuid' => $image->uuid,
-            'purpose' => $image->purpose,
-            'url' => $this->postImageService->urlForImage($image),
-            'width' => $image->width,
-            'height' => $image->height,
-            'size' => $image->size,
         ];
     }
 }

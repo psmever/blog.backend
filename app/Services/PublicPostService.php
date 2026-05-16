@@ -43,7 +43,7 @@ class PublicPostService
 
     public function findPublishedBySlug(string $slug, Request $request): ?Post
     {
-        $post = $this->posts->findPublishedBySlug($slug);
+        $post = $this->posts->findPublishedBySlug($this->normalizeSlug($slug));
         if (! $post) {
             return null;
         }
@@ -58,6 +58,22 @@ class PublicPostService
         }
 
         return $post;
+    }
+
+    private function normalizeSlug(string $slug): string
+    {
+        $normalized = $slug;
+
+        for ($attempts = 0; $attempts < 2; $attempts++) {
+            $decoded = rawurldecode($normalized);
+            if ($decoded === $normalized) {
+                break;
+            }
+
+            $normalized = $decoded;
+        }
+
+        return $normalized;
     }
 
     public function excerptFromBody(?string $body): string

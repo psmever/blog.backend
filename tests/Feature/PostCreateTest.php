@@ -41,7 +41,10 @@ class PostCreateTest extends TestCase
         $response = $this->postWithClientType('/api/v1/posts', $payload);
 
         $response->assertCreated();
-        $response->assertJsonStructure(['data' => ['uuid']]);
+        $response
+            ->assertJsonStructure(['data' => ['uuid', 'slug', 'public_url']])
+            ->assertJsonPath('data.slug', 'hello-react')
+            ->assertJsonPath('data.public_url', '/api/v1/public/posts/hello-react');
         $this->assertMatchesRegularExpression('/^[0-9a-f-]{36}$/i', (string) $response->json('data.uuid'));
 
         $this->assertDatabaseHas('posts', [
@@ -71,8 +74,12 @@ class PostCreateTest extends TestCase
             'body' => '내용',
         ];
 
-        $this->postWithClientType('/api/v1/posts', $payload)->assertCreated();
-        $this->postWithClientType('/api/v1/posts', $payload)->assertCreated();
+        $this->postWithClientType('/api/v1/posts', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.slug', 'same-title');
+        $this->postWithClientType('/api/v1/posts', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.slug', 'same-title-2');
 
         $this->assertDatabaseHas('posts', [
             'user_id' => $user->getKey(),
@@ -85,11 +92,39 @@ class PostCreateTest extends TestCase
 
         $other = User::factory()->create();
         Sanctum::actingAs($other);
-        $this->postWithClientType('/api/v1/posts', $payload)->assertCreated();
+        $this->postWithClientType('/api/v1/posts', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.slug', 'same-title-3');
 
         $this->assertDatabaseHas('posts', [
             'user_id' => $other->getKey(),
             'slug' => 'same-title-3',
+        ]);
+    }
+
+    public function test_create_post_preserves_korean_title_in_slug(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $payload = [
+            'title' => '한글 제목으로 Slug URL 만들기!',
+            'tags' => ['laravel'],
+            'body' => '내용',
+        ];
+
+        $this->postWithClientType('/api/v1/posts', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.slug', '한글-제목으로-slug-url-만들기');
+        $this->postWithClientType('/api/v1/posts', $payload)->assertCreated();
+
+        $this->assertDatabaseHas('posts', [
+            'user_id' => $user->getKey(),
+            'slug' => '한글-제목으로-slug-url-만들기',
+        ]);
+        $this->assertDatabaseHas('posts', [
+            'user_id' => $user->getKey(),
+            'slug' => '한글-제목으로-slug-url-만들기-2',
         ]);
     }
 }

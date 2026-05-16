@@ -72,6 +72,14 @@ class PublicPostListTest extends TestCase
             ->assertJsonPath('data.0.primary_tag.key', 'next-js')
             ->assertJsonPath('data.0.primary_tag.label', 'Next.js')
             ->assertJsonPath('data.0.cover_image.uuid', $featured->coverImage?->uuid)
+            ->assertJsonPath('data.0.cover_image.is_default', false)
+            ->assertJsonPath('data.1.cover_image.uuid', null)
+            ->assertJsonPath('data.1.cover_image.purpose', 'default')
+            ->assertJsonPath('data.1.cover_image.url', 'https://api.test.local/images/default-cover.png')
+            ->assertJsonPath('data.1.cover_image.width', 1200)
+            ->assertJsonPath('data.1.cover_image.height', 630)
+            ->assertJsonPath('data.1.cover_image.size', 0)
+            ->assertJsonPath('data.1.cover_image.is_default', true)
             ->assertJsonPath('data.0.view_count', 0);
 
         $this->assertSame(
