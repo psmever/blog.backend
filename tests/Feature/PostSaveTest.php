@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Post;
 use App\Models\User;
 use Database\Seeders\CommonCodeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -115,6 +116,62 @@ class PostSaveTest extends TestCase
         $this->assertDatabaseHas('posts', [
             'uuid' => $uuid,
             'slug' => 'shared-title-2',
+        ]);
+    }
+
+    public function test_save_preserves_korean_title_in_slug_when_title_changes(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $created = $this->postWithClientType('/api/v1/posts', [
+            'title' => 'Draft Post',
+            'tags' => ['laravel'],
+            'body' => 'body',
+        ])->assertCreated();
+
+        $uuid = (string) $created->json('data.uuid');
+
+        $this->postWithClientType('/api/v1/posts/'.$uuid.'/save', [
+            'title' => '라라벨 API 설계',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.slug', '라라벨-api-설계');
+
+        $this->assertDatabaseHas('posts', [
+            'uuid' => $uuid,
+            'slug' => '라라벨-api-설계',
+        ]);
+    }
+
+    public function test_save_refreshes_stale_post_slug_from_same_korean_title(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $created = $this->postWithClientType('/api/v1/posts', [
+            'title' => '라라벨 API 설계',
+            'tags' => ['laravel'],
+            'body' => 'body',
+        ])->assertCreated();
+
+        $uuid = (string) $created->json('data.uuid');
+
+        Post::query()
+            ->where('uuid', $uuid)
+            ->firstOrFail()
+            ->forceFill(['slug' => 'post'])
+            ->save();
+
+        $this->postWithClientType('/api/v1/posts/'.$uuid.'/save', [
+            'title' => '라라벨 API 설계',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.slug', '라라벨-api-설계');
+
+        $this->assertDatabaseHas('posts', [
+            'uuid' => $uuid,
+            'slug' => '라라벨-api-설계',
         ]);
     }
 }

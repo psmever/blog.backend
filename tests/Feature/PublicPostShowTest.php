@@ -20,6 +20,7 @@ class PublicPostShowTest extends TestCase
     {
         parent::setUp();
         $this->seed(CommonCodeSeeder::class);
+        config(['app.url' => 'https://api.test.local']);
     }
 
     private function postWithClientType(string $uri, array $payload)
@@ -45,6 +46,13 @@ class PublicPostShowTest extends TestCase
             ->assertJsonPath('data.author.name', '공개 작성자')
             ->assertJsonPath('data.tags.0.key', 'next-js')
             ->assertJsonPath('data.tags.1.key', 'react')
+            ->assertJsonPath('data.cover_image.uuid', null)
+            ->assertJsonPath('data.cover_image.purpose', 'default')
+            ->assertJsonPath('data.cover_image.url', 'https://api.test.local/images/default-cover.png')
+            ->assertJsonPath('data.cover_image.width', 1200)
+            ->assertJsonPath('data.cover_image.height', 630)
+            ->assertJsonPath('data.cover_image.size', 0)
+            ->assertJsonPath('data.cover_image.is_default', true)
             ->assertJsonPath('data.view_count', 1)
             ->assertJsonPath('data.body', '# markdown 원문');
 
@@ -107,6 +115,24 @@ class PublicPostShowTest extends TestCase
 
         $this->getWithClientType('/api/v1/public/posts/unknown-post')
             ->assertNotFound();
+    }
+
+    public function test_public_show_accepts_encoded_and_double_encoded_korean_slug(): void
+    {
+        $author = User::factory()->create();
+        $this->createPublishedPost($author, '슬러그 테스트', ['laravel']);
+
+        $this->app['auth']->forgetGuards();
+
+        $encodedSlug = rawurlencode('슬러그-테스트');
+
+        $this->getWithClientType('/api/v1/public/posts/'.$encodedSlug)
+            ->assertOk()
+            ->assertJsonPath('data.slug', '슬러그-테스트');
+
+        $this->getWithClientType('/api/v1/public/posts/'.rawurlencode($encodedSlug))
+            ->assertOk()
+            ->assertJsonPath('data.slug', '슬러그-테스트');
     }
 
     private function createPublishedPost(User $user, string $title, array $tags): Post

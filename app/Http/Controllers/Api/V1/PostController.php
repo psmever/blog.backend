@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiBaseController;
 use App\Models\Post;
-use App\Models\PostImage;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\PostImageService;
 use App\Services\PostService;
+use App\Support\PostImageResponseFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -18,7 +18,8 @@ class PostController extends ApiBaseController
 {
     public function __construct(
         private readonly PostService $postService,
-        private readonly PostImageService $postImageService
+        private readonly PostImageService $postImageService,
+        private readonly PostImageResponseFormatter $postImageFormatter
     ) {}
 
     public function issueUuid(Request $request)
@@ -52,9 +53,11 @@ class PostController extends ApiBaseController
 
         $post = $this->postService->create($user, $payload);
 
-        return $this->responseSuccess([
-            'uuid' => $post->uuid,
-        ], '정상 처리되었습니다', Response::HTTP_CREATED);
+        return $this->responseSuccess(
+            $this->formatWritePostResponse($post),
+            '정상 처리되었습니다',
+            Response::HTTP_CREATED
+        );
     }
 
     public function index(Request $request)
@@ -109,7 +112,7 @@ class PostController extends ApiBaseController
             'slug' => $post->slug,
             'status' => $post->status,
             'published_at' => $this->formatDateTimeForResponse($post->published_at),
-            'cover_image' => $this->formatImageForResponse($post->coverImage),
+            'cover_image' => $this->postImageFormatter->format($post->coverImage),
             'tags' => $tags
                 ->map(fn (Tag $tag) => ['key' => $tag->key, 'label' => $tag->label])
                 ->values()
@@ -139,9 +142,10 @@ class PostController extends ApiBaseController
             return $this->responseNotFound('게시글을 찾을 수 없습니다.');
         }
 
-        return $this->responseSuccess([
-            'uuid' => $post->uuid,
-        ], '임시 저장되었습니다.');
+        return $this->responseSuccess(
+            $this->formatWritePostResponse($post),
+            '임시 저장되었습니다.'
+        );
     }
 
     public function uploadImage(Request $request, string $uuid)
@@ -152,7 +156,7 @@ class PostController extends ApiBaseController
         }
 
         $payload = $request->validate([
-            'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:204800'],
+            'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:'.config('posts.image_upload_max_kb')],
         ]);
 
         $image = $this->postImageService->uploadForPost($user, $uuid, $payload['image']);
@@ -161,7 +165,7 @@ class PostController extends ApiBaseController
         }
 
         return $this->responseSuccess(
-            $this->formatImageForResponse($image),
+            $this->postImageFormatter->format($image),
             '이미지가 업로드되었습니다.',
             Response::HTTP_CREATED
         );
@@ -179,24 +183,18 @@ class PostController extends ApiBaseController
             return $this->responseNotFound('게시글을 찾을 수 없습니다.');
         }
 
-        return $this->responseSuccess([
-            'uuid' => $post->uuid,
-        ], '개시되었습니다.');
+        return $this->responseSuccess(
+            $this->formatWritePostResponse($post),
+            '게시되었습니다.'
+        );
     }
 
-    private function formatImageForResponse(?PostImage $image): ?array
+    private function formatWritePostResponse(Post $post): array
     {
-        if (! $image) {
-            return null;
-        }
-
         return [
-            'uuid' => $image->uuid,
-            'purpose' => $image->purpose,
-            'url' => $this->postImageService->urlForImage($image),
-            'width' => $image->width,
-            'height' => $image->height,
-            'size' => $image->size,
+            'uuid' => $post->uuid,
+            'slug' => $post->slug,
+            'public_url' => '/api/v1/public/posts/'.$post->slug,
         ];
     }
 }

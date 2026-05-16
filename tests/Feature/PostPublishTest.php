@@ -42,12 +42,46 @@ class PostPublishTest extends TestCase
 
         $this->postWithClientType('/api/v1/posts/'.$uuid.'/publish', [])
             ->assertOk()
-            ->assertJsonPath('data.uuid', $uuid);
+            ->assertJsonPath('status', true)
+            ->assertJsonPath('message', '게시되었습니다.')
+            ->assertJsonPath('data.uuid', $uuid)
+            ->assertJsonPath('data.slug', 'publish-me')
+            ->assertJsonPath('data.public_url', '/api/v1/public/posts/publish-me');
 
         /** @var Post $post */
         $post = Post::query()->where('uuid', $uuid)->firstOrFail();
         $this->assertSame(Post::STATUS_PUBLISHED, $post->status);
         $this->assertNotNull($post->published_at);
+    }
+
+    public function test_publish_refreshes_stale_post_slug_from_korean_title(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $created = $this->postWithClientType('/api/v1/posts', [
+            'title' => '',
+            'tags' => ['laravel'],
+            'body' => 'body',
+        ])->assertCreated();
+
+        $uuid = (string) $created->json('data.uuid');
+
+        Post::query()
+            ->where('uuid', $uuid)
+            ->firstOrFail()
+            ->forceFill(['title' => '라라벨 API 설계'])
+            ->save();
+
+        $this->postWithClientType('/api/v1/posts/'.$uuid.'/publish', [])
+            ->assertOk()
+            ->assertJsonPath('data.slug', '라라벨-api-설계')
+            ->assertJsonPath('data.public_url', '/api/v1/public/posts/라라벨-api-설계');
+
+        $this->assertDatabaseHas('posts', [
+            'uuid' => $uuid,
+            'slug' => '라라벨-api-설계',
+        ]);
     }
 
     public function test_publish_requires_title_tags_body(): void

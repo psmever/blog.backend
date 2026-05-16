@@ -22,6 +22,8 @@ class PostService
 
     private const POST_STATUS_PUBLISHED = 'published';
 
+    private const POST_SLUG_MAX_LENGTH = 191;
+
     public function __construct(
         private readonly CommonCodeRepositoryInterface $commonCodes,
         private readonly PostImageRepositoryInterface $postImages,
@@ -46,7 +48,7 @@ class PostService
             $body = (string) ($payload['body'] ?? '');
             $tagNames = $this->normalizeTagNames($payload['tags'] ?? []);
 
-            $slug = $this->makeUniqueSlug($title !== '' ? $title : 'post');
+            $slug = $this->makeUniqueSlugFromTitle($title);
 
             $draftStatus = $this->resolveStatusCode(self::POST_STATUS_DRAFT);
 
@@ -123,11 +125,9 @@ class PostService
                 $title = trim((string) ($payload['title'] ?? ''));
                 $attributes['title'] = $title;
 
-                if ($post->title !== $title) {
-                    $attributes['slug'] = $this->makeUniqueSlug(
-                        $title !== '' ? $title : 'post',
-                        (int) $post->getKey()
-                    );
+                $slug = $this->makeUniqueSlugFromTitle($title, (int) $post->getKey());
+                if ($post->slug !== $slug) {
+                    $attributes['slug'] = $slug;
                 }
             }
 
@@ -205,10 +205,20 @@ class PostService
             $publishedStatus = $this->resolveStatusCode(self::POST_STATUS_PUBLISHED);
             $fromStatus = (string) $post->status;
 
-            $post = $this->posts->update($post, [
+            $attributes = [
                 'status' => $publishedStatus,
                 'published_at' => $post->published_at ?? now(),
-            ])->load('tags');
+            ];
+
+            $title = trim((string) $post->title);
+            if ($title !== '') {
+                $slug = $this->makeUniqueSlugFromTitle($title, (int) $post->getKey());
+                if ($post->slug !== $slug) {
+                    $attributes['slug'] = $slug;
+                }
+            }
+
+            $post = $this->posts->update($post, $attributes)->load('tags');
 
             $this->recordStatusHistory(
                 $post,
@@ -224,20 +234,44 @@ class PostService
 
     private function makeUniqueSlug(string $title, ?int $exceptPostId = null): string
     {
-        $base = Str::slug($title);
+        $base = $this->makeSlugBase($title);
         if ($base === '') {
             $base = 'post';
         }
 
+        $base = $this->limitSlug($base);
         $slug = $base;
         $suffix = 2;
 
         while ($this->slugExists($slug, $exceptPostId)) {
-            $slug = $base.'-'.$suffix;
+            $suffixText = '-'.$suffix;
+            $slug = $this->limitSlug($base, mb_strlen($suffixText, 'UTF-8')).$suffixText;
             $suffix++;
         }
 
         return $slug;
+    }
+
+    private function makeUniqueSlugFromTitle(string $title, ?int $exceptPostId = null): string
+    {
+        $title = trim($title);
+
+        return $this->makeUniqueSlug($title !== '' ? $title : 'post', $exceptPostId);
+    }
+
+    private function makeSlugBase(string $title): string
+    {
+        $slug = preg_replace('/[^\p{L}\p{N}]+/u', '-', mb_strtolower($title, 'UTF-8'));
+        $slug = trim((string) $slug, '-');
+
+        return $slug;
+    }
+
+    private function limitSlug(string $slug, int $reservedLength = 0): string
+    {
+        $maxLength = self::POST_SLUG_MAX_LENGTH - $reservedLength;
+
+        return mb_substr($slug, 0, $maxLength, 'UTF-8');
     }
 
     private function slugExists(string $slug, ?int $exceptPostId = null): bool
