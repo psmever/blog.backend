@@ -73,6 +73,12 @@ class PostImageService
     private function publicUrl(string $disk, string $path): string
     {
         $storageUrl = Storage::disk($disk)->url($path);
+
+        // Cloud disks can already return a fully qualified CDN/S3 URL.
+        if (filter_var($storageUrl, FILTER_VALIDATE_URL) !== false) {
+            return $storageUrl;
+        }
+
         $appUrl = rtrim((string) config('app.url', ''), '/');
 
         if ($appUrl === '') {

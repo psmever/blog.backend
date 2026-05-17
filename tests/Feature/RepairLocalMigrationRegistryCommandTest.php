@@ -51,6 +51,28 @@ class RepairLocalMigrationRegistryCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
+    public function test_local_migrate_repairs_missing_registry_rows_before_running(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        DB::table('migrations')
+            ->whereIn('migration', [
+                '2026_02_08_000007_create_post_images_table',
+                '2026_02_08_000008_add_cover_image_id_to_posts_table',
+            ])
+            ->delete();
+
+        $this->artisan('migrate')
+            ->assertExitCode(0);
+
+        $this->assertDatabaseHas('migrations', [
+            'migration' => '2026_02_08_000007_create_post_images_table',
+        ]);
+        $this->assertDatabaseHas('migrations', [
+            'migration' => '2026_02_08_000008_add_cover_image_id_to_posts_table',
+        ]);
+    }
+
     public function test_repair_command_fails_outside_local_environment(): void
     {
         $this->app->detectEnvironment(fn () => 'testing');
