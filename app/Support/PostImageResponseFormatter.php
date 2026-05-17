@@ -46,15 +46,6 @@ class PostImageResponseFormatter
             $url = '/images/default-cover.png';
         }
 
-        if (parse_url($url, PHP_URL_SCHEME) !== null) {
-            return $url;
-        }
-
-        $appUrl = rtrim((string) config('app.url', ''), '/');
-        if ($appUrl === '') {
-            return '/'.ltrim($url, '/');
-        }
-
-        return $appUrl.'/'.ltrim($url, '/');
+        return $this->postImageService->responseUrl($url);
     }
 }

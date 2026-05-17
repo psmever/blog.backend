@@ -21,6 +21,7 @@ class PublicPostShowTest extends TestCase
         parent::setUp();
         $this->seed(CommonCodeSeeder::class);
         config(['app.url' => 'https://api.test.local']);
+        config(['posts.image_base_url' => 'https://images.test.local']);
     }
 
     private function postWithClientType(string $uri, array $payload)
@@ -48,7 +49,7 @@ class PublicPostShowTest extends TestCase
             ->assertJsonPath('data.tags.1.key', 'react')
             ->assertJsonPath('data.cover_image.uuid', null)
             ->assertJsonPath('data.cover_image.purpose', 'default')
-            ->assertJsonPath('data.cover_image.url', 'https://api.test.local/images/default-cover.png')
+            ->assertJsonPath('data.cover_image.url', 'https://images.test.local/images/default-cover.png')
             ->assertJsonPath('data.cover_image.width', 1200)
             ->assertJsonPath('data.cover_image.height', 630)
             ->assertJsonPath('data.cover_image.size', 0)

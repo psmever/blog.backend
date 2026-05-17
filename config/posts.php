@@ -2,6 +2,7 @@
 
 return [
     'image_upload_max_kb' => (int) env('POST_IMAGE_MAX_KB', 204800),
+    'image_base_url' => env('APP_IMAGE_URL'),
     'default_cover_image' => [
         'url' => env('POST_DEFAULT_COVER_IMAGE_URL', '/images/default-cover.png'),
         'width' => (int) env('POST_DEFAULT_COVER_IMAGE_WIDTH', 1200),
