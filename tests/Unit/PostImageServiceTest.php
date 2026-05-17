@@ -21,7 +21,7 @@ class PostImageServiceTest extends TestCase
 
     public function test_it_prefixes_relative_local_storage_urls_with_app_url(): void
     {
-        config(['app.url' => 'https://blog.api.jaubi.co.kr']);
+        config(['posts.image_base_url' => 'https://images.jaubi.co.kr']);
 
         Storage::shouldReceive('disk->url')
             ->once()
@@ -39,14 +39,14 @@ class PostImageServiceTest extends TestCase
         ]);
 
         $this->assertSame(
-            'https://blog.api.jaubi.co.kr/storage/posts/sample/body.png',
+            'https://images.jaubi.co.kr/storage/posts/sample/body.png',
             $service->urlForImage($image),
         );
     }
 
-    public function test_it_keeps_absolute_cloud_storage_urls_as_is(): void
+    public function test_it_prefixes_domainless_cloud_storage_urls_with_image_base_url(): void
     {
-        config(['app.url' => 'https://blog.api.jaubi.co.kr']);
+        config(['posts.image_base_url' => 'https://images.jaubi.co.kr']);
 
         Storage::shouldReceive('disk->url')
             ->once()
@@ -64,7 +64,7 @@ class PostImageServiceTest extends TestCase
         ]);
 
         $this->assertSame(
-            'https://cdn.jaubi.co.kr/posts/sample/body.png',
+            'https://images.jaubi.co.kr/posts/sample/body.png',
             $service->urlForImage($image),
         );
     }

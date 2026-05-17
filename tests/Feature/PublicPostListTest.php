@@ -23,6 +23,7 @@ class PublicPostListTest extends TestCase
         parent::setUp();
         $this->seed(CommonCodeSeeder::class);
         config(['app.url' => 'https://api.test.local']);
+        config(['posts.image_base_url' => 'https://images.test.local']);
         config(['filesystems.media_disk' => 'public']);
         Storage::fake('public');
     }
@@ -75,7 +76,7 @@ class PublicPostListTest extends TestCase
             ->assertJsonPath('data.0.cover_image.is_default', false)
             ->assertJsonPath('data.1.cover_image.uuid', null)
             ->assertJsonPath('data.1.cover_image.purpose', 'default')
-            ->assertJsonPath('data.1.cover_image.url', 'https://api.test.local/images/default-cover.png')
+            ->assertJsonPath('data.1.cover_image.url', 'https://images.test.local/images/default-cover.png')
             ->assertJsonPath('data.1.cover_image.width', 1200)
             ->assertJsonPath('data.1.cover_image.height', 630)
             ->assertJsonPath('data.1.cover_image.size', 0)

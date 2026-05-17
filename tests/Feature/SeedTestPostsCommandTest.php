@@ -16,6 +16,7 @@ class SeedTestPostsCommandTest extends TestCase
         parent::setUp();
 
         config(['app.url' => 'https://api.test.local']);
+        config(['posts.image_base_url' => 'https://images.test.local']);
         config(['filesystems.media_disk' => 'public']);
         Storage::fake('public');
     }

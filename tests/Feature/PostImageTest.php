@@ -22,6 +22,7 @@ class PostImageTest extends TestCase
         parent::setUp();
         $this->seed(CommonCodeSeeder::class);
         config(['app.url' => 'https://api.test.local']);
+        config(['posts.image_base_url' => 'https://images.test.local']);
         config(['filesystems.media_disk' => 'public']);
         Storage::fake('public');
     }
@@ -61,10 +62,11 @@ class PostImageTest extends TestCase
 
         /** @var PostImage $image */
         $image = PostImage::query()->where('uuid', $response->json('data.uuid'))->firstOrFail();
-        $expectedUrl = rtrim((string) config('app.url'), '/').'/storage/'.$image->path;
+        $expectedUrl = rtrim((string) config('posts.image_base_url'), '/').'/storage/'.$image->path;
+        $expectedStoredUrl = '/storage/'.$image->path;
 
         $response->assertJsonPath('data.url', $expectedUrl);
-        $this->assertSame($expectedUrl, $image->url);
+        $this->assertSame($expectedStoredUrl, $image->url);
         Storage::disk('public')->assertExists($image->path);
     }
 
@@ -239,6 +241,24 @@ class PostImageTest extends TestCase
             'purpose' => PostImage::PURPOSE_BODY,
             'image' => UploadedFile::fake()->create('document.pdf', 10, 'application/pdf'),
         ])->assertUnprocessable();
+    }
+
+    public function test_upload_image_is_unavailable_when_image_base_url_is_missing(): void
+    {
+        config(['posts.image_base_url' => '']);
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $postUuid = $this->createPost();
+
+        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => PostImage::PURPOSE_BODY,
+            'image' => $this->fakePng('body.png'),
+        ])->assertStatus(503)
+            ->assertJsonPath('message', '이미지 업로드를 사용할 수 없습니다. APP_IMAGE_URL 설정이 필요합니다.');
+
+        $this->assertDatabaseCount('post_images', 0);
     }
 
     public function test_upload_image_validates_file_size(): void

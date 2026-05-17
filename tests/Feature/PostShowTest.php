@@ -19,6 +19,7 @@ class PostShowTest extends TestCase
         parent::setUp();
         $this->seed(CommonCodeSeeder::class);
         config(['app.url' => 'https://api.test.local']);
+        config(['posts.image_base_url' => 'https://images.test.local']);
     }
 
     private function postWithClientType(string $uri, array $payload)
@@ -51,7 +52,7 @@ class PostShowTest extends TestCase
         $response->assertJsonPath('data.slug', 'hello-react');
         $response->assertJsonPath('data.cover_image.uuid', null);
         $response->assertJsonPath('data.cover_image.purpose', 'default');
-        $response->assertJsonPath('data.cover_image.url', 'https://api.test.local/images/default-cover.png');
+        $response->assertJsonPath('data.cover_image.url', 'https://images.test.local/images/default-cover.png');
         $response->assertJsonPath('data.cover_image.width', 1200);
         $response->assertJsonPath('data.cover_image.height', 630);
         $response->assertJsonPath('data.cover_image.size', 0);
