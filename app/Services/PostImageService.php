@@ -9,9 +9,11 @@ use App\Repositories\PostImageRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Throwable;
 
 class PostImageService
 {
@@ -35,14 +37,40 @@ class PostImageService
             $disk = $this->mediaDisk();
             $path = sprintf('posts/%s/%s/%s.%s', $postUuid, PostImage::PURPOSE_BODY, $imageUuid, $extension);
 
-            $storedPath = Storage::disk($disk)->putFileAs(
-                dirname($path),
-                $image,
-                basename($path),
-                ['visibility' => 'public']
-            );
+            try {
+                $storedPath = Storage::disk($disk)->putFileAs(
+                    dirname($path),
+                    $image,
+                    basename($path),
+                    $this->storageWriteOptions($disk)
+                );
+                $fileExists = $storedPath !== false && Storage::disk($disk)->exists($path);
+            } catch (Throwable $e) {
+                Log::error('Post image storage write failed.', [
+                    'disk' => $disk,
+                    'path' => $path,
+                    'post_uuid' => $postUuid,
+                    'user_id' => (int) $user->getKey(),
+                    'exception_class' => $e::class,
+                    'exception_message' => $e->getMessage(),
+                ]);
 
-            if ($storedPath === false || ! Storage::disk($disk)->exists($path)) {
+                throw new ApiException(
+                    sprintf('이미지 파일 저장에 실패했습니다. [%s] 디스크 설정과 접근 권한을 확인해 주세요.', $disk),
+                    500
+                );
+            }
+
+            if ($storedPath === false || ! $fileExists) {
+                Log::error('Post image storage write returned without a persisted file.', [
+                    'disk' => $disk,
+                    'path' => $path,
+                    'post_uuid' => $postUuid,
+                    'user_id' => (int) $user->getKey(),
+                    'stored_path' => $storedPath,
+                    'file_exists' => $fileExists,
+                ]);
+
                 throw new ApiException(
                     sprintf('이미지 파일 저장에 실패했습니다. [%s] 디스크 설정과 접근 권한을 확인해 주세요.', $disk),
                     500
@@ -114,6 +142,18 @@ class PostImageService
     private function imageBaseUrl(): string
     {
         return rtrim(trim((string) config('posts.image_base_url', '')), '/');
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function storageWriteOptions(string $disk): array
+    {
+        if ($disk === 's3') {
+            return [];
+        }
+
+        return ['visibility' => 'public'];
     }
 
     private function publicUrlPath(string $disk, string $path): string
