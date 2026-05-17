@@ -92,6 +92,7 @@ class CommonCodeSeeder extends Seeder
             'sort_order' => 0,
             'is_active' => true,
             'meta' => null,
+            'deleted_at' => null,
         ];
 
         $payload = array_map(
@@ -102,7 +103,7 @@ class CommonCodeSeeder extends Seeder
         CommonCode::query()->upsert(
             $payload,
             ['group_key', 'code'],
-            ['label', 'description', 'sort_order', 'is_active', 'meta']
+            ['label', 'description', 'sort_order', 'is_active', 'meta', 'deleted_at']
         );
     }
 }
