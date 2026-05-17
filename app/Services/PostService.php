@@ -1,0 +1,379 @@
+<?php
+
+namespace App\Services;
+
+use App\Exceptions\ApiException;
+use App\Models\Post;
+use App\Models\User;
+use App\Repositories\CommonCodeRepositoryInterface;
+use App\Repositories\PostImageRepositoryInterface;
+use App\Repositories\PostRepositoryInterface;
+use App\Repositories\PostStatusHistoryRepositoryInterface;
+use App\Repositories\TagRepositoryInterface;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+class PostService
+{
+    private const POST_STATUS_GROUP = 'post.status';
+
+    private const POST_STATUS_DRAFT = 'draft';
+
+    private const POST_STATUS_PUBLISHED = 'published';
+
+    private const POST_SLUG_MAX_LENGTH = 191;
+
+    public function __construct(
+        private readonly CommonCodeRepositoryInterface $commonCodes,
+        private readonly PostImageRepositoryInterface $postImages,
+        private readonly PostRepositoryInterface $posts,
+        private readonly PostStatusHistoryRepositoryInterface $postStatusHistories,
+        private readonly TagRepositoryInterface $tags
+    ) {}
+
+    public function issueUuid(): string
+    {
+        do {
+            $uuid = (string) Str::uuid();
+        } while ($this->posts->uuidExists($uuid));
+
+        return $uuid;
+    }
+
+    public function create(User $user, array $payload): Post
+    {
+        return DB::transaction(function () use ($user, $payload) {
+            $title = trim((string) ($payload['title'] ?? ''));
+            $body = (string) ($payload['body'] ?? '');
+            $tagNames = $this->normalizeTagNames($payload['tags'] ?? []);
+
+            $slug = $this->makeUniqueSlugFromTitle($title);
+
+            $draftStatus = $this->resolveStatusCode(self::POST_STATUS_DRAFT);
+
+            $post = $this->posts->create([
+                'uuid' => $payload['uuid'] ?? (string) Str::uuid(),
+                'user_id' => $user->getKey(),
+                'title' => $title,
+                'slug' => $slug,
+                'status' => $draftStatus,
+                'published_at' => null,
+                'body' => $body,
+            ]);
+
+            $tagModels = $this->tags->findOrCreateByNames($tagNames);
+            if ($tagModels->isNotEmpty()) {
+                $post->tags()->sync($tagModels->pluck('id')->unique()->all());
+            }
+            $this->postImages->attachStagedImagesToPost(
+                (string) $post->uuid,
+                (int) $user->getKey(),
+                (int) $post->getKey()
+            );
+            $post = $this->syncCoverImageFromBody($post, (int) $user->getKey());
+            $post->load('tags');
+
+            $this->recordStatusHistory(
+                $post,
+                null,
+                $draftStatus,
+                (int) $user->getKey(),
+                'create'
+            );
+
+            return $post;
+        });
+    }
+
+    public function findByUuid(User $user, string $uuid): ?Post
+    {
+        return $this->posts->findByUuidForUser($user->getKey(), $uuid);
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function listByStatus(User $user, string $status, int $limit): Collection
+    {
+        return $this->posts->listForUserByStatus(
+            $user->getKey(),
+            $status,
+            $limit
+        );
+    }
+
+    public function saveByUuid(User $user, string $uuid, array $payload): ?Post
+    {
+        return DB::transaction(function () use ($user, $uuid, $payload) {
+            $post = $this->posts->findByUuidForUser($user->getKey(), $uuid);
+            if (! $post) {
+                if ($this->posts->uuidExists($uuid)) {
+                    return null;
+                }
+
+                $payload['uuid'] = $uuid;
+                $post = $this->create($user, $payload);
+                $this->postImages->attachStagedImagesToPost($uuid, (int) $user->getKey(), (int) $post->getKey());
+
+                return $post->load(['coverImage', 'tags']);
+            }
+
+            $attributes = [];
+
+            if (array_key_exists('title', $payload)) {
+                $title = trim((string) ($payload['title'] ?? ''));
+                $attributes['title'] = $title;
+
+                $slug = $this->makeUniqueSlugFromTitle($title, (int) $post->getKey());
+                if ($post->slug !== $slug) {
+                    $attributes['slug'] = $slug;
+                }
+            }
+
+            if (array_key_exists('body', $payload)) {
+                $attributes['body'] = (string) ($payload['body'] ?? '');
+            }
+
+            if ($attributes !== []) {
+                $post = $this->posts->update($post, $attributes);
+            }
+
+            if (array_key_exists('tags', $payload)) {
+                $tagNames = $this->normalizeTagNames($payload['tags'] ?? []);
+                $tagModels = $this->tags->findOrCreateByNames($tagNames);
+                $post->tags()->sync($tagModels->pluck('id')->unique()->all());
+            }
+
+            $draftStatus = $this->resolveStatusCode(self::POST_STATUS_DRAFT);
+            $fromStatus = (string) $post->status;
+            $statusNeedsUpdate = $fromStatus !== $draftStatus || $post->published_at !== null;
+
+            if ($statusNeedsUpdate) {
+                $post = $this->posts->update($post, [
+                    'status' => $draftStatus,
+                    'published_at' => null,
+                ]);
+            }
+
+            $post = $this->syncCoverImageFromBody($post, (int) $user->getKey());
+            $post->load('tags');
+
+            $this->recordStatusHistory(
+                $post,
+                $fromStatus,
+                $draftStatus,
+                (int) $user->getKey(),
+                'save'
+            );
+
+            return $post;
+        });
+    }
+
+    public function publishByUuid(User $user, string $uuid): ?Post
+    {
+        return DB::transaction(function () use ($user, $uuid) {
+            $post = $this->posts->findByUuidForUser($user->getKey(), $uuid);
+            if (! $post) {
+                return null;
+            }
+
+            $post->loadMissing('tags');
+            $errors = [];
+
+            if (trim((string) $post->title) === '') {
+                $errors['title'] = ['제목은 필수입니다.'];
+            }
+
+            if (trim((string) $post->body) === '') {
+                $errors['body'] = ['본문은 필수입니다.'];
+            }
+
+            if ($post->tags->isEmpty()) {
+                $errors['tags'] = ['태그는 최소 1개 이상 필요합니다.'];
+            }
+
+            if ($errors !== []) {
+                throw new ApiException(
+                    '게시글을 개시하려면 필수 항목을 입력하세요.',
+                    422,
+                    $errors
+                );
+            }
+
+            $publishedStatus = $this->resolveStatusCode(self::POST_STATUS_PUBLISHED);
+            $fromStatus = (string) $post->status;
+
+            $attributes = [
+                'status' => $publishedStatus,
+                'published_at' => $post->published_at ?? now(),
+            ];
+
+            $title = trim((string) $post->title);
+            if ($title !== '') {
+                $slug = $this->makeUniqueSlugFromTitle($title, (int) $post->getKey());
+                if ($post->slug !== $slug) {
+                    $attributes['slug'] = $slug;
+                }
+            }
+
+            $post = $this->posts->update($post, $attributes)->load('tags');
+
+            $this->recordStatusHistory(
+                $post,
+                $fromStatus,
+                $publishedStatus,
+                (int) $user->getKey(),
+                'publish'
+            );
+
+            return $post;
+        });
+    }
+
+    private function makeUniqueSlug(string $title, ?int $exceptPostId = null): string
+    {
+        $base = $this->makeSlugBase($title);
+        if ($base === '') {
+            $base = 'post';
+        }
+
+        $base = $this->limitSlug($base);
+        $slug = $base;
+        $suffix = 2;
+
+        while ($this->slugExists($slug, $exceptPostId)) {
+            $suffixText = '-'.$suffix;
+            $slug = $this->limitSlug($base, mb_strlen($suffixText, 'UTF-8')).$suffixText;
+            $suffix++;
+        }
+
+        return $slug;
+    }
+
+    private function makeUniqueSlugFromTitle(string $title, ?int $exceptPostId = null): string
+    {
+        $title = trim($title);
+
+        return $this->makeUniqueSlug($title !== '' ? $title : 'post', $exceptPostId);
+    }
+
+    private function makeSlugBase(string $title): string
+    {
+        $slug = preg_replace('/[^\p{L}\p{N}]+/u', '-', mb_strtolower($title, 'UTF-8'));
+        $slug = trim((string) $slug, '-');
+
+        return $slug;
+    }
+
+    private function limitSlug(string $slug, int $reservedLength = 0): string
+    {
+        $maxLength = self::POST_SLUG_MAX_LENGTH - $reservedLength;
+
+        return mb_substr($slug, 0, $maxLength, 'UTF-8');
+    }
+
+    private function slugExists(string $slug, ?int $exceptPostId = null): bool
+    {
+        if ($exceptPostId === null) {
+            return $this->posts->slugExists($slug);
+        }
+
+        return $this->posts->slugExistsExceptPost($slug, $exceptPostId);
+    }
+
+    private function normalizeTagNames(array $tags): array
+    {
+        return collect($tags)
+            ->filter(fn ($tag) => is_string($tag))
+            ->map(fn ($tag) => trim($tag))
+            ->filter(fn ($tag) => $tag !== '')
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function syncCoverImageFromBody(Post $post, int $userId): Post
+    {
+        $coverImageId = null;
+
+        foreach ($this->extractImageUrlsFromBody((string) $post->body) as $url) {
+            $image = $this->postImages->findByUrlForPostUuidAndUser((string) $post->uuid, $userId, $url);
+            if (! $image) {
+                continue;
+            }
+
+            $coverImageId = (int) $image->getKey();
+            break;
+        }
+
+        if ($post->cover_image_id !== $coverImageId) {
+            $post = $this->posts->update($post, [
+                'cover_image_id' => $coverImageId,
+            ]);
+        }
+
+        return $post->load('coverImage');
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function extractImageUrlsFromBody(string $body): array
+    {
+        if ($body === '') {
+            return [];
+        }
+
+        preg_match_all('/!\[[^\]]*]\((<[^>]+>|[^)\s]+)(?:\s+"[^"]*")?\)/u', $body, $matches);
+        /** @var array{0: list<string>, 1: list<string>} $matches */
+
+        return array_values(array_filter(
+            array_map(
+                static fn (string $url): string => trim($url, '<>'),
+                $matches[1]
+            ),
+            static fn (string $url): bool => $url !== ''
+        ));
+    }
+
+    private function resolveStatusCode(string $statusCode): string
+    {
+        $code = $this->commonCodes->findActiveByGroupAndCode(
+            self::POST_STATUS_GROUP,
+            $statusCode,
+            ['id']
+        );
+
+        if (! $code) {
+            throw new ApiException(
+                sprintf('공통코드 설정 오류입니다. [%s:%s]', self::POST_STATUS_GROUP, $statusCode),
+                500
+            );
+        }
+
+        return $statusCode;
+    }
+
+    private function recordStatusHistory(
+        Post $post,
+        ?string $fromStatus,
+        string $toStatus,
+        int $changedByUserId,
+        string $action
+    ): void {
+        if ($fromStatus === $toStatus && $action !== 'save') {
+            return;
+        }
+
+        $this->postStatusHistories->create([
+            'post_id' => (int) $post->getKey(),
+            'from_status' => $fromStatus,
+            'to_status' => $toStatus,
+            'changed_by_user_id' => $changedByUserId,
+            'action' => $action,
+            'changed_at' => now(),
+        ]);
+    }
+}

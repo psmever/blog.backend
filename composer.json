@@ -1,35 +1,31 @@
 {
+    "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
-        "php": "^7.4|^8.0",
-        "ext-json": "*",
-        "ext-pdo": "*",
-        "fideloper/proxy": "^4.4",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.12",
-        "laravel/passport": "^10.1",
-        "laravel/slack-notification-channel": "^2.3",
-        "laravel/tinker": "^2.5",
-        "maatwebsite/excel": "^3.1",
-        "parsedown/laravel": "^1.2",
-        "ext-simplexml": "*",
-        "ext-libxml": "*"
+        "php": "^8.2",
+        "laravel/framework": "^12.0",
+        "laravel/octane": "^2.13",
+        "laravel/sanctum": "^4.2",
+        "laravel/tinker": "^2.10.1",
+        "league/flysystem-aws-s3-v3": "^3.25"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.10",
-        "doctrine/dbal": "^3.1",
-        "facade/ignition": "^2.5",
-        "fakerphp/faker": "^1.9.1",
-        "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3",
-        "spatie/phpunit-watcher": "^1.23"
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.25",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "nunomaduro/larastan": "^3.7",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
         "psr-4": {
@@ -48,37 +44,26 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi",
+            "@php artisan migrate --graceful --ansi"
         ],
-        "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:generate; fi",
-            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:models -W; fi",
-            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:meta; fi",
-            "php artisan optimize"
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
         ],
-        "app-reset": [
-            "composer dump-autoload",
-            "php artisan optimize:clear",
-            "php artisan migrate:refresh --seed",
-            "php artisan passport:install"
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
         ],
-        "app-clear": [
-            "composer dump-autoload",
-            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:generate; fi",
-            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:models -W; fi",
-            "if [[ $COMPOSER_DEV_MODE -eq 1 ]]; then php artisan ide-helper:meta; fi",
-            "php artisan optimize:clear"
-        ],
-        "app-test:watch": [
-            "phpunit-watcher watch < /dev/tty"
-        ],
-        "app-test:clear": [
-            "php artisan config:clear --env=testing"
+        "postman:export": [
+            "@php artisan postman:export"
         ]
     },
     "extra": {
@@ -89,8 +74,12 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

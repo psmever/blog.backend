@@ -1,0 +1,12 @@
+includes:
+  - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+  paths:
+    - app
+  level: 5
+  ignoreErrors:
+    - '#Call to an undefined method Illuminate\\.*#'
+    - '#Property .* does not exist on .*#'
+  reportUnmatchedIgnoredErrors: false
+  tmpDir: storage/phpstan

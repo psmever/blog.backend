@@ -1,111 +1,222 @@
-# Blog.Backend
+# 📘 Blog Backend (Laravel 12)
 
-## psmever's Blog Back-End Source.
+> **Next.js + Laravel Blog Project** 의 백엔드 서비스입니다.
+> Docker 환경에서 Laravel 12.x 기반으로 작동하며,
+> `Pint`, `PHPStan`, `Larastan` 을 이용해 코드 품질과 일관성을 유지합니다.
 
-## Git Clone.
+---
+
+## 🧱 프로젝트 구조
+
+```text
+blog.backend/
+├── app/                  # 주요 Laravel 앱 로직
+├── bootstrap/            # 초기 부트스트랩 로직
+├── config/               # 환경별 설정 파일
+├── database/             # 마이그레이션 및 시더
+├── public/               # 퍼블릭 엔드포인트
+├── routes/               # 웹 / API 라우트
+│   ├── api/
+│   │   ├── api.php
+│   │   └── v1.php
+│   └── web/
+│       ├── web.php
+│       └── admin.php
+├── storage/              # 캐시, 로그, 업로드
+│   └── phpstan/          # PHPStan 캐시 (Git 무시)
+├── tests/                # 테스트 코드
+├── .env.example          # 환경 변수 예시
+├── composer.json         # PHP 의존성
+├── phpstan.neon.dist     # PHPStan / Larastan 설정
+├── pint.json             # Laravel Pint 설정
+└── README.md             # ← 현재 문서
+```
+
+---
+
+## ⚙️ 개발 환경
+
+이 백엔드는 `blog.workspace` 디렉터리의 Docker Compose 환경에서 실행됩니다.
+
+### 1️⃣ 컨테이너 실행
 
 ```bash
-git clone https://github.com/psmever/blog.backend.git blog.backend
+cd ../blog.workspace
+make up local
 ```
 
-## Git Clone (Single Branch).
+- `php` : Laravel Backend (PHP-FPM)
+- `mariadb` : Database
+- `node` : Frontend / Build 용
+- `.env.local.enc` 파일을 자동 복호화하여 환경 구성
+
+### 2️⃣ Artisan 명령어 실행
 
 ```bash
-git clone -b develop --single-branch https://github.com/psmever/blog.backend.git
+make migrate
+make seed
+make logs
 ```
 
-## Composer.
+또는 직접 실행:
+
 ```bash
-composer install
-
+./scripts/artisan.sh migrate
 ```
 
-## First Config.
+---
+
+## 🧩 라우팅 구조
+
+| 구분     | 경로           | 설명                 |
+| -------- | -------------- | -------------------- |
+| Web      | `/`            | 메인 페이지          |
+| API      | `/api/health`  | Health Check         |
+| API Demo | `/api/_demo/*` | 예시용 테스트 라우트 |
+
+라우트 캐시:
+
 ```bash
-composer install
-cp .env.example .env
+php artisan route:cache
 ```
 
-## Local Develop Server.
+---
+
+## 🧰 코드 품질 도구
+
+### 🧹 **Laravel Pint**
+
+> Laravel 공식 코드 스타일러 (Prettier + PSR-12 기반)
+
+#### 실행 (Pint)
+
 ```bash
-php artisan serve
+./vendor/bin/pint
 ```
 
-## Local Unit Test.
+#### VSCode 자동 실행
+
+- 저장 시 자동 포맷 (`open-southeners.laravel-pint` 확장 사용)
+- 설정: `.vscode/settings.json`
+
+---
+
+### 🧠 **PHPStan + Larastan**
+
+> 코드의 타입 안정성과 논리 오류를 정적으로 분석
+
+#### 실행 (PHPStan)
+
 ```bash
-php artisan test
-
-composer app-test:watch
-
-./vendor/bin/phpunit-watcher watch --filter=test_waiting_
-./vendor/bin/phpunit-watcher watch --filter=ScribbleEditTest
-
+./vendor/bin/phpstan analyse
 ```
 
-## db:seed.
-```
-php artisan db:seed --class=CodesSeeder --force
+#### 설정 파일
+
+📄 `phpstan.neon.dist`
+
+```neon
+includes:
+  - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+  paths:
+    - app
+  level: 5
+  ignoreErrors:
+    - '#Call to an undefined method Illuminate\\.*#'
+    - '#Property .* does not exist on .*#'
+  reportUnmatchedIgnoredErrors: false
+  tmpDir: storage/phpstan
 ```
 
-## Browser.
+#### 캐시 초기화
+
 ```bash
-http://127.0.0.1:8000 || http://localhost:8000/
+./vendor/bin/phpstan clear-result-cache
 ```
 
-## Ex Site.
+---
+
+## 💻 VSCode 권장 설정
+
+📄 `.vscode/settings.json`
+
+```json
+{
+    "editor.formatOnSave": true,
+
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint"
+    },
+
+    "phpstan.executablePath": "${workspaceFolder}/vendor/bin/phpstan",
+    "phpstan.configFile": "${workspaceFolder}/phpstan.neon.dist",
+    "phpstan.runOnSave": true
+}
+```
+
+📦 주요 확장 목록:
+
+- `open-southeners.laravel-pint` (Laravel Pint)
+- `sanderronde.phpstan-vscode` (PHPStan)
+- `bmewburn.vscode-intelephense-client` (PHP 인텔리전스)
+
+---
+
+## 🧑‍💻 개발 흐름 예시
+
 ```bash
-repository-pattern
-https://medium.com/dev-genius/laravel-api-repository-pattern-make-your-code-more-structured-the-simple-guide-5b770da766d7
+# 컨테이너 시작
+make up local
 
-deploy
-https://jeromejaglale.com/doc/php/laravel_github_webhook
+# DB 마이그레이션
+make migrate
 
-deploy - envoy
-https://github.com/appkr/envoy
+# 코드 자동 포맷 (Pint)
+./vendor/bin/pint
 
-
-Rest-api-Response-Format
-https://github.com/cryptlex/rest-api-response-format
-
+# 코드 정적 분석 (PHPStan)
+./vendor/bin/phpstan analyse
 ```
 
-## CustomException.
-```
-throw new \App\Exceptions\CustomException('Something Went Wrong.');
+---
 
-```
+## 🚫 Git 제외 파일
 
-## App Manager Script.
-```
-composer app-clear
-composer app-test:watch
-composer app-test:clear
-```
+📄 `.gitignore`
 
-## Server Deploy.
-
-* Production Deploy Git Main Repositories Push
-```
-> composer global require laravel/envoy
-
-envoy run deploy:stage
-
+```gitignore
+/storage/phpstan/
+/vendor/
+/node_modules/
+/.env
+/.env.*
 ```
 
-## Etc.
+---
+
+## 🩺 헬스체크
+
+```bash
+curl http://localhost:4000/api/health
+# → { "success": true, "message": "ok", "data": { ... } }
 ```
-SlackMessage notifications
-https://medium.com/@olayinka.omole/sending-slack-notifications-from-your-laravel-app-1bdb6e4e4127
-https://www.lesstif.com/php-and-laravel/sending-slack-notifications-from-laravel-36209045.html
-```
 
+---
 
+## 🏁 마무리
 
+이 백엔드는 다음을 목표로 설계되었습니다:
 
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+- Docker 기반 완전 격리 개발 환경
+- Laravel 12.x 최신 구조 준수
+- 코드 품질 자동화 (Pint + PHPStan)
+- VSCode에서 자동 포맷 + 실시간 분석
 
-Please make sure to update tests as appropriate.
+---
 
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+### 👤 Maintainer
+
+**@sm**
+📍 Development Workspace: `/Users/sm/Workspaces/Development/MyProject/blog/blog.backend`
