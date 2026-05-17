@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ApiException;
 use App\Models\PostImage;
 use App\Models\User;
 use App\Repositories\PostImageRepositoryInterface;
@@ -34,12 +35,19 @@ class PostImageService
             $disk = $this->mediaDisk();
             $path = sprintf('posts/%s/%s/%s.%s', $postUuid, PostImage::PURPOSE_BODY, $imageUuid, $extension);
 
-            Storage::disk($disk)->putFileAs(
+            $storedPath = Storage::disk($disk)->putFileAs(
                 dirname($path),
                 $image,
                 basename($path),
                 ['visibility' => 'public']
             );
+
+            if ($storedPath === false || ! Storage::disk($disk)->exists($path)) {
+                throw new ApiException(
+                    sprintf('이미지 파일 저장에 실패했습니다. [%s] 디스크 설정과 접근 권한을 확인해 주세요.', $disk),
+                    500
+                );
+            }
 
             [$width, $height] = $this->dimensions($image);
 
