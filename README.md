@@ -36,12 +36,12 @@ blog.backend/
 
 ## ⚙️ 개발 환경
 
-이 백엔드는 `blog.docker` 디렉터리의 Docker Compose 환경에서 실행됩니다.
+이 백엔드는 `blog.workspace` 디렉터리의 Docker Compose 환경에서 실행됩니다.
 
 ### 1️⃣ 컨테이너 실행
 
 ```bash
-cd ../blog.docker
+cd ../blog.workspace
 make up local
 ```
 

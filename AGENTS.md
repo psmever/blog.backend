@@ -9,12 +9,12 @@
 - `docs/` tracks project documentation (see `docs/overview.md` and `docs/TASKS.md`).
 
 ## Build, Test, and Development Commands
-- `cd ../blog.docker && make up local` starts the Docker stack for local development.
+- `cd ../blog.workspace && make up local` starts the Docker stack for local development.
 - `composer dev` runs the Laravel server, queue, log tailing (Pail), and Vite in parallel.
 - `npm run dev` starts the Vite dev server only.
 - `npm run build` creates production assets via Vite.
 - `php artisan <command>` runs standard Laravel commands (e.g., `php artisan migrate`).
-- `../blog.docker/scripts/artisan.sh migrate` runs Artisan inside the Docker container.
+- `../blog.workspace/scripts/artisan.sh migrate` runs Artisan inside the Docker container.
 
 ## Coding Style & Naming Conventions
 - PHP follows PSR-12 conventions and is auto-formatted with Laravel Pint (`./vendor/bin/pint`).
