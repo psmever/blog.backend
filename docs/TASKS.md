@@ -8,7 +8,7 @@
 ## 🧱 1. 환경 구성
 
 - [x] Laravel 12 프로젝트 초기화
-- [x] Docker 개발 환경 연결 (`blog.docker`)
+- [x] Docker 개발 환경 연결 (`blog.workspace`)
 - [x] Makefile / Artisan 헬퍼 스크립트 구성
 - [x] Laravel Pint 포맷터 설치 및 VSCode 연동
 - [x] PHPStan + Larastan 정적 분석기 설정
