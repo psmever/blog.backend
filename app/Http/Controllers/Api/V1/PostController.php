@@ -155,6 +155,13 @@ class PostController extends ApiBaseController
             return $this->responseUnauthorized();
         }
 
+        if (! $this->postImageService->isUploadAvailable()) {
+            return $this->responseError(
+                '이미지 업로드를 사용할 수 없습니다. APP_IMAGE_URL 설정이 필요합니다.',
+                Response::HTTP_SERVICE_UNAVAILABLE
+            );
+        }
+
         $payload = $request->validate([
             'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp,gif', 'max:'.config('posts.image_upload_max_kb')],
         ]);

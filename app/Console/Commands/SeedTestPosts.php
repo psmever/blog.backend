@@ -153,7 +153,7 @@ class SeedTestPosts extends Command
                 @unlink($uploadedImage->getPathname());
             }
 
-            $imageUrl = $image?->url;
+            $imageUrl = $image ? $this->postImages->urlForImage($image) : null;
         }
 
         $post = $this->posts->saveByUuid($user, $postUuid, [

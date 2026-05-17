@@ -10,6 +10,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class PostImageService
 {
@@ -20,6 +21,8 @@ class PostImageService
 
     public function uploadForPost(User $user, string $postUuid, UploadedFile $image): ?PostImage
     {
+        $this->ensureUploadAvailable();
+
         return DB::transaction(function () use ($user, $postUuid, $image) {
             $post = $this->posts->findByUuidForUser($user->getKey(), $postUuid);
             if (! $post && $this->posts->uuidExists($postUuid)) {
@@ -48,7 +51,7 @@ class PostImageService
                 'purpose' => PostImage::PURPOSE_BODY,
                 'disk' => $disk,
                 'path' => $path,
-                'url' => $this->publicUrl($disk, $path),
+                'url' => $this->publicUrlPath($disk, $path),
                 'original_name' => $image->getClientOriginalName(),
                 'mime_type' => $image->getMimeType() ?: 'application/octet-stream',
                 'size' => $image->getSize() ?: 0,
@@ -60,7 +63,28 @@ class PostImageService
 
     public function urlForImage(PostImage $image): string
     {
-        return $this->publicUrl($image->disk, $image->path);
+        return $this->responseUrl($this->publicUrlPath($image->disk, $image->path));
+    }
+
+    public function responseUrl(string $url): string
+    {
+        if (filter_var($url, FILTER_VALIDATE_URL) !== false) {
+            return $url;
+        }
+
+        $normalizedUrl = $this->normalizePublicUrlPath($url);
+        $baseUrl = $this->imageBaseUrl();
+
+        if ($baseUrl === '') {
+            return $normalizedUrl;
+        }
+
+        return $baseUrl.$normalizedUrl;
+    }
+
+    public function isUploadAvailable(): bool
+    {
+        return $this->imageBaseUrl() !== '';
     }
 
     private function mediaDisk(): string
@@ -70,33 +94,45 @@ class PostImageService
         return is_string($disk) && $disk !== '' ? $disk : 'public';
     }
 
-    private function publicUrl(string $disk, string $path): string
+    private function ensureUploadAvailable(): void
+    {
+        if ($this->isUploadAvailable()) {
+            return;
+        }
+
+        throw new RuntimeException('이미지 업로드를 사용할 수 없습니다. APP_IMAGE_URL 설정이 필요합니다.');
+    }
+
+    private function imageBaseUrl(): string
+    {
+        return rtrim(trim((string) config('posts.image_base_url', '')), '/');
+    }
+
+    private function publicUrlPath(string $disk, string $path): string
     {
         $storageUrl = Storage::disk($disk)->url($path);
 
-        // Cloud disks can already return a fully qualified CDN/S3 URL.
-        if (filter_var($storageUrl, FILTER_VALIDATE_URL) !== false) {
-            return $storageUrl;
+        return $this->normalizePublicUrlPath($storageUrl);
+    }
+
+    private function normalizePublicUrlPath(string $url): string
+    {
+        $url = trim($url);
+        if ($url === '') {
+            return '/';
         }
 
-        $appUrl = rtrim((string) config('app.url', ''), '/');
-
-        if ($appUrl === '') {
-            return $storageUrl;
-        }
-
-        $urlPath = parse_url($storageUrl, PHP_URL_PATH);
-        $urlQuery = parse_url($storageUrl, PHP_URL_QUERY);
-        $urlFragment = parse_url($storageUrl, PHP_URL_FRAGMENT);
+        $urlPath = parse_url($url, PHP_URL_PATH);
+        $urlQuery = parse_url($url, PHP_URL_QUERY);
+        $urlFragment = parse_url($url, PHP_URL_FRAGMENT);
 
         if (! is_string($urlPath) || $urlPath === '') {
-            $urlPath = '/'.ltrim($storageUrl, '/');
+            $urlPath = '/'.ltrim($url, '/');
         } elseif (! str_starts_with($urlPath, '/')) {
             $urlPath = '/'.$urlPath;
         }
 
-        return $appUrl
-            .$urlPath
+        return $urlPath
             .(is_string($urlQuery) && $urlQuery !== '' ? '?'.$urlQuery : '')
             .(is_string($urlFragment) && $urlFragment !== '' ? '#'.$urlFragment : '');
     }
