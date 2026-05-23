@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-PASSWORD="${BLOG_ENV_SECRET:-}"
+PASSWORD="${BLOG_ENV_SECRET:-${BLOG_ENV_LOCAL_SECRET:-}}"
 
 if [[ -z "$PASSWORD" ]]; then
-  read -s "PASSWORD?🔑 Enter decryption password: "
+  read -s "PASSWORD?Enter decryption password: "
   echo
 fi
 

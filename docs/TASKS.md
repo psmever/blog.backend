@@ -51,7 +51,7 @@
 ## 🌍 5. 배포 및 환경 관리
 
 - [ ] `.env.example` 업데이트 (설정 정리)
-- [ ] production 환경용 `.env.production.enc` 생성
+- [ ] production 환경용 `.env.production.enc` 생성 (`BLOG_ENV_PRODUCTION_SECRET` 사용, Git/iCloud 백업 금지)
 - [ ] `make up production` 환경 점검
 - [ ] Docker 이미지 빌드 및 배포 테스트
 
