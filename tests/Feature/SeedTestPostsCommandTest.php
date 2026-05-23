@@ -18,6 +18,9 @@ class SeedTestPostsCommandTest extends TestCase
         config(['app.url' => 'https://api.test.local']);
         config(['posts.image_base_url' => 'https://images.test.local']);
         config(['filesystems.media_disk' => 'public']);
+        config(['admin.seed_user.name' => '관리자']);
+        config(['admin.seed_user.email' => 'admin@example.com']);
+        config(['admin.seed_user.password' => 'secret-password']);
         Storage::fake('public');
     }
 
@@ -30,6 +33,10 @@ class SeedTestPostsCommandTest extends TestCase
 
         $this->assertDatabaseCount('posts', 50);
         $this->assertDatabaseCount('post_images', 50);
+        $this->assertDatabaseHas('users', [
+            'name' => '관리자',
+            'email' => 'admin@example.com',
+        ]);
 
         $posts = Post::query()
             ->with('coverImage')
@@ -95,6 +102,20 @@ class SeedTestPostsCommandTest extends TestCase
 
         $this->artisan('posts:seed-test')
             ->expectsOutput('This command can only be run in the local environment.')
+            ->assertExitCode(1);
+
+        $this->assertDatabaseCount('posts', 0);
+    }
+
+    public function test_seed_test_posts_requires_admin_user_config(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+        config(['admin.seed_user.name' => '']);
+        config(['admin.seed_user.email' => '']);
+        config(['admin.seed_user.password' => '']);
+
+        $this->artisan('posts:seed-test')
+            ->expectsOutput('ADMIN_USER_NAME, ADMIN_LOGIN_EMAIL, and ADMIN_LOGIN_PASSWORD must be configured.')
             ->assertExitCode(1);
 
         $this->assertDatabaseCount('posts', 0);
