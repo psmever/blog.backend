@@ -33,4 +33,4 @@
 
 ## Security & Configuration Tips
 - Do not commit `.env` files. Use `.env.example` as the template.
-- Environment encryption helpers live in `scripts/` (e.g., `env-encrypt.sh`, `env-decrypt.sh`).
+- Keep local and production `.env` files out of Git. Update them manually when values change.
