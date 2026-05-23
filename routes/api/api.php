@@ -28,14 +28,17 @@ use Illuminate\Support\Facades\Route;
 require __DIR__.'/v1.php';
 
 Route::get('/health', [HealthController::class, 'index']);
-Route::get('/_demo/ok', fn () => response()->json(['message' => 'ok', 'data' => ['at' => now()]]));
-Route::get('/_demo/boom', fn () => throw new \Exception('boom!'));
-Route::get('/_demo/api-ex', fn () => throw new ApiException('Bad thing', 422, ['field' => ['wrong']]));
-Route::post('/_demo/validate', function (\Illuminate\Http\Request $r) {
-    $r->validate(['title' => ['required', 'min:3']]);
 
-    return response()->json(['message' => 'ok']);
-});
+if (app()->environment(['local', 'development', 'testing'])) {
+    Route::get('/_demo/ok', fn () => response()->json(['message' => 'ok', 'data' => ['at' => now()]]));
+    Route::get('/_demo/boom', fn () => throw new \Exception('boom!'));
+    Route::get('/_demo/api-ex', fn () => throw new ApiException('Bad thing', 422, ['field' => ['wrong']]));
+    Route::post('/_demo/validate', function (\Illuminate\Http\Request $r) {
+        $r->validate(['title' => ['required', 'min:3']]);
+
+        return response()->json(['message' => 'ok']);
+    });
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -45,8 +48,8 @@ Route::post('/_demo/validate', function (\Illuminate\Http\Request $r) {
 | 로그인, 로그아웃, 토큰 갱신 등의 엔드포인트를 포함합니다.
 |--------------------------------------------------------------------------*/
 Route::prefix('auth')->group(function () {
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('refresh', [AuthController::class, 'refresh'])->middleware('throttle:10,1');
 
     Route::middleware(['auth:sanctum', 'token.expiry'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);
