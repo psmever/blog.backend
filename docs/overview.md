@@ -138,7 +138,7 @@ POST /api/v1/posts/{uuid}/images
 
 요청 필드:
 
-- `image`: jpeg, jpg, png, webp, gif / 최대 5MB
+- `image`: jpeg, jpg, png, webp, gif / 최대 10MB
 - `purpose`: 선택 전달값이며 현재는 무시됩니다. 업로드 이미지는 모두 본문 이미지(`body`)로 저장됩니다.
 - 게시글 대표 이미지는 별도 API로 지정하지 않고, `POST /api/v1/posts/{uuid}/save` 또는 생성 시점에 본문 Markdown의 첫 번째 이미지 기준으로 자동 동기화됩니다.
 

@@ -96,6 +96,23 @@ class SeedTestPostsCommandTest extends TestCase
         });
     }
 
+    public function test_seed_test_posts_can_target_custom_user_email_without_admin_config(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+        config(['admin.seed_user.name' => '']);
+        config(['admin.seed_user.email' => '']);
+        config(['admin.seed_user.password' => '']);
+
+        $this->artisan('posts:seed-test --count=1 --no-images --user-email=writer@example.com')
+            ->assertExitCode(0);
+
+        $this->assertDatabaseCount('posts', 1);
+        $this->assertDatabaseHas('users', [
+            'name' => '테스트 작성자',
+            'email' => 'writer@example.com',
+        ]);
+    }
+
     public function test_seed_test_posts_fails_outside_local_environment(): void
     {
         $this->app->detectEnvironment(fn () => 'testing');

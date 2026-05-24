@@ -15,18 +15,32 @@
   - `tests/`
   - `resources/`
   - `public/`
+  - `docs/`
 - 기본적으로 수정하지 않는 대상:
   - `../blog.frontend`
   - `../blog.workspace`
 
+## 구조와 문서
+
+- `app/`: 컨트롤러, 서비스, 예외, 트레이트 등 Laravel 애플리케이션 로직
+- `routes/`: HTTP 진입점. 버전 API는 주로 `routes/api/v1.php`
+- `database/`: 마이그레이션, 팩토리, 시더
+- `tests/`: `Feature/`, `Unit/` 테스트
+- `public/`: 퍼블릭 엔트리포인트 및 정적 파일
+- `resources/`: 뷰와 프런트 자산
+- `docs/`: 개요와 작업 기록 (`docs/overview.md`, `docs/TASKS.md`)
+
 ## 자주 쓰는 명령
 
-- 로컬 전체 스택 시작: `cd ../blog.workspace && make up`
+- 로컬 전체 스택 시작: `cd ../blog.workspace && make up local`
 - Artisan 실행: `cd ../blog.workspace && ./scripts/artisan.sh route:list`
 - 마이그레이션: `cd ../blog.workspace && make migrate`
 - 시더 실행: `cd ../blog.workspace && make seed`
 - 테스트: `php artisan test` 또는 `composer test`
 - 코드 포맷: `./vendor/bin/pint`
+- 로컬 서버/큐/로그/Vite 동시 실행: `composer dev`
+- 프런트 자산 개발 서버만 실행: `npm run dev`
+- 프런트 자산 빌드: `npm run build`
 
 ## 코딩 규칙
 
@@ -44,6 +58,8 @@
 ## 안전 규칙
 
 - `.env`, `.env.*`, `*.enc` 파일은 꼭 필요한 경우에만 열람하거나 수정한다.
+- 실제 환경 파일은 커밋하지 않는다. 기본값은 `.env.example`을 기준으로 확인한다.
+- 로컬/운영 `.env`는 Git에서 제외하고 값 변경 시 각 환경에서 수동 관리한다.
 - 컨테이너/배포 흐름 변경이 필요하면 먼저 `../blog.workspace` 수정이 맞는지 판단한다.
 - 한 요청이 여러 저장소에 걸치면 백엔드 변경과 그 외 변경을 분리해서 커밋한다.
 - 새 브랜치를 만들기 전에는 먼저 사용자에게 확인하고 승인받은 뒤 진행한다.
