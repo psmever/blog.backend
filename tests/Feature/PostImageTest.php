@@ -263,7 +263,11 @@ class PostImageTest extends TestCase
 
     public function test_upload_image_validates_file_size(): void
     {
-        config(['posts.image_upload_max_kb' => 1]);
+        config([
+            'app.locale' => 'ko',
+            'app.fallback_locale' => 'ko',
+            'posts.image_upload_max_kb' => 1,
+        ]);
 
         $user = User::factory()->create();
         Sanctum::actingAs($user);
@@ -274,7 +278,8 @@ class PostImageTest extends TestCase
             'purpose' => PostImage::PURPOSE_BODY,
             'image' => $this->fakePng('large.png', 2048),
         ])->assertUnprocessable()
-            ->assertJsonValidationErrors('image');
+            ->assertJsonValidationErrors('image')
+            ->assertJsonPath('errors.image.0', '이미지 항목은 1 KB보다 클 수 없습니다.');
 
         $this->assertDatabaseCount('post_images', 0);
     }
