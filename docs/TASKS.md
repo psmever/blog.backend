@@ -51,7 +51,7 @@
 ## 🌍 5. 배포 및 환경 관리
 
 - [ ] `.env.example` 업데이트 (설정 정리)
-- [ ] production 환경용 실제 `.env` 또는 암호화 환경 파일 준비 및 서버 권한 점검
+- [ ] production 환경용 `.env` 수동 작성 및 서버 권한 점검
 - [ ] `make up production` 환경 점검
 - [ ] Docker 이미지 빌드 및 배포 테스트
 

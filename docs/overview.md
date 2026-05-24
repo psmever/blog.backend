@@ -138,7 +138,7 @@ POST /api/v1/posts/{uuid}/images
 
 요청 필드:
 
-- `image`: jpeg, jpg, png, webp, gif / 최대 5MB
+- `image`: jpeg, jpg, png, webp, gif / 최대 10MB
 - `purpose`: 선택 전달값이며 현재는 무시됩니다. 업로드 이미지는 모두 본문 이미지(`body`)로 저장됩니다.
 - 게시글 대표 이미지는 별도 API로 지정하지 않고, `POST /api/v1/posts/{uuid}/save` 또는 생성 시점에 본문 Markdown의 첫 번째 이미지 기준으로 자동 동기화됩니다.
 
@@ -154,7 +154,7 @@ POST /api/v1/posts/{uuid}/images
 ## 문서 & 참고
 
 - 개발 진행 상황: `docs/TASKS.md`
-- 환경 변수 정의: `.env.example` (`.env`는 Git에 커밋하지 않으며 필요하면 `scripts/env-encrypt.sh`, `scripts/env-decrypt.sh`를 사용)
+- 환경 변수 정의: `.env.example` (실제 `.env`는 각 환경에서 수동 관리하며 Git에 커밋하지 않음)
 - 향후 작성 예정: 배포 전략, 인증/서비스 계층 설계 문서
 
 필요 시 본 문서에 추가 섹션(예: ERD, 시퀀스 다이어그램, CI 파이프라인)을 만들어 협업 중 발견한 내용을 계속 보완해 주세요.

@@ -155,6 +155,7 @@ class AuthTest extends TestCase
             ->assertForbidden()
             ->assertJsonPath('message', '접근 토큰이 필요합니다. 다시 로그인해 주세요.');
     }
+
     public function test_refresh_rejects_expired_refresh_token(): void
     {
         $user = User::factory()->create();

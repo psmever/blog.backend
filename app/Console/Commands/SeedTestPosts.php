@@ -95,7 +95,6 @@ class SeedTestPosts extends Command
         } else {
             $user = $this->resolveUser($adminUser['email'], $adminUser['name'], $adminUser['password']);
         }
-
         $withImages = ! (bool) $this->option('no-images');
         $runKey = now()->format('YmdHis').'-'.Str::lower(Str::random(6));
 

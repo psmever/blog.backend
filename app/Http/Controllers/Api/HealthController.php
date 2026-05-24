@@ -9,6 +9,7 @@ class HealthController extends ApiBaseController
         if (app()->isProduction()) {
             return $this->responseSuccess(['status' => 'ok']);
         }
+
         return $this->responseSuccess([
             'app' => config('app.name'),
             'version' => app()->version(),
