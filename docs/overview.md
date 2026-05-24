@@ -154,7 +154,7 @@ POST /api/v1/posts/{uuid}/images
 ## 문서 & 참고
 
 - 개발 진행 상황: `docs/TASKS.md`
-- 환경 변수 정의: `.env.example` (생성/암호화된 환경 파일은 `blog.workspace`에서 관리)
+- 환경 변수 정의: `.env.example` (`.env`는 Git에 커밋하지 않으며 필요하면 `scripts/env-encrypt.sh`, `scripts/env-decrypt.sh`를 사용)
 - 향후 작성 예정: 배포 전략, 인증/서비스 계층 설계 문서
 
 필요 시 본 문서에 추가 섹션(예: ERD, 시퀀스 다이어그램, CI 파이프라인)을 만들어 협업 중 발견한 내용을 계속 보완해 주세요.

@@ -136,6 +136,25 @@ class AuthTest extends TestCase
         $this->assertDatabaseCount('personal_access_tokens', 2);
     }
 
+    public function test_refresh_token_cannot_access_protected_api_routes(): void
+    {
+        User::factory()->create([
+            'email' => 'author@example.com',
+            'password' => Hash::make('secret'),
+        ]);
+
+        $login = $this->postWithClientType('/api/auth/login', [
+            'email' => 'author@example.com',
+            'password' => 'secret',
+        ])->assertOk();
+
+        $this
+            ->withHeader('Client-Type', self::CLIENT_TYPE)
+            ->withToken($login->json('data.refresh_token'))
+            ->getJson('/api/auth/me')
+            ->assertForbidden()
+            ->assertJsonPath('message', '접근 토큰이 필요합니다. 다시 로그인해 주세요.');
+    }
     public function test_refresh_rejects_expired_refresh_token(): void
     {
         $user = User::factory()->create();

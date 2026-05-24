@@ -17,7 +17,7 @@ class SeedTestPosts extends Command
 {
     protected $signature = 'posts:seed-test
         {--count=50 : Number of test posts to create}
-        {--user-email=test@example.com : Email address of the test post owner}
+        {--user-email= : Email address of the test post owner}
         {--no-images : Create posts without local dummy images}
         {--status=published : Post status to create: published or draft}';
 
@@ -79,16 +79,23 @@ class SeedTestPosts extends Command
             return self::FAILURE;
         }
 
-        $email = trim((string) $this->option('user-email'));
-        if ($email === '') {
-            $this->error('The --user-email option is required.');
+        $userEmail = $this->userEmailOption();
+        $adminUser = $userEmail === null ? $this->adminUserAttributes() : null;
+
+        if ($userEmail === null && $adminUser === null) {
+            $this->error('ADMIN_USER_NAME, ADMIN_LOGIN_EMAIL, and ADMIN_LOGIN_PASSWORD must be configured.');
 
             return self::FAILURE;
         }
 
         $this->callSilent('db:seed', ['--class' => CommonCodeSeeder::class]);
 
-        $user = $this->resolveUser($email);
+        if ($userEmail !== null) {
+            $user = $this->resolveUser($userEmail, '테스트 작성자', 'password');
+        } else {
+            $user = $this->resolveUser($adminUser['email'], $adminUser['name'], $adminUser['password']);
+        }
+
         $withImages = ! (bool) $this->option('no-images');
         $runKey = now()->format('YmdHis').'-'.Str::lower(Str::random(6));
 
@@ -119,14 +126,41 @@ class SeedTestPosts extends Command
         return $count;
     }
 
-    private function resolveUser(string $email): User
+    private function userEmailOption(): ?string
+    {
+        $email = trim((string) $this->option('user-email'));
+
+        return $email !== '' ? $email : null;
+    }
+
+    /**
+     * @return array{name: string, email: string, password: string}|null
+     */
+    private function adminUserAttributes(): ?array
+    {
+        $name = trim((string) config('admin.seed_user.name', ''));
+        $email = trim((string) config('admin.seed_user.email', ''));
+        $password = (string) config('admin.seed_user.password', '');
+
+        if ($name === '' || $email === '' || trim($password) === '') {
+            return null;
+        }
+
+        return [
+            'name' => $name,
+            'email' => $email,
+            'password' => $password,
+        ];
+    }
+
+    private function resolveUser(string $email, string $name, string $password): User
     {
         $user = User::query()->firstOrNew(['email' => $email]);
-        $user->name = $user->name ?: '테스트 작성자';
+        $user->name = $user->name ?: $name;
         $user->email_verified_at = $user->email_verified_at ?: now();
 
         if (! $user->exists) {
-            $user->password = Hash::make('password');
+            $user->password = Hash::make($password);
             $user->remember_token = Str::random(10);
         }
 

@@ -18,6 +18,9 @@ class SeedTestPostsCommandTest extends TestCase
         config(['app.url' => 'https://api.test.local']);
         config(['posts.image_base_url' => 'https://images.test.local']);
         config(['filesystems.media_disk' => 'public']);
+        config(['admin.seed_user.name' => '관리자']);
+        config(['admin.seed_user.email' => 'admin@example.com']);
+        config(['admin.seed_user.password' => 'secret-password']);
         Storage::fake('public');
     }
 
@@ -30,6 +33,10 @@ class SeedTestPostsCommandTest extends TestCase
 
         $this->assertDatabaseCount('posts', 50);
         $this->assertDatabaseCount('post_images', 50);
+        $this->assertDatabaseHas('users', [
+            'name' => '관리자',
+            'email' => 'admin@example.com',
+        ]);
 
         $posts = Post::query()
             ->with('coverImage')
@@ -89,12 +96,43 @@ class SeedTestPostsCommandTest extends TestCase
         });
     }
 
+    public function test_seed_test_posts_can_target_custom_user_email_without_admin_config(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+        config(['admin.seed_user.name' => '']);
+        config(['admin.seed_user.email' => '']);
+        config(['admin.seed_user.password' => '']);
+
+        $this->artisan('posts:seed-test --count=1 --no-images --user-email=writer@example.com')
+            ->assertExitCode(0);
+
+        $this->assertDatabaseCount('posts', 1);
+        $this->assertDatabaseHas('users', [
+            'name' => '테스트 작성자',
+            'email' => 'writer@example.com',
+        ]);
+    }
+
     public function test_seed_test_posts_fails_outside_local_environment(): void
     {
         $this->app->detectEnvironment(fn () => 'testing');
 
         $this->artisan('posts:seed-test')
             ->expectsOutput('This command can only be run in the local environment.')
+            ->assertExitCode(1);
+
+        $this->assertDatabaseCount('posts', 0);
+    }
+
+    public function test_seed_test_posts_requires_admin_user_config(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+        config(['admin.seed_user.name' => '']);
+        config(['admin.seed_user.email' => '']);
+        config(['admin.seed_user.password' => '']);
+
+        $this->artisan('posts:seed-test')
+            ->expectsOutput('ADMIN_USER_NAME, ADMIN_LOGIN_EMAIL, and ADMIN_LOGIN_PASSWORD must be configured.')
             ->assertExitCode(1);
 
         $this->assertDatabaseCount('posts', 0);

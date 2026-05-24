@@ -9,6 +9,9 @@ use Laravel\Sanctum\TransientToken;
 
 class CheckTokenExpiry
 {
+    private const ACCESS_TOKEN_ABILITY = 'access-api';
+
+    private const REFRESH_TOKEN_ABILITY = 'token:refresh';
     /**
      * Ensure the Sanctum access token used for the request is still valid.
      */
@@ -30,6 +33,9 @@ class CheckTokenExpiry
             return response()->json(['message' => '토큰이 만료되었습니다. 다시 로그인해 주세요.'], 401);
         }
 
+        if ($token->can(self::REFRESH_TOKEN_ABILITY) && ! $token->can(self::ACCESS_TOKEN_ABILITY)) {
+            return response()->json(['message' => '접근 토큰이 필요합니다. 다시 로그인해 주세요.'], 403);
+        }
         return $next($request);
     }
 }

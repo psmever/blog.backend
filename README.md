@@ -48,7 +48,7 @@ make up local
 - `php` : Laravel Backend (PHP-FPM)
 - `mariadb` : Database
 - `node` : Frontend / Build 용
-- `.env.local.enc` 파일을 자동 복호화하여 환경 구성
+- `.env.example`을 참고해 `.env`를 작성하고, 필요하면 `scripts/env-encrypt.sh`, `scripts/env-decrypt.sh`로 암호화 파일을 관리
 
 ### 2️⃣ Artisan 명령어 실행
 
