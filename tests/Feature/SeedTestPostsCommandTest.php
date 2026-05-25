@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -11,17 +12,31 @@ class SeedTestPostsCommandTest extends TestCase
 {
     use RefreshDatabase;
 
+    private string $publicRoot;
+
     protected function setUp(): void
     {
         parent::setUp();
 
+        $mediaRoot = trim((string) config('filesystems.media_root', 'blog'), '/');
+        $this->publicRoot = storage_path('framework/testing/disks/public'.($mediaRoot !== '' ? '/'.$mediaRoot : ''));
+
         config(['app.url' => 'https://api.test.local']);
         config(['posts.image_base_url' => 'https://images.test.local']);
         config(['filesystems.media_disk' => 'public']);
+        config([
+            'filesystems.disks.public.root' => $this->publicRoot,
+            'filesystems.disks.public.url' => rtrim((string) config('app.url'), '/').'/storage'.($mediaRoot !== '' ? '/'.$mediaRoot : ''),
+        ]);
         config(['admin.seed_user.name' => '관리자']);
         config(['admin.seed_user.email' => 'admin@example.com']);
         config(['admin.seed_user.password' => 'secret-password']);
-        Storage::fake('public');
+
+        $filesystem = new Filesystem;
+        $filesystem->deleteDirectory(dirname($this->publicRoot));
+        $filesystem->ensureDirectoryExists($this->publicRoot);
+
+        Storage::forgetDisk('public');
     }
 
     public function test_seed_test_posts_creates_default_korean_published_posts_with_images(): void

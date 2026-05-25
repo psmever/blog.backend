@@ -31,7 +31,7 @@ class PostImageServiceTest extends TestCase
         Storage::shouldReceive('disk->url')
             ->once()
             ->with('posts/sample/body.png')
-            ->andReturn('/storage/posts/sample/body.png');
+            ->andReturn('/storage/blog/posts/sample/body.png');
 
         $service = new PostImageService(
             Mockery::mock(PostRepositoryInterface::class),
@@ -44,7 +44,7 @@ class PostImageServiceTest extends TestCase
         ]);
 
         $this->assertSame(
-            'https://images.jaubi.co.kr/storage/posts/sample/body.png',
+            'https://images.jaubi.co.kr/storage/blog/posts/sample/body.png',
             $service->urlForImage($image),
         );
     }
@@ -56,7 +56,7 @@ class PostImageServiceTest extends TestCase
         Storage::shouldReceive('disk->url')
             ->once()
             ->with('posts/sample/body.png')
-            ->andReturn('https://cdn.jaubi.co.kr/posts/sample/body.png');
+            ->andReturn('https://cdn.jaubi.co.kr/blog/posts/sample/body.png');
 
         $service = new PostImageService(
             Mockery::mock(PostRepositoryInterface::class),
@@ -69,7 +69,7 @@ class PostImageServiceTest extends TestCase
         ]);
 
         $this->assertSame(
-            'https://images.jaubi.co.kr/posts/sample/body.png',
+            'https://images.jaubi.co.kr/blog/posts/sample/body.png',
             $service->urlForImage($image),
         );
     }
@@ -151,7 +151,7 @@ class PostImageServiceTest extends TestCase
                 return $attributes['disk'] === 'public'
                     && str_starts_with($attributes['path'], 'posts/post-uuid/body/')
                     && str_ends_with($attributes['path'], '.png')
-                    && str_starts_with($attributes['url'], '/storage/posts/post-uuid/body/')
+                    && str_starts_with($attributes['url'], '/storage/blog/posts/post-uuid/body/')
                     && str_ends_with($attributes['url'], '.png');
             }))
             ->andReturn($createdImage);
@@ -170,7 +170,7 @@ class PostImageServiceTest extends TestCase
             ->andReturn(true);
         Storage::shouldReceive('disk->url')
             ->once()
-            ->andReturn('/storage/posts/post-uuid/body/image-uuid.png');
+            ->andReturn('/storage/blog/posts/post-uuid/body/image-uuid.png');
 
         $service = new PostImageService($posts, $postImages);
 

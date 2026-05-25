@@ -1,5 +1,11 @@
 <?php
 
+$mediaRoot = trim((string) env('MEDIA_ROOT', 'blog'), '/');
+$appUrl = rtrim((string) env('APP_URL', ''), '/');
+$publicStorageBase = '/storage'.($mediaRoot !== '' ? '/'.$mediaRoot : '');
+$publicUrl = ($appUrl !== '' ? $appUrl : '').$publicStorageBase;
+$publicRoot = storage_path('app/public'.($mediaRoot !== '' ? '/'.$mediaRoot : ''));
+
 return [
 
     /*
@@ -16,6 +22,7 @@ return [
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     'media_disk' => env('MEDIA_DISK', 'public'),
+    'media_root' => $mediaRoot,
 
     /*
     |--------------------------------------------------------------------------
@@ -42,8 +49,8 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'root' => $publicRoot,
+            'url' => $publicUrl,
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -58,6 +65,7 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'root' => $mediaRoot,
             'throw' => true,
             'report' => false,
         ],
