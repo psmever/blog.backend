@@ -21,7 +21,7 @@ blog/
 
 ## 기술 스택
 
-- `PHP 8.2` + `Laravel 12.x`
+- `PHP 8.5` + `Laravel 12.x`
 - MariaDB (Docker 컨테이너)
 - Composer / NPM
 - 코드 품질: Laravel Pint, PHPStan + Larastan, PHPUnit
