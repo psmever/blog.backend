@@ -25,7 +25,13 @@ class PublicPostListTest extends TestCase
         config(['app.url' => 'https://api.test.local']);
         config(['posts.image_base_url' => 'https://images.test.local']);
         config(['filesystems.media_disk' => 'public']);
-        Storage::fake('public');
+        $mediaRoot = trim((string) config('filesystems.media_root', 'blog'), '/');
+        config([
+            'filesystems.disks.public.url' => rtrim((string) config('app.url'), '/').'/storage'.($mediaRoot !== '' ? '/'.$mediaRoot : ''),
+        ]);
+        Storage::fake('public', [
+            'url' => (string) config('filesystems.disks.public.url'),
+        ]);
     }
 
     private function postWithClientType(string $uri, array $payload)
