@@ -1,5 +1,11 @@
 <?php
 
+use App\Console\Commands\ExportPostmanCollection;
+use App\Console\Commands\PruneExpiredTokens;
+use App\Console\Commands\RepairLocalMigrationRegistry;
+use App\Console\Commands\SeedTestPosts;
+use App\Console\Commands\TruncatePostTables;
+use App\Http\Middleware\CheckTokenExpiry;
 use App\Http\Middleware\ValidateClientType;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -33,17 +39,17 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'token.expiry' => \App\Http\Middleware\CheckTokenExpiry::class,
+            'token.expiry' => CheckTokenExpiry::class,
         ]);
 
         $middleware->appendToGroup('api', ValidateClientType::class);
     })
     ->withCommands([
-        \App\Console\Commands\ExportPostmanCollection::class,
-        \App\Console\Commands\PruneExpiredTokens::class,
-        \App\Console\Commands\RepairLocalMigrationRegistry::class,
-        \App\Console\Commands\SeedTestPosts::class,
-        \App\Console\Commands\TruncatePostTables::class,
+        ExportPostmanCollection::class,
+        PruneExpiredTokens::class,
+        RepairLocalMigrationRegistry::class,
+        SeedTestPosts::class,
+        TruncatePostTables::class,
     ])
     ->withExceptions(function (Exceptions $exceptions) {
         // 헬퍼: 이 요청이 API인지?

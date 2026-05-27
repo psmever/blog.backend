@@ -3,6 +3,7 @@
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HealthController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,9 +32,9 @@ Route::get('/health', [HealthController::class, 'index']);
 
 if (app()->environment(['local', 'development', 'testing'])) {
     Route::get('/_demo/ok', fn () => response()->json(['message' => 'ok', 'data' => ['at' => now()]]));
-    Route::get('/_demo/boom', fn () => throw new \Exception('boom!'));
+    Route::get('/_demo/boom', fn () => throw new Exception('boom!'));
     Route::get('/_demo/api-ex', fn () => throw new ApiException('Bad thing', 422, ['field' => ['wrong']]));
-    Route::post('/_demo/validate', function (\Illuminate\Http\Request $r) {
+    Route::post('/_demo/validate', function (Request $r) {
         $r->validate(['title' => ['required', 'min:3']]);
 
         return response()->json(['message' => 'ok']);

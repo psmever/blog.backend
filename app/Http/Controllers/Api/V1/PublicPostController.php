@@ -60,7 +60,7 @@ class PublicPostController extends ApiBaseController
             'published_at' => $this->formatDateTimeForResponse($post->published_at),
             'cover_image' => $this->postImageFormatter->format($post->coverImage),
             'author' => [
-                'name' => $post->user?->name ?? '',
+                'name' => $post->user->name ?? '',
             ],
             'primary_tag' => $this->formatPrimaryTag($post),
             'view_count' => (int) $post->view_count,
@@ -79,7 +79,7 @@ class PublicPostController extends ApiBaseController
             'published_at' => $this->formatDateTimeForResponse($post->published_at),
             'cover_image' => $this->postImageFormatter->format($post->coverImage),
             'author' => [
-                'name' => $post->user?->name ?? '',
+                'name' => $post->user->name ?? '',
             ],
             'tags' => $post->tags
                 ->sortBy('label')

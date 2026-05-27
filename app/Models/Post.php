@@ -33,26 +33,41 @@ class Post extends Model
         'view_count' => 'integer',
     ];
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsToMany<Tag, $this>
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
     }
 
+    /**
+     * @return HasMany<PostStatusHistory, $this>
+     */
     public function statusHistories(): HasMany
     {
         return $this->hasMany(PostStatusHistory::class);
     }
 
+    /**
+     * @return HasMany<PostImage, $this>
+     */
     public function images(): HasMany
     {
         return $this->hasMany(PostImage::class);
     }
 
+    /**
+     * @return BelongsTo<PostImage, $this>
+     */
     public function coverImage(): BelongsTo
     {
         return $this->belongsTo(PostImage::class, 'cover_image_id');
