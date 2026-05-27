@@ -1,14 +1,15 @@
 <?php
 
 use Illuminate\Support\Str;
+use Pdo\Mysql;
 
 $mysqlSslCaAttribute = null;
 
 if (extension_loaded('pdo_mysql')) {
     // PHP 8.5 deprecates driver-specific PDO constants on the base PDO class.
-    $mysqlSslCaAttribute = class_exists(\Pdo\Mysql::class)
-        ? \Pdo\Mysql::ATTR_SSL_CA
-        : \PDO::MYSQL_ATTR_SSL_CA;
+    $mysqlSslCaAttribute = class_exists(Mysql::class)
+        ? Mysql::ATTR_SSL_CA
+        : PDO::MYSQL_ATTR_SSL_CA;
 }
 
 return [

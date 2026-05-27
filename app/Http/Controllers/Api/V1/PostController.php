@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\PostImageService;
 use App\Services\PostService;
 use App\Support\PostImageResponseFormatter;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -103,7 +104,7 @@ class PostController extends ApiBaseController
             return $this->responseNotFound('게시글을 찾을 수 없습니다.');
         }
 
-        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags */
+        /** @var Collection<int, Tag> $tags */
         $tags = $post->tags;
 
         return $this->responseSuccess([
