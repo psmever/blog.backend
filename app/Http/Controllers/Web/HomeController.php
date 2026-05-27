@@ -7,7 +7,7 @@ class HomeController extends WebBaseController
     public function index()
     {
         return $this->responseView('home', [
-            'title' => 'Welcome · '.config('app.name'),
+            'title' => 'blog.api server',
         ]);
     }
 
