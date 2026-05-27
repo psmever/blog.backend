@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repositories\PostImageRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
 use App\Services\PostImageService;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -27,11 +28,16 @@ class PostImageServiceTest extends TestCase
     public function test_it_prefixes_relative_local_storage_urls_with_app_url(): void
     {
         config(['posts.image_base_url' => 'https://images.jaubi.co.kr']);
+        config(['filesystems.media_root' => 'blog']);
 
         Storage::shouldReceive('disk->url')
             ->once()
             ->with('posts/sample/body.png')
             ->andReturn('/storage/blog/posts/sample/body.png');
+        Storage::shouldReceive('disk->exists')
+            ->once()
+            ->with('posts/sample/body.png')
+            ->andReturn(true);
 
         $service = new PostImageService(
             Mockery::mock(PostRepositoryInterface::class),
@@ -72,6 +78,44 @@ class PostImageServiceTest extends TestCase
             'https://images.jaubi.co.kr/blog/posts/sample/body.png',
             $service->urlForImage($image),
         );
+    }
+
+    public function test_it_falls_back_to_legacy_local_storage_url_when_media_root_was_added_later(): void
+    {
+        config(['posts.image_base_url' => 'https://images.jaubi.co.kr']);
+        config(['filesystems.media_root' => 'blog']);
+        config([
+            'filesystems.disks.public.root' => storage_path('framework/testing/disks/public/blog'),
+            'filesystems.disks.public.url' => 'http://localhost:4000/storage/blog',
+        ]);
+        Storage::forgetDisk('public');
+
+        $legacyPath = storage_path('app/public/posts/sample/body.png');
+        $filesystem = new Filesystem;
+        $filesystem->ensureDirectoryExists(dirname($legacyPath));
+        file_put_contents($legacyPath, 'legacy-image');
+
+        try {
+            $service = new PostImageService(
+                Mockery::mock(PostRepositoryInterface::class),
+                Mockery::mock(PostImageRepositoryInterface::class),
+            );
+
+            $image = new PostImage([
+                'disk' => 'public',
+                'path' => 'posts/sample/body.png',
+            ]);
+
+            $this->assertSame(
+                'https://images.jaubi.co.kr/storage/posts/sample/body.png',
+                $service->urlForImage($image),
+            );
+        } finally {
+            @unlink($legacyPath);
+            $filesystem->deleteDirectory(storage_path('app/public/posts/sample'));
+            $filesystem->deleteDirectory(storage_path('framework/testing/disks/public'));
+            Storage::forgetDisk('public');
+        }
     }
 
     public function test_it_throws_when_storage_write_fails(): void
@@ -127,6 +171,7 @@ class PostImageServiceTest extends TestCase
     {
         config(['posts.image_base_url' => 'https://images.jaubi.co.kr']);
         config(['filesystems.media_disk' => 'public']);
+        config(['filesystems.media_root' => 'blog']);
 
         $posts = Mockery::mock(PostRepositoryInterface::class);
         $posts->shouldReceive('findByUuidForUser')
@@ -166,7 +211,7 @@ class PostImageServiceTest extends TestCase
             )
             ->andReturn('posts/post-uuid/body/image-uuid.png');
         Storage::shouldReceive('disk->exists')
-            ->once()
+            ->twice()
             ->andReturn(true);
         Storage::shouldReceive('disk->url')
             ->once()

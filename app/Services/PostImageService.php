@@ -158,9 +158,36 @@ class PostImageService
 
     private function publicUrlPath(string $disk, string $path): string
     {
+        if ($legacyUrl = $this->legacyLocalPublicUrlPath($disk, $path)) {
+            return $legacyUrl;
+        }
+
         $storageUrl = Storage::disk($disk)->url($path);
 
         return $this->normalizePublicUrlPath($storageUrl);
+    }
+
+    private function legacyLocalPublicUrlPath(string $disk, string $path): ?string
+    {
+        if ($disk !== 'public') {
+            return null;
+        }
+
+        $mediaRoot = trim((string) config('filesystems.media_root', ''), '/');
+        if ($mediaRoot === '') {
+            return null;
+        }
+
+        if (Storage::disk($disk)->exists($path)) {
+            return null;
+        }
+
+        $legacyPath = storage_path('app/public/'.ltrim($path, '/'));
+        if (! is_file($legacyPath)) {
+            return null;
+        }
+
+        return '/storage/'.ltrim($path, '/');
     }
 
     private function normalizePublicUrlPath(string $url): string
