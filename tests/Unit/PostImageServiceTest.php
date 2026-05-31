@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repositories\PostImageRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
 use App\Services\PostImageService;
+use App\Services\PostImageThumbnailService;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
@@ -42,6 +43,7 @@ class PostImageServiceTest extends TestCase
         $service = new PostImageService(
             Mockery::mock(PostRepositoryInterface::class),
             Mockery::mock(PostImageRepositoryInterface::class),
+            Mockery::mock(PostImageThumbnailService::class),
         );
 
         $image = new PostImage([
@@ -67,6 +69,7 @@ class PostImageServiceTest extends TestCase
         $service = new PostImageService(
             Mockery::mock(PostRepositoryInterface::class),
             Mockery::mock(PostImageRepositoryInterface::class),
+            Mockery::mock(PostImageThumbnailService::class),
         );
 
         $image = new PostImage([
@@ -99,6 +102,7 @@ class PostImageServiceTest extends TestCase
             $service = new PostImageService(
                 Mockery::mock(PostRepositoryInterface::class),
                 Mockery::mock(PostImageRepositoryInterface::class),
+                Mockery::mock(PostImageThumbnailService::class),
             );
 
             $image = new PostImage([
@@ -151,8 +155,14 @@ class PostImageServiceTest extends TestCase
             ->andThrow(new RuntimeException('S3 write failed'));
         Storage::shouldReceive('disk->exists')
             ->never();
+        Storage::shouldReceive('disk->delete')
+            ->once();
 
-        $service = new PostImageService($posts, $postImages);
+        $service = new PostImageService(
+            $posts,
+            $postImages,
+            Mockery::mock(PostImageThumbnailService::class)
+        );
 
         $user = new User;
         $user->id = 1;
@@ -217,7 +227,12 @@ class PostImageServiceTest extends TestCase
             ->once()
             ->andReturn('/storage/blog/posts/post-uuid/body/image-uuid.png');
 
-        $service = new PostImageService($posts, $postImages);
+        $thumbnails = Mockery::mock(PostImageThumbnailService::class);
+        $thumbnails->shouldReceive('createForImage')
+            ->once()
+            ->with($createdImage, Mockery::type('string'), Mockery::type('string'));
+
+        $service = new PostImageService($posts, $postImages, $thumbnails);
 
         $user = new User;
         $user->id = 1;

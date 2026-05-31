@@ -63,6 +63,20 @@ class TruncatePostTablesCommandTest extends TestCase
             ->where('id', $postId)
             ->update(['cover_image_id' => $imageId]);
 
+        DB::table('post_image_variants')->insert([
+            'post_image_id' => $imageId,
+            'variant' => 'thumbnail',
+            'disk' => 'public',
+            'path' => 'posts/'.$postUuid.'/thumbnail/'.$imageUuid.'.webp',
+            'url' => 'https://example.test/thumbnail.webp',
+            'mime_type' => 'image/webp',
+            'size' => 1,
+            'width' => 800,
+            'height' => 550,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
         DB::table('post_tag')->insert([
             'post_id' => $postId,
             'tag_id' => $tagId,
@@ -80,11 +94,12 @@ class TruncatePostTablesCommandTest extends TestCase
         ]);
 
         $this->artisan('posts:truncate-local')
-            ->expectsOutput('Truncated post-related tables: post_status_histories, post_tag, post_images, posts, tags')
+            ->expectsOutput('Truncated post-related tables: post_status_histories, post_tag, post_image_variants, post_images, posts, tags')
             ->assertExitCode(0);
 
         $this->assertDatabaseCount('post_status_histories', 0);
         $this->assertDatabaseCount('post_tag', 0);
+        $this->assertDatabaseCount('post_image_variants', 0);
         $this->assertDatabaseCount('post_images', 0);
         $this->assertDatabaseCount('posts', 0);
         $this->assertDatabaseCount('tags', 0);

@@ -80,6 +80,9 @@ class PublicPostListTest extends TestCase
             ->assertJsonPath('data.0.primary_tag.label', 'Next.js')
             ->assertJsonPath('data.0.cover_image.uuid', $featured->coverImage?->uuid)
             ->assertJsonPath('data.0.cover_image.is_default', false)
+            ->assertJsonPath('data.0.cover_image.thumbnail.width', 800)
+            ->assertJsonPath('data.0.cover_image.thumbnail.height', 550)
+            ->assertJsonPath('data.0.cover_image.thumbnail.mime_type', 'image/webp')
             ->assertJsonPath('data.1.cover_image.uuid', null)
             ->assertJsonPath('data.1.cover_image.purpose', 'default')
             ->assertJsonPath('data.1.cover_image.url', 'https://images.test.local/images/default-cover.png')
@@ -87,6 +90,7 @@ class PublicPostListTest extends TestCase
             ->assertJsonPath('data.1.cover_image.height', 630)
             ->assertJsonPath('data.1.cover_image.size', 0)
             ->assertJsonPath('data.1.cover_image.is_default', true)
+            ->assertJsonPath('data.1.cover_image.thumbnail', null)
             ->assertJsonPath('data.0.view_count', 0);
 
         $this->assertSame(
@@ -192,9 +196,15 @@ class PublicPostListTest extends TestCase
 
     private function fakePng(string $name): UploadedFile
     {
+        $image = imagecreatetruecolor(10, 10);
+        ob_start();
+        imagepng($image);
+        $contents = ob_get_clean() ?: '';
+        imagedestroy($image);
+
         return UploadedFile::fake()->createWithContent(
             $name,
-            base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=') ?: ''
+            $contents
         );
     }
 }
