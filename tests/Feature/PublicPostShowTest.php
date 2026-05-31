@@ -54,6 +54,7 @@ class PublicPostShowTest extends TestCase
             ->assertJsonPath('data.cover_image.height', 630)
             ->assertJsonPath('data.cover_image.size', 0)
             ->assertJsonPath('data.cover_image.is_default', true)
+            ->assertJsonPath('data.cover_image.thumbnail', null)
             ->assertJsonPath('data.view_count', 1)
             ->assertJsonPath('data.body', '# markdown 원문');
 

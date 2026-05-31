@@ -46,7 +46,7 @@ class EloquentPostRepository implements PostRepositoryInterface
     public function findByUuidForUser(int $userId, string $uuid): ?Post
     {
         return Post::query()
-            ->with(['coverImage', 'tags'])
+            ->with(['coverImage.thumbnailVariant', 'tags'])
             ->where('user_id', $userId)
             ->where('uuid', $uuid)
             ->first();
@@ -55,7 +55,7 @@ class EloquentPostRepository implements PostRepositoryInterface
     public function findPublishedBySlug(string $slug): ?Post
     {
         return Post::query()
-            ->with(['coverImage', 'tags', 'user'])
+            ->with(['coverImage.thumbnailVariant', 'tags', 'user'])
             ->where('slug', $slug)
             ->where('status', Post::STATUS_PUBLISHED)
             ->first();
@@ -88,7 +88,7 @@ class EloquentPostRepository implements PostRepositoryInterface
     public function listPublishedBeforeCursor(?string $publishedAt, ?int $id, int $limit): Collection
     {
         $query = Post::query()
-            ->with(['coverImage', 'tags', 'user'])
+            ->with(['coverImage.thumbnailVariant', 'tags', 'user'])
             ->where('status', Post::STATUS_PUBLISHED);
 
         if ($publishedAt !== null && $id !== null) {

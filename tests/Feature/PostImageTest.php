@@ -2,13 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\ApiException;
 use App\Models\PostImage;
 use App\Models\User;
+use App\Services\PostImageThumbnailService;
 use Database\Seeders\CommonCodeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
+use Mockery;
 use Tests\TestCase;
 
 class PostImageTest extends TestCase
@@ -63,8 +66,11 @@ class PostImageTest extends TestCase
 
         $response->assertCreated()
             ->assertJsonPath('data.purpose', PostImage::PURPOSE_BODY)
-            ->assertJsonPath('data.width', 1)
-            ->assertJsonPath('data.height', 1);
+            ->assertJsonPath('data.width', 10)
+            ->assertJsonPath('data.height', 10)
+            ->assertJsonPath('data.thumbnail.width', 800)
+            ->assertJsonPath('data.thumbnail.height', 550)
+            ->assertJsonPath('data.thumbnail.mime_type', 'image/webp');
 
         /** @var PostImage $image */
         $image = PostImage::query()->where('uuid', $response->json('data.uuid'))->firstOrFail();
@@ -76,6 +82,9 @@ class PostImageTest extends TestCase
         $response->assertJsonPath('data.url', $expectedUrl);
         $this->assertSame($expectedStoredUrl, $image->url);
         Storage::disk('public')->assertExists($image->path);
+        $thumbnail = $image->thumbnailVariant()->firstOrFail();
+        $this->assertSame('posts/'.$postUuid.'/thumbnail/'.$image->uuid.'.webp', $thumbnail->path);
+        Storage::disk('public')->assertExists($thumbnail->path);
     }
 
     public function test_issue_post_uuid_without_creating_post(): void
@@ -292,9 +301,57 @@ class PostImageTest extends TestCase
         $this->assertDatabaseCount('post_images', 0);
     }
 
+    public function test_upload_generates_webp_thumbnail_for_supported_image_formats(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        foreach (['jpg', 'png', 'webp', 'gif'] as $extension) {
+            $postUuid = $this->createPost();
+
+            $response = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+                'image' => $this->fakeImage('body.'.$extension, $extension),
+            ])->assertCreated();
+
+            $response
+                ->assertJsonPath('data.thumbnail.width', 800)
+                ->assertJsonPath('data.thumbnail.height', 550)
+                ->assertJsonPath('data.thumbnail.mime_type', 'image/webp');
+
+            $image = PostImage::query()->where('uuid', $response->json('data.uuid'))->firstOrFail();
+            $thumbnail = $image->thumbnailVariant()->firstOrFail();
+
+            $this->assertSame('posts/'.$postUuid.'/thumbnail/'.$image->uuid.'.webp', $thumbnail->path);
+            Storage::disk('public')->assertExists($thumbnail->path);
+        }
+    }
+
+    public function test_upload_removes_original_file_and_database_record_when_thumbnail_generation_fails(): void
+    {
+        $thumbnails = Mockery::mock(PostImageThumbnailService::class);
+        $thumbnails->shouldReceive('createForImage')
+            ->once()
+            ->andThrow(new ApiException('이미지 썸네일 생성에 실패했습니다.', 500));
+        $this->app->instance(PostImageThumbnailService::class, $thumbnails);
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $postUuid = $this->createPost();
+
+        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'image' => $this->fakePng('body.png'),
+        ])->assertStatus(500)
+            ->assertJsonPath('message', '이미지 썸네일 생성에 실패했습니다.');
+
+        $this->assertDatabaseCount('post_images', 0);
+        $this->assertDatabaseCount('post_image_variants', 0);
+        $this->assertSame([], Storage::disk('public')->allFiles());
+    }
+
     private function fakePng(string $name, int $minBytes = 0): UploadedFile
     {
-        $contents = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=') ?: '';
+        $contents = $this->imageBytes('png');
 
         if ($minBytes > strlen($contents)) {
             $contents .= str_repeat('0', $minBytes - strlen($contents));
@@ -304,5 +361,26 @@ class PostImageTest extends TestCase
             $name,
             $contents
         );
+    }
+
+    private function fakeImage(string $name, string $extension): UploadedFile
+    {
+        return UploadedFile::fake()->createWithContent($name, $this->imageBytes($extension));
+    }
+
+    private function imageBytes(string $extension): string
+    {
+        $image = imagecreatetruecolor(10, 10);
+        ob_start();
+        match ($extension) {
+            'jpg' => imagejpeg($image),
+            'png' => imagepng($image),
+            'webp' => imagewebp($image),
+            'gif' => imagegif($image),
+        };
+        $contents = ob_get_clean() ?: '';
+        imagedestroy($image);
+
+        return $contents;
     }
 }

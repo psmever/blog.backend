@@ -142,6 +142,10 @@ POST /api/v1/posts/{uuid}/images
 - `image`: jpeg, jpg, png, webp, gif / 최대 10MB
 - `purpose`: 선택 전달값이며 현재는 무시됩니다. 업로드 이미지는 모두 본문 이미지(`body`)로 저장됩니다.
 - 게시글 대표 이미지는 별도 API로 지정하지 않고, `POST /api/v1/posts/{uuid}/save` 또는 생성 시점에 본문 Markdown의 첫 번째 이미지 기준으로 자동 동기화됩니다.
+- 업로드 시 홈 카드용 `800x550` WebP 썸네일을 `posts/{postUuid}/thumbnail/{imageUuid}.webp` 경로에 함께 생성합니다.
+- 썸네일 생성에는 PHP GD 확장의 JPEG, PNG, GIF, WebP 지원이 필요하며, 변환 또는 저장 실패 시 원본 업로드도 실패 처리됩니다.
+- 이미지 응답의 `thumbnail` 객체는 썸네일 URL, 너비, 높이, 용량, MIME 타입을 포함합니다. 기존 이미지가 아직 변환되지 않았거나 기본 커버 이미지이면 `thumbnail`은 `null`입니다.
+- 기존 업로드 이미지의 누락된 썸네일은 `php artisan posts:backfill-thumbnails` 명령으로 생성합니다.
 
 ## 공개 블로그 API
 

@@ -116,7 +116,7 @@ class PostService
                 $post = $this->create($user, $payload);
                 $this->postImages->attachStagedImagesToPost($uuid, (int) $user->getKey(), (int) $post->getKey());
 
-                return $post->load(['coverImage', 'tags']);
+                return $post->load(['coverImage.thumbnailVariant', 'tags']);
             }
 
             $attributes = [];
@@ -314,7 +314,7 @@ class PostService
             ]);
         }
 
-        return $post->load('coverImage');
+        return $post->load('coverImage.thumbnailVariant');
     }
 
     /**

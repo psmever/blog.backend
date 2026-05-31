@@ -12,7 +12,7 @@ class PostImageResponseFormatter
     ) {}
 
     /**
-     * @return array<string, bool|int|string|null>
+     * @return array<string, mixed>
      */
     public function format(?PostImage $image): array
     {
@@ -25,6 +25,7 @@ class PostImageResponseFormatter
                 'height' => (int) config('posts.default_cover_image.height', 630),
                 'size' => (int) config('posts.default_cover_image.size', 0),
                 'is_default' => true,
+                'thumbnail' => null,
             ];
         }
 
@@ -36,6 +37,26 @@ class PostImageResponseFormatter
             'height' => $image->height,
             'size' => $image->size,
             'is_default' => false,
+            'thumbnail' => $this->formatThumbnail($image),
+        ];
+    }
+
+    /**
+     * @return array<string, int|string>|null
+     */
+    private function formatThumbnail(PostImage $image): ?array
+    {
+        $thumbnail = $image->thumbnailVariant;
+        if (! $thumbnail) {
+            return null;
+        }
+
+        return [
+            'url' => $this->postImageService->urlForVariant($thumbnail),
+            'width' => $thumbnail->width,
+            'height' => $thumbnail->height,
+            'size' => $thumbnail->size,
+            'mime_type' => $thumbnail->mime_type,
         ];
     }
 

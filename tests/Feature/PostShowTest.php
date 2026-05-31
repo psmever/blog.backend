@@ -57,6 +57,7 @@ class PostShowTest extends TestCase
         $response->assertJsonPath('data.cover_image.height', 630);
         $response->assertJsonPath('data.cover_image.size', 0);
         $response->assertJsonPath('data.cover_image.is_default', true);
+        $response->assertJsonPath('data.cover_image.thumbnail', null);
         $response->assertJsonPath('data.body', '본문 내용');
         $response->assertJsonCount(2, 'data.tags');
     }

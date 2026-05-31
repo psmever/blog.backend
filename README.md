@@ -45,9 +45,9 @@ cd ../blog.workspace
 make up local
 ```
 
-- `php` : Laravel Backend (PHP-FPM)
-- `mariadb` : Database
-- `node` : Frontend / Build 용
+- `backend` : Laravel Backend
+- `database` : MariaDB Database
+- `frontend` : Next.js Frontend
 - `.env.example`을 참고해 `.env`를 직접 작성하여 환경 구성
 
 ### 2️⃣ Artisan 명령어 실행

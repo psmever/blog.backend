@@ -54,7 +54,7 @@ class PublicPostService
             $this->posts->incrementViewCount($post);
             $request->session()->put($sessionKey, true);
             $post->refresh();
-            $post->loadMissing(['coverImage', 'tags', 'user']);
+            $post->loadMissing(['coverImage.thumbnailVariant', 'tags', 'user']);
         }
 
         return $post;
