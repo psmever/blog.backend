@@ -152,7 +152,7 @@ POST /api/v1/posts/{uuid}/images
 - 공개 목록은 `GET /api/v1/public/posts`로 조회하며 `status=published` 글만 최신 공개일 순(`published_at DESC, id DESC`)으로 반환합니다.
 - 기본 `limit`은 `12`, 최대 `50`이며 다음 페이지는 `meta.next_cursor`를 그대로 `cursor` 쿼리에 전달해 조회합니다.
 - 공개 목록 응답에는 `slug`, `title`, `excerpt`, `published_at`, `cover_image`, `author.name`, `primary_tag`, `view_count`가 포함됩니다.
-- 공개 목록/상세의 `cover_image`는 대표 이미지가 없을 때 기본 이미지(`/images/default-cover.png`)를 반환하며, `is_default` 값으로 업로드 이미지 여부를 구분할 수 있습니다.
+- 공개 목록/상세의 `cover_image`는 대표 이미지가 없을 때 `POST_DEFAULT_COVER_IMAGE_URL`로 지정한 기본 이미지를 반환하며, `is_default` 값으로 업로드 이미지 여부를 구분할 수 있습니다. 운영 환경에서는 CDN 이미지(`https://cdn.jaubi.co.kr/blog/assets/default-cover.png`)를 사용합니다.
 - 공개 상세는 `GET /api/v1/public/posts/{slug}`로 조회하며 markdown 원문 `body`와 함께 `view_count`를 반환합니다.
 - 공개 상세 조회수는 Laravel 세션 쿠키 기준으로 동일 세션에서 같은 글을 반복 조회해도 한 번만 증가합니다.
 

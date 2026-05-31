@@ -143,6 +143,24 @@ class PublicPostListTest extends TestCase
             ->assertUnprocessable();
     }
 
+    public function test_public_list_returns_absolute_default_cover_image_url(): void
+    {
+        config([
+            'posts.default_cover_image.url' => 'https://cdn.jaubi.co.kr/blog/assets/default-cover.png',
+        ]);
+
+        $author = User::factory()->create();
+        $this->createPublishedPost($author, 'CDN Cover List', ['cdn'], Carbon::parse('2026-05-08 12:00:00'));
+
+        $this->app['auth']->forgetGuards();
+
+        $this->getWithClientType('/api/v1/public/posts')
+            ->assertOk()
+            ->assertJsonPath('data.0.cover_image.url', 'https://cdn.jaubi.co.kr/blog/assets/default-cover.png')
+            ->assertJsonPath('data.0.cover_image.is_default', true)
+            ->assertJsonPath('data.0.cover_image.thumbnail', null);
+    }
+
     private function createPublishedPost(User $user, string $title, array $tags, Carbon $publishedAt): Post
     {
         Sanctum::actingAs($user);
