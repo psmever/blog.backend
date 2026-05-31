@@ -137,6 +137,24 @@ class PublicPostShowTest extends TestCase
             ->assertJsonPath('data.slug', '슬러그-테스트');
     }
 
+    public function test_public_show_returns_absolute_default_cover_image_url(): void
+    {
+        config([
+            'posts.default_cover_image.url' => 'https://cdn.jaubi.co.kr/blog/assets/default-cover.png',
+        ]);
+
+        $author = User::factory()->create();
+        $this->createPublishedPost($author, 'CDN Cover Detail', ['cdn']);
+
+        $this->app['auth']->forgetGuards();
+
+        $this->getWithClientType('/api/v1/public/posts/cdn-cover-detail')
+            ->assertOk()
+            ->assertJsonPath('data.cover_image.url', 'https://cdn.jaubi.co.kr/blog/assets/default-cover.png')
+            ->assertJsonPath('data.cover_image.is_default', true)
+            ->assertJsonPath('data.cover_image.thumbnail', null);
+    }
+
     private function createPublishedPost(User $user, string $title, array $tags): Post
     {
         Sanctum::actingAs($user);

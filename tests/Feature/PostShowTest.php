@@ -62,6 +62,30 @@ class PostShowTest extends TestCase
         $response->assertJsonCount(2, 'data.tags');
     }
 
+    public function test_show_post_by_uuid_returns_absolute_default_cover_image_url_without_prefixing_image_base_url(): void
+    {
+        config([
+            'posts.default_cover_image.url' => 'https://cdn.jaubi.co.kr/blog/assets/default-cover.png',
+        ]);
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $create = $this->postWithClientType('/api/v1/posts', [
+            'title' => 'Default Cover',
+            'tags' => ['cdn'],
+            'body' => '본문 내용',
+        ])->assertCreated();
+
+        $uuid = (string) $create->json('data.uuid');
+
+        $this->getWithClientType('/api/v1/posts/'.$uuid)
+            ->assertOk()
+            ->assertJsonPath('data.cover_image.url', 'https://cdn.jaubi.co.kr/blog/assets/default-cover.png')
+            ->assertJsonPath('data.cover_image.is_default', true)
+            ->assertJsonPath('data.cover_image.thumbnail', null);
+    }
+
     public function test_show_post_by_uuid_returns_not_found_for_other_user(): void
     {
         $owner = User::factory()->create();
