@@ -99,6 +99,7 @@ class RepairLocalMigrationRegistry extends Command
             '2026_02_08_000009_stage_post_images_by_post_uuid' => fn (): bool => Schema::hasColumn('post_images', 'post_uuid'),
             '2026_05_09_000000_add_view_count_and_global_slug_to_posts_table' => fn (): bool => Schema::hasColumn('posts', 'view_count')
                 && Schema::hasIndex('posts', ['slug'], 'unique'),
+            '2026_05_31_000000_create_post_image_variants_table' => fn (): bool => Schema::hasTable('post_image_variants'),
         ];
     }
 

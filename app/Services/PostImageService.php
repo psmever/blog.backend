@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\ApiException;
 use App\Models\PostImage;
+use App\Models\PostImageVariant;
 use App\Models\User;
 use App\Repositories\PostImageRepositoryInterface;
 use App\Repositories\PostRepositoryInterface;
@@ -19,25 +20,27 @@ class PostImageService
 {
     public function __construct(
         private readonly PostRepositoryInterface $posts,
-        private readonly PostImageRepositoryInterface $postImages
+        private readonly PostImageRepositoryInterface $postImages,
+        private readonly PostImageThumbnailService $thumbnails
     ) {}
 
     public function uploadForPost(User $user, string $postUuid, UploadedFile $image): ?PostImage
     {
         $this->ensureUploadAvailable();
 
-        return DB::transaction(function () use ($user, $postUuid, $image) {
-            $post = $this->posts->findByUuidForUser($user->getKey(), $postUuid);
-            if (! $post && $this->posts->uuidExists($postUuid)) {
-                return null;
-            }
+        $imageUuid = (string) Str::uuid();
+        $extension = $image->extension() ?: $image->guessExtension() ?: 'bin';
+        $disk = $this->mediaDisk();
+        $path = sprintf('posts/%s/%s/%s.%s', $postUuid, PostImage::PURPOSE_BODY, $imageUuid, $extension);
+        $thumbnailPath = sprintf('posts/%s/%s/%s.webp', $postUuid, PostImageVariant::VARIANT_THUMBNAIL, $imageUuid);
 
-            $imageUuid = (string) Str::uuid();
-            $extension = $image->extension() ?: $image->guessExtension() ?: 'bin';
-            $disk = $this->mediaDisk();
-            $path = sprintf('posts/%s/%s/%s.%s', $postUuid, PostImage::PURPOSE_BODY, $imageUuid, $extension);
+        try {
+            return DB::transaction(function () use ($user, $postUuid, $image, $imageUuid, $disk, $path) {
+                $post = $this->posts->findByUuidForUser($user->getKey(), $postUuid);
+                if (! $post && $this->posts->uuidExists($postUuid)) {
+                    return null;
+                }
 
-            try {
                 $storedPath = Storage::disk($disk)->putFileAs(
                     dirname($path),
                     $image,
@@ -45,61 +48,69 @@ class PostImageService
                     $this->storageWriteOptions($disk)
                 );
                 $fileExists = $storedPath !== false && Storage::disk($disk)->exists($path);
-            } catch (Throwable $e) {
-                Log::error('Post image storage write failed.', [
+
+                if ($storedPath === false || ! $fileExists) {
+                    throw new RuntimeException('Image storage write returned without a persisted file.');
+                }
+
+                [$width, $height] = $this->dimensions($image);
+
+                $postImage = $this->postImages->create([
+                    'uuid' => $imageUuid,
+                    'post_id' => $post ? (int) $post->getKey() : null,
+                    'user_id' => (int) $user->getKey(),
+                    'post_uuid' => $postUuid,
+                    'purpose' => PostImage::PURPOSE_BODY,
                     'disk' => $disk,
                     'path' => $path,
-                    'post_uuid' => $postUuid,
-                    'user_id' => (int) $user->getKey(),
-                    'exception_class' => $e::class,
-                    'exception_message' => $e->getMessage(),
+                    'url' => $this->publicUrlPath($disk, $path),
+                    'original_name' => $image->getClientOriginalName(),
+                    'mime_type' => $image->getMimeType() ?: 'application/octet-stream',
+                    'size' => $image->getSize() ?: 0,
+                    'width' => $width,
+                    'height' => $height,
                 ]);
 
-                throw new ApiException(
-                    sprintf('이미지 파일 저장에 실패했습니다. [%s] 디스크 설정과 접근 권한을 확인해 주세요.', $disk),
-                    500
-                );
+                $sourceBytes = file_get_contents($image->getRealPath());
+                if (! is_string($sourceBytes)) {
+                    throw new RuntimeException('Failed to read uploaded image.');
+                }
+
+                $this->thumbnails->createForImage($postImage, $sourceBytes, $image->getRealPath());
+
+                return $postImage;
+            });
+        } catch (Throwable $e) {
+            $this->deleteQuietly($disk, [$path, $thumbnailPath]);
+
+            if ($e instanceof ApiException) {
+                throw $e;
             }
 
-            if ($storedPath === false || ! $fileExists) {
-                Log::error('Post image storage write returned without a persisted file.', [
-                    'disk' => $disk,
-                    'path' => $path,
-                    'post_uuid' => $postUuid,
-                    'user_id' => (int) $user->getKey(),
-                    'stored_path' => $storedPath,
-                    'file_exists' => $fileExists,
-                ]);
-
-                throw new ApiException(
-                    sprintf('이미지 파일 저장에 실패했습니다. [%s] 디스크 설정과 접근 권한을 확인해 주세요.', $disk),
-                    500
-                );
-            }
-
-            [$width, $height] = $this->dimensions($image);
-
-            return $this->postImages->create([
-                'uuid' => $imageUuid,
-                'post_id' => $post ? (int) $post->getKey() : null,
-                'user_id' => (int) $user->getKey(),
-                'post_uuid' => $postUuid,
-                'purpose' => PostImage::PURPOSE_BODY,
+            Log::error('Post image storage write failed.', [
                 'disk' => $disk,
                 'path' => $path,
-                'url' => $this->publicUrlPath($disk, $path),
-                'original_name' => $image->getClientOriginalName(),
-                'mime_type' => $image->getMimeType() ?: 'application/octet-stream',
-                'size' => $image->getSize() ?: 0,
-                'width' => $width,
-                'height' => $height,
+                'post_uuid' => $postUuid,
+                'user_id' => (int) $user->getKey(),
+                'exception_class' => $e::class,
+                'exception_message' => $e->getMessage(),
             ]);
-        });
+
+            throw new ApiException(
+                sprintf('이미지 파일 저장에 실패했습니다. [%s] 디스크 설정과 접근 권한을 확인해 주세요.', $disk),
+                500
+            );
+        }
     }
 
     public function urlForImage(PostImage $image): string
     {
         return $this->responseUrl($this->publicUrlPath($image->disk, $image->path));
+    }
+
+    public function urlForVariant(PostImageVariant $variant): string
+    {
+        return $this->responseUrl($this->publicUrlPath($variant->disk, $variant->path));
     }
 
     public function responseUrl(string $url): string
@@ -142,6 +153,23 @@ class PostImageService
     private function imageBaseUrl(): string
     {
         return rtrim(trim((string) config('posts.image_base_url', '')), '/');
+    }
+
+    /**
+     * @param  array<int, string>  $paths
+     */
+    private function deleteQuietly(string $disk, array $paths): void
+    {
+        try {
+            Storage::disk($disk)->delete($paths);
+        } catch (Throwable $e) {
+            Log::warning('Post image cleanup failed.', [
+                'disk' => $disk,
+                'paths' => $paths,
+                'exception_class' => $e::class,
+                'exception_message' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

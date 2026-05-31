@@ -11,6 +11,7 @@ class TruncatePostTables extends Command
     private const TABLES = [
         'post_status_histories',
         'post_tag',
+        'post_image_variants',
         'post_images',
         'posts',
         'tags',

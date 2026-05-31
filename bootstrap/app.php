@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\BackfillPostImageThumbnails;
 use App\Console\Commands\ExportPostmanCollection;
 use App\Console\Commands\PruneExpiredTokens;
 use App\Console\Commands\RepairLocalMigrationRegistry;
@@ -45,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('api', ValidateClientType::class);
     })
     ->withCommands([
+        BackfillPostImageThumbnails::class,
         ExportPostmanCollection::class,
         PruneExpiredTokens::class,
         RepairLocalMigrationRegistry::class,
