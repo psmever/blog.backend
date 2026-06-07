@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\CommonCode;
 use App\Models\User;
+use Database\Seeders\CommonCodeSeeder;
 use Database\Seeders\DatabaseSeeder as AppDatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -85,6 +86,28 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame('임시 저장', $restoredDraftStatus->label);
         $this->assertNull($restoredDraftStatus->deleted_at);
         $this->assertDatabaseCount('users', 1);
+    }
+
+    public function test_common_code_seeder_uses_codes_config(): void
+    {
+        config()->set('codes.items', [
+            [
+                'group_key' => 'client.type',
+                'code' => 'TEST_CLIENT',
+                'label' => '테스트 클라이언트',
+                'description' => 'config 기반 테스트 클라이언트',
+                'sort_order' => 10,
+            ],
+        ]);
+
+        $this->seed(CommonCodeSeeder::class);
+
+        $this->assertDatabaseHas('common_codes', [
+            'group_key' => 'client.type',
+            'code' => 'TEST_CLIENT',
+            'label' => '테스트 클라이언트',
+            'is_active' => true,
+        ]);
     }
 
     private function setAdminSeedConfig(string $name, string $email, string $password): void
