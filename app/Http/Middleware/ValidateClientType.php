@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\ApiException;
-use App\Models\CommonCode;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,13 +32,7 @@ class ValidateClientType
             );
         }
 
-        $code = CommonCode::query()
-            ->forGroup(self::GROUP_KEY)
-            ->active()
-            ->where('code', $clientType)
-            ->first();
-
-        if (! $code) {
+        if (! $this->isAllowedClientType($clientType)) {
             throw new ApiException(
                 'Client-Type 헤더 값이 올바르지 않습니다.',
                 400,
@@ -47,9 +40,32 @@ class ValidateClientType
             );
         }
 
-        $request->attributes->set('clientTypeCode', $code->code);
-        $request->attributes->set('clientType', $code);
+        $request->attributes->set('clientTypeCode', $clientType);
 
         return $next($request);
+    }
+
+    private function isAllowedClientType(string $clientType): bool
+    {
+        $codes = config('codes.items', []);
+        if (! is_array($codes)) {
+            return false;
+        }
+
+        foreach ($codes as $code) {
+            if (! is_array($code)) {
+                continue;
+            }
+
+            if (
+                ($code['group_key'] ?? null) === self::GROUP_KEY
+                && ($code['code'] ?? null) === $clientType
+                && ($code['is_active'] ?? true) === true
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
