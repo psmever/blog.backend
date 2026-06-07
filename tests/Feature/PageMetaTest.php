@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Post;
-use App\Models\ShortUrl;
 use App\Models\User;
 use Database\Seeders\CommonCodeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -63,29 +62,16 @@ class PageMetaTest extends TestCase
             ]);
     }
 
-    public function test_meta_resolves_short_url_and_disables_indexing(): void
-    {
-        $this->createPublishedPost('Short Meta Post');
-
-        ShortUrl::query()->create([
-            'code' => 'aB3x9K',
-            'original_url' => '/posts/short-meta-post',
-        ]);
-
-        $this->getWithClientType('/api/v1/meta?url=/s/aB3x9K')
-            ->assertOk()
-            ->assertJsonPath('data.url', '/s/aB3x9K')
-            ->assertJsonPath('data.resolved_url', '/posts/short-meta-post')
-            ->assertJsonPath('data.canonical_url', '/posts/short-meta-post')
-            ->assertJsonPath('data.title', 'Short Meta Post')
-            ->assertJsonPath('data.robots.index', false)
-            ->assertJsonPath('data.robots.follow', true);
-    }
-
     public function test_meta_rejects_external_url(): void
     {
         $this->getWithClientType('/api/v1/meta?url=https://external.test/posts/meta-post')
             ->assertStatus(422);
+    }
+
+    public function test_meta_returns_not_found_for_short_url_path(): void
+    {
+        $this->getWithClientType('/api/v1/meta?url=/s/aB3x9K')
+            ->assertNotFound();
     }
 
     public function test_meta_returns_not_found_for_unknown_post(): void

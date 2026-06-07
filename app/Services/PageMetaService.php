@@ -12,7 +12,6 @@ class PageMetaService
     public function __construct(
         private readonly PostRepositoryInterface $posts,
         private readonly PublicPostService $publicPosts,
-        private readonly ShortUrlService $shortUrls,
         private readonly PostImageResponseFormatter $postImageFormatter
     ) {}
 
@@ -22,16 +21,8 @@ class PageMetaService
     public function getMeta(string $url): array
     {
         $requestedUrl = $this->normalizeUrl($url);
-        $resolvedUrl = $requestedUrl;
-        $isShortUrl = false;
 
-        $shortUrl = $this->shortUrls->resolveShortUrl($requestedUrl);
-        if ($shortUrl) {
-            $resolvedUrl = (string) $shortUrl->original_url;
-            $isShortUrl = true;
-        }
-
-        $post = $this->findPostByUrl($resolvedUrl);
+        $post = $this->findPostByUrl($requestedUrl);
         if (! $post) {
             throw new ApiException('메타데이터를 찾을 수 없습니다.', 404);
         }
@@ -41,8 +32,8 @@ class PageMetaService
 
         return [
             'url' => $requestedUrl,
-            'resolved_url' => $resolvedUrl,
-            'canonical_url' => $resolvedUrl,
+            'resolved_url' => $requestedUrl,
+            'canonical_url' => $requestedUrl,
             'title' => (string) $post->title,
             'description' => $this->publicPosts->excerptFromBody($post->body),
             'image_url' => $this->withoutDomain($imageUrl),
@@ -52,7 +43,7 @@ class PageMetaService
             'published_time' => $this->formatIsoDateTime($post->published_at),
             'modified_time' => $this->formatIsoDateTime($post->updated_at),
             'robots' => [
-                'index' => ! $isShortUrl,
+                'index' => true,
                 'follow' => true,
             ],
         ];

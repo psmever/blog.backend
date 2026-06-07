@@ -13,7 +13,6 @@
 use App\Http\Controllers\Api\V1\PageMetaController;
 use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\PublicPostController;
-use App\Http\Controllers\Api\V1\ShortUrlController;
 use App\Http\Controllers\Api\V1\SystemController;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -23,8 +22,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::get('base-data', [SystemController::class, 'index']);
     Route::get('meta', [PageMetaController::class, 'show']);
-    Route::get('short-urls/{code}', [ShortUrlController::class, 'show'])
-        ->where('code', '[A-Za-z0-9]+');
     Route::prefix('public')->group(function () {
         Route::get('posts', [PublicPostController::class, 'index']);
         Route::get('posts/{slug}', [PublicPostController::class, 'show'])
@@ -35,7 +32,6 @@ Route::prefix('v1')->group(function () {
             ]);
     });
     Route::middleware(['auth:sanctum', 'token.expiry'])->group(function () {
-        Route::post('short-urls', [ShortUrlController::class, 'store']);
         Route::post('posts/uuid', [PostController::class, 'issueUuid']);
         Route::post('posts', [PostController::class, 'store']);
         Route::get('posts', [PostController::class, 'index']);
