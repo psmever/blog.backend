@@ -48,7 +48,7 @@ class PageMetaTest extends TestCase
             ->assertJsonPath('data.canonical_url', '/posts/meta-post')
             ->assertJsonPath('data.title', 'Meta Post')
             ->assertJsonPath('data.description', '본문입니다. 설명으로 사용합니다.')
-            ->assertJsonPath('data.image_url', '/images/default-cover.png')
+            ->assertJsonPath('data.image_url', 'https://images.test.local/images/default-cover.png')
             ->assertJsonPath('data.type', 'article')
             ->assertJsonPath('data.site_name', '테스트 블로그')
             ->assertJsonPath('data.locale', 'ko_KR')

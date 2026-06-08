@@ -36,7 +36,7 @@ class PageMetaService
             'canonical_url' => $requestedUrl,
             'title' => (string) $post->title,
             'description' => $this->publicPosts->excerptFromBody($post->body),
-            'image_url' => $this->withoutDomain($imageUrl),
+            'image_url' => $imageUrl,
             'type' => 'article',
             'site_name' => (string) config('app.name'),
             'locale' => 'ko_KR',
@@ -95,25 +95,6 @@ class PageMetaService
         }
 
         return $normalized;
-    }
-
-    private function withoutDomain(string $url): string
-    {
-        if ($url === '') {
-            return '';
-        }
-
-        $path = parse_url($url, PHP_URL_PATH);
-        if (! is_string($path) || $path === '') {
-            return $url;
-        }
-
-        $query = parse_url($url, PHP_URL_QUERY);
-        $fragment = parse_url($url, PHP_URL_FRAGMENT);
-
-        return $path
-            .(is_string($query) && $query !== '' ? '?'.$query : '')
-            .(is_string($fragment) && $fragment !== '' ? '#'.$fragment : '');
     }
 
     private function formatIsoDateTime($dateTime): ?string
