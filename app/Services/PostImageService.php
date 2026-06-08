@@ -32,6 +32,7 @@ class PostImageService
         $extension = $image->extension() ?: $image->guessExtension() ?: 'bin';
         $disk = $this->mediaDisk();
         $path = sprintf('posts/%s/%s/%s.%s', $postUuid, PostImage::PURPOSE_BODY, $imageUuid, $extension);
+        $bodyPath = sprintf('posts/%s/body-resized/%s.webp', $postUuid, $imageUuid);
         $thumbnailPath = sprintf('posts/%s/%s/%s.webp', $postUuid, PostImageVariant::VARIANT_THUMBNAIL, $imageUuid);
 
         try {
@@ -77,11 +78,12 @@ class PostImageService
                 }
 
                 $this->thumbnails->createForImage($postImage, $sourceBytes, $image->getRealPath());
+                $this->thumbnails->createBodyForImage($postImage, $sourceBytes, $image->getRealPath());
 
                 return $postImage;
             });
         } catch (Throwable $e) {
-            $this->deleteQuietly($disk, [$path, $thumbnailPath]);
+            $this->deleteQuietly($disk, [$path, $thumbnailPath, $bodyPath]);
 
             if ($e instanceof ApiException) {
                 throw $e;

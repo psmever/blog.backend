@@ -25,6 +25,7 @@ class PostImageResponseFormatter
                 'height' => (int) config('posts.default_cover_image.height', 630),
                 'size' => (int) config('posts.default_cover_image.size', 0),
                 'is_default' => true,
+                'body_image' => null,
                 'thumbnail' => null,
             ];
         }
@@ -37,7 +38,27 @@ class PostImageResponseFormatter
             'height' => $image->height,
             'size' => $image->size,
             'is_default' => false,
+            'body_image' => $this->formatBodyImage($image),
             'thumbnail' => $this->formatThumbnail($image),
+        ];
+    }
+
+    /**
+     * @return array<string, int|string>|null
+     */
+    private function formatBodyImage(PostImage $image): ?array
+    {
+        $bodyImage = $image->bodyVariant;
+        if (! $bodyImage) {
+            return null;
+        }
+
+        return [
+            'url' => $this->postImageService->urlForVariant($bodyImage),
+            'width' => $bodyImage->width,
+            'height' => $bodyImage->height,
+            'size' => $bodyImage->size,
+            'mime_type' => $bodyImage->mime_type,
         ];
     }
 

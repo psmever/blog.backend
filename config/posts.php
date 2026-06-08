@@ -8,6 +8,10 @@ return [
         'height' => 550,
         'quality' => 82,
     ],
+    'body_image' => [
+        'max_width' => (int) env('POST_BODY_IMAGE_MAX_WIDTH', 800),
+        'quality' => (int) env('POST_BODY_IMAGE_QUALITY', 75),
+    ],
     'default_cover_image' => [
         'url' => env('POST_DEFAULT_COVER_IMAGE_URL', '/images/default-cover.png'),
         'width' => (int) env('POST_DEFAULT_COVER_IMAGE_WIDTH', 1200),

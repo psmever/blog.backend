@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PostImageVariant extends Model
 {
+    public const VARIANT_BODY = 'body';
+
     public const VARIANT_THUMBNAIL = 'thumbnail';
 
     protected $fillable = [

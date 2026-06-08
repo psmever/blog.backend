@@ -62,4 +62,13 @@ class PostImage extends Model
         return $this->hasOne(PostImageVariant::class)
             ->where('variant', PostImageVariant::VARIANT_THUMBNAIL);
     }
+
+    /**
+     * @return HasOne<PostImageVariant, $this>
+     */
+    public function bodyVariant(): HasOne
+    {
+        return $this->hasOne(PostImageVariant::class)
+            ->where('variant', PostImageVariant::VARIANT_BODY);
+    }
 }

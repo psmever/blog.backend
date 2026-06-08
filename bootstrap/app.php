@@ -2,6 +2,7 @@
 
 use App\Console\Commands\BackfillPostImageThumbnails;
 use App\Console\Commands\ExportPostmanCollection;
+use App\Console\Commands\OptimizePostBodyImages;
 use App\Console\Commands\PruneExpiredTokens;
 use App\Console\Commands\RepairLocalMigrationRegistry;
 use App\Console\Commands\SeedTestPosts;
@@ -48,6 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([
         BackfillPostImageThumbnails::class,
         ExportPostmanCollection::class,
+        OptimizePostBodyImages::class,
         PruneExpiredTokens::class,
         RepairLocalMigrationRegistry::class,
         SeedTestPosts::class,
