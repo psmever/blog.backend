@@ -20,6 +20,7 @@ class PostShowTest extends TestCase
         $this->seed(CommonCodeSeeder::class);
         config(['app.url' => 'https://api.test.local']);
         config(['posts.image_base_url' => 'https://images.test.local']);
+        config(['posts.default_cover_image.url' => '/images/default-cover.png']);
     }
 
     private function postWithClientType(string $uri, array $payload)

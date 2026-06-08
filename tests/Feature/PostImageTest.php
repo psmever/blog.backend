@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Exceptions\ApiException;
 use App\Models\PostImage;
+use App\Models\PostImageVariant;
 use App\Models\User;
 use App\Services\PostImageThumbnailService;
 use Database\Seeders\CommonCodeSeeder;
@@ -68,6 +69,9 @@ class PostImageTest extends TestCase
             ->assertJsonPath('data.purpose', PostImage::PURPOSE_BODY)
             ->assertJsonPath('data.width', 10)
             ->assertJsonPath('data.height', 10)
+            ->assertJsonPath('data.body_image.width', 10)
+            ->assertJsonPath('data.body_image.height', 10)
+            ->assertJsonPath('data.body_image.mime_type', 'image/webp')
             ->assertJsonPath('data.thumbnail.width', 800)
             ->assertJsonPath('data.thumbnail.height', 550)
             ->assertJsonPath('data.thumbnail.mime_type', 'image/webp');
@@ -85,6 +89,11 @@ class PostImageTest extends TestCase
         $thumbnail = $image->thumbnailVariant()->firstOrFail();
         $this->assertSame('posts/'.$postUuid.'/thumbnail/'.$image->uuid.'.webp', $thumbnail->path);
         Storage::disk('public')->assertExists($thumbnail->path);
+
+        $bodyImage = $image->bodyVariant()->firstOrFail();
+        $this->assertSame(PostImageVariant::VARIANT_BODY, $bodyImage->variant);
+        $this->assertSame('posts/'.$postUuid.'/body-resized/'.$image->uuid.'.webp', $bodyImage->path);
+        Storage::disk('public')->assertExists($bodyImage->path);
     }
 
     public function test_issue_post_uuid_without_creating_post(): void
@@ -314,16 +323,49 @@ class PostImageTest extends TestCase
             ])->assertCreated();
 
             $response
+                ->assertJsonPath('data.body_image.mime_type', 'image/webp')
                 ->assertJsonPath('data.thumbnail.width', 800)
                 ->assertJsonPath('data.thumbnail.height', 550)
                 ->assertJsonPath('data.thumbnail.mime_type', 'image/webp');
 
             $image = PostImage::query()->where('uuid', $response->json('data.uuid'))->firstOrFail();
+            $bodyImage = $image->bodyVariant()->firstOrFail();
             $thumbnail = $image->thumbnailVariant()->firstOrFail();
 
+            $this->assertSame('posts/'.$postUuid.'/body-resized/'.$image->uuid.'.webp', $bodyImage->path);
+            Storage::disk('public')->assertExists($bodyImage->path);
             $this->assertSame('posts/'.$postUuid.'/thumbnail/'.$image->uuid.'.webp', $thumbnail->path);
             Storage::disk('public')->assertExists($thumbnail->path);
         }
+    }
+
+    public function test_upload_resizes_body_image_to_configured_max_width_without_changing_ratio(): void
+    {
+        config(['posts.body_image.max_width' => 6]);
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $postUuid = $this->createPost();
+
+        $response = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'image' => $this->fakePng('wide.png', 0, 12, 8),
+        ])->assertCreated();
+
+        $response
+            ->assertJsonPath('data.width', 12)
+            ->assertJsonPath('data.height', 8)
+            ->assertJsonPath('data.body_image.width', 6)
+            ->assertJsonPath('data.body_image.height', 4)
+            ->assertJsonPath('data.body_image.mime_type', 'image/webp');
+
+        $image = PostImage::query()->where('uuid', $response->json('data.uuid'))->firstOrFail();
+        $bodyImage = $image->bodyVariant()->firstOrFail();
+
+        $this->assertSame(PostImageVariant::VARIANT_BODY, $bodyImage->variant);
+        $this->assertSame(6, $bodyImage->width);
+        $this->assertSame(4, $bodyImage->height);
+        Storage::disk('public')->assertExists($bodyImage->path);
     }
 
     public function test_upload_removes_original_file_and_database_record_when_thumbnail_generation_fails(): void
@@ -332,6 +374,8 @@ class PostImageTest extends TestCase
         $thumbnails->shouldReceive('createForImage')
             ->once()
             ->andThrow(new ApiException('이미지 썸네일 생성에 실패했습니다.', 500));
+        $thumbnails->shouldReceive('createBodyForImage')
+            ->never();
         $this->app->instance(PostImageThumbnailService::class, $thumbnails);
 
         $user = User::factory()->create();
@@ -349,9 +393,9 @@ class PostImageTest extends TestCase
         $this->assertSame([], Storage::disk('public')->allFiles());
     }
 
-    private function fakePng(string $name, int $minBytes = 0): UploadedFile
+    private function fakePng(string $name, int $minBytes = 0, int $width = 10, int $height = 10): UploadedFile
     {
-        $contents = $this->imageBytes('png');
+        $contents = $this->imageBytes('png', $width, $height);
 
         if ($minBytes > strlen($contents)) {
             $contents .= str_repeat('0', $minBytes - strlen($contents));
@@ -368,9 +412,9 @@ class PostImageTest extends TestCase
         return UploadedFile::fake()->createWithContent($name, $this->imageBytes($extension));
     }
 
-    private function imageBytes(string $extension): string
+    private function imageBytes(string $extension, int $width = 10, int $height = 10): string
     {
-        $image = imagecreatetruecolor(10, 10);
+        $image = imagecreatetruecolor($width, $height);
         ob_start();
         match ($extension) {
             'jpg' => imagejpeg($image),

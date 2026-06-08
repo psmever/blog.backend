@@ -24,6 +24,7 @@ class PublicPostListTest extends TestCase
         $this->seed(CommonCodeSeeder::class);
         config(['app.url' => 'https://api.test.local']);
         config(['posts.image_base_url' => 'https://images.test.local']);
+        config(['posts.default_cover_image.url' => '/images/default-cover.png']);
         config(['filesystems.media_disk' => 'public']);
         $mediaRoot = trim((string) config('filesystems.media_root', 'blog'), '/');
         config([

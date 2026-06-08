@@ -231,6 +231,9 @@ class PostImageServiceTest extends TestCase
         $thumbnails->shouldReceive('createForImage')
             ->once()
             ->with($createdImage, Mockery::type('string'), Mockery::type('string'));
+        $thumbnails->shouldReceive('createBodyForImage')
+            ->once()
+            ->with($createdImage, Mockery::type('string'), Mockery::type('string'));
 
         $service = new PostImageService($posts, $postImages, $thumbnails);
 
