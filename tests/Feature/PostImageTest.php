@@ -181,6 +181,36 @@ class PostImageTest extends TestCase
             ->assertJsonPath('data.cover_image.purpose', PostImage::PURPOSE_BODY);
     }
 
+    public function test_save_uses_body_resized_image_url_as_cover_image(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $issued = $this->postWithClientType('/api/v1/posts/uuid', [])->assertOk();
+        $postUuid = (string) $issued->json('data.uuid');
+
+        $upload = $this->postWithClientType('/api/v1/posts/'.$postUuid.'/images', [
+            'purpose' => PostImage::PURPOSE_BODY,
+            'image' => $this->fakePng('body.png'),
+        ])->assertCreated();
+
+        $bodyImageUrl = (string) $upload->json('data.body_image.url');
+        $imageUuid = (string) $upload->json('data.uuid');
+
+        $this->postWithClientType('/api/v1/posts/'.$postUuid.'/save', [
+            'title' => 'Saved With Resized Body Image',
+            'tags' => ['laravel'],
+            'body' => sprintf('![body](%s)', $bodyImageUrl),
+        ])->assertOk();
+
+        $this->withHeader('Client-Type', self::CLIENT_TYPE)
+            ->getJson('/api/v1/posts/'.$postUuid)
+            ->assertOk()
+            ->assertJsonPath('data.cover_image.uuid', $imageUuid)
+            ->assertJsonPath('data.cover_image.purpose', PostImage::PURPOSE_BODY)
+            ->assertJsonPath('data.cover_image.is_default', false);
+    }
+
     public function test_save_updates_cover_image_when_first_body_image_changes(): void
     {
         $user = User::factory()->create();

@@ -53,7 +53,7 @@ class OptimizePostBodyImagesCommandTest extends TestCase
         ]);
 
         $this->artisan('posts:optimize-body-images --chunk=1')
-            ->expectsOutput('Post body image optimization completed: processed=1, optimized=1, rewritten_posts=1, rewritten_urls=1, failed=0')
+            ->expectsOutput('Post body image optimization completed: processed=1, optimized=1, rewritten_posts=1, rewritten_urls=1, synced_covers=1, failed=0')
             ->assertExitCode(0);
 
         $bodyImage = $image->bodyVariant()->firstOrFail();
@@ -65,6 +65,7 @@ class OptimizePostBodyImagesCommandTest extends TestCase
         Storage::disk('public')->assertExists($bodyImage->path);
 
         $post->refresh();
+        $this->assertSame($image->getKey(), $post->cover_image_id);
         $this->assertStringContainsString(
             'https://images.test.local/storage/blog/posts/'.$image->post_uuid.'/body-resized/'.$image->uuid.'.webp',
             (string) $post->body
@@ -81,12 +82,14 @@ class OptimizePostBodyImagesCommandTest extends TestCase
         $originalBody = (string) $post->body;
 
         $this->artisan('posts:optimize-body-images --dry-run --chunk=1')
-            ->expectsOutput('Post body image optimization dry-run completed: processed=1, optimized=1, rewritten_posts=1, rewritten_urls=1, failed=0')
+            ->expectsOutput('Post body image optimization dry-run completed: processed=1, optimized=1, rewritten_posts=1, rewritten_urls=1, synced_covers=1, failed=0')
             ->assertExitCode(0);
 
         $this->assertNull($image->bodyVariant()->first());
         Storage::disk('public')->assertMissing('posts/'.$image->post_uuid.'/body-resized/'.$image->uuid.'.webp');
-        $this->assertSame($originalBody, (string) $post->refresh()->body);
+        $post->refresh();
+        $this->assertNull($post->cover_image_id);
+        $this->assertSame($originalBody, (string) $post->body);
     }
 
     /**
