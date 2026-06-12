@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Post;
 use App\Models\PostImage;
 use App\Models\PostImageVariant;
+use App\Repositories\PostImageRepositoryInterface;
 use App\Services\PostImageService;
 use App\Services\PostImageThumbnailService;
 use Illuminate\Console\Command;
@@ -18,15 +19,20 @@ class OptimizePostBodyImages extends Command
 
     protected $description = 'Regenerate resized body images and rewrite post body image URLs';
 
-    public function handle(PostImageThumbnailService $images, PostImageService $imageUrls): int
-    {
+    public function handle(
+        PostImageThumbnailService $images,
+        PostImageService $imageUrls,
+        PostImageRepositoryInterface $postImages
+    ): int {
         $dryRun = (bool) $this->option('dry-run');
         $chunk = max(1, (int) $this->option('chunk'));
         $processed = 0;
         $optimized = 0;
         $rewrittenPosts = 0;
         $rewrittenUrls = 0;
+        $syncedCovers = 0;
         $failed = 0;
+        $processedPostUuids = [];
 
         try {
             $images->ensureSupported();
@@ -47,6 +53,7 @@ class OptimizePostBodyImages extends Command
                 &$optimized,
                 &$rewrittenPosts,
                 &$rewrittenUrls,
+                &$processedPostUuids,
                 &$failed
             ): void {
                 foreach ($postImages as $postImage) {
@@ -64,6 +71,10 @@ class OptimizePostBodyImages extends Command
                             $rewrittenPosts++;
                             $rewrittenUrls += $urlCount;
                         }
+
+                        if ($postImage->post_uuid !== null) {
+                            $processedPostUuids[(string) $postImage->post_uuid] = true;
+                        }
                     } catch (Throwable $e) {
                         $failed++;
                         $this->error(sprintf('%s: %s', $postImage->path, $e->getMessage()));
@@ -71,13 +82,25 @@ class OptimizePostBodyImages extends Command
                 }
             });
 
+        foreach (array_keys($processedPostUuids) as $postUuid) {
+            try {
+                if ($this->syncCoverImage($postUuid, $postImages, $dryRun)) {
+                    $syncedCovers++;
+                }
+            } catch (Throwable $e) {
+                $failed++;
+                $this->error(sprintf('%s: %s', $postUuid, $e->getMessage()));
+            }
+        }
+
         $this->info(sprintf(
-            'Post body image optimization %s: processed=%d, optimized=%d, rewritten_posts=%d, rewritten_urls=%d, failed=%d',
+            'Post body image optimization %s: processed=%d, optimized=%d, rewritten_posts=%d, rewritten_urls=%d, synced_covers=%d, failed=%d',
             $dryRun ? 'dry-run completed' : 'completed',
             $processed,
             $optimized,
             $rewrittenPosts,
             $rewrittenUrls,
+            $syncedCovers,
             $failed
         ));
 
@@ -111,6 +134,64 @@ class OptimizePostBodyImages extends Command
         }
 
         return [true, $count];
+    }
+
+    private function syncCoverImage(string $postUuid, PostImageRepositoryInterface $postImages, bool $dryRun): bool
+    {
+        $post = Post::query()
+            ->where('uuid', $postUuid)
+            ->first();
+
+        if (! $post) {
+            return false;
+        }
+
+        $coverImageId = null;
+        foreach ($this->extractImageUrlsFromBody((string) $post->body) as $url) {
+            $image = $postImages->findByUrlForPostUuidAndUser(
+                $postUuid,
+                (int) $post->user_id,
+                $url
+            );
+
+            if (! $image) {
+                continue;
+            }
+
+            $coverImageId = (int) $image->getKey();
+            break;
+        }
+
+        if ($post->cover_image_id === $coverImageId) {
+            return false;
+        }
+
+        if (! $dryRun) {
+            $post->forceFill(['cover_image_id' => $coverImageId])->save();
+        }
+
+        return true;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function extractImageUrlsFromBody(string $body): array
+    {
+        if ($body === '') {
+            return [];
+        }
+
+        preg_match_all('/!\[[^\]]*]\((<[^>]+>|[^)\s]+)(?:\s+"[^"]*")?\)/u', $body, $matches);
+        /** @var array{0: list<string>, 1: list<string>} $matches */
+
+        return array_values(array_filter(
+            array_map(
+                static fn (string $url): string => trim($url, '<>'),
+                $matches[1]
+            ),
+            static fn (string $url): bool => $url !== ''
+        ));
     }
 
     /**

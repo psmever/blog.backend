@@ -22,7 +22,15 @@ class EloquentPostImageRepository implements PostImageRepositoryInterface
             ->where('user_id', $userId)
             ->where(function ($query) use ($url, $normalizedUrl, $storagePath) {
                 $query->where('url', $url)
-                    ->orWhere('url', $normalizedUrl);
+                    ->orWhere('url', $normalizedUrl)
+                    ->orWhereHas('variants', function ($variantQuery) use ($url, $normalizedUrl, $storagePath) {
+                        $variantQuery->where('url', $url)
+                            ->orWhere('url', $normalizedUrl);
+
+                        if ($storagePath !== null) {
+                            $variantQuery->orWhere('path', $storagePath);
+                        }
+                    });
 
                 if ($storagePath !== null) {
                     $query->orWhere('path', $storagePath);

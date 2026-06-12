@@ -156,7 +156,7 @@ POST /api/v1/posts/{uuid}/images
 - 본문 이미지와 썸네일 생성에는 PHP GD 확장의 JPEG, PNG, GIF, WebP 지원이 필요하며, 변환 또는 저장 실패 시 원본 업로드도 실패 처리됩니다.
 - 이미지 응답의 `body_image` 객체는 본문 표시용 URL, 너비, 높이, 용량, MIME 타입을 포함합니다. 프런트는 본문 Markdown에 이미지를 삽입할 때 이 URL을 우선 사용합니다.
 - 이미지 응답의 `thumbnail` 객체는 썸네일 URL, 너비, 높이, 용량, MIME 타입을 포함합니다. 기존 이미지가 아직 변환되지 않았거나 기본 커버 이미지이면 `thumbnail`은 `null`입니다.
-- 기존 업로드 이미지의 본문 표시용 WebP 이미지는 `php artisan posts:optimize-body-images` 명령으로 모두 재생성하고, 게시글 본문 Markdown의 원본 이미지 URL도 `body_image` URL로 치환합니다. 변경 전 확인만 하려면 `--dry-run`을 사용합니다.
+- 기존 업로드 이미지의 본문 표시용 WebP 이미지는 `php artisan posts:optimize-body-images` 명령으로 모두 재생성하고, 게시글 본문 Markdown의 원본 이미지 URL도 `body_image` URL로 치환합니다. 이 명령은 본문 첫 이미지 기준으로 대표 이미지도 다시 동기화합니다. 변경 전 확인만 하려면 `--dry-run`을 사용합니다.
 - 기존 업로드 이미지의 누락된 썸네일은 `php artisan posts:backfill-thumbnails` 명령으로 생성합니다.
 
 ## 공개 블로그 API
