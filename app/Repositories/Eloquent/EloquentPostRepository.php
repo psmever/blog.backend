@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\Post;
 use App\Repositories\PostRepositoryInterface;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class EloquentPostRepository implements PostRepositoryInterface
 {
@@ -63,8 +64,8 @@ class EloquentPostRepository implements PostRepositoryInterface
 
     public function incrementViewCount(Post $post): void
     {
-        Post::query()
-            ->whereKey($post->getKey())
+        DB::table($post->getTable())
+            ->where('id', $post->getKey())
             ->increment('view_count');
     }
 

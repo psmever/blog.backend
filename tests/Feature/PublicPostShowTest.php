@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Database\Seeders\CommonCodeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpFoundation\Cookie;
 use Tests\TestCase;
@@ -39,6 +40,11 @@ class PublicPostShowTest extends TestCase
     {
         $author = User::factory()->create(['name' => '공개 작성자']);
         $post = $this->createPublishedPost($author, 'Public Detail', ['Next.js', 'React']);
+        $originalUpdatedAt = Carbon::parse('2026-05-01 09:30:00');
+        $post->timestamps = false;
+        $post->forceFill(['updated_at' => $originalUpdatedAt])->save();
+        $post->timestamps = true;
+        $post->refresh();
 
         $this->app['auth']->forgetGuards();
 
@@ -57,11 +63,13 @@ class PublicPostShowTest extends TestCase
             ->assertJsonPath('data.cover_image.is_default', true)
             ->assertJsonPath('data.cover_image.thumbnail', null)
             ->assertJsonPath('data.view_count', 1)
+            ->assertJsonPath('data.updated_at', '2026-05-01 09:30:00')
             ->assertJsonPath('data.body', '# markdown 원문');
 
         $this->assertDatabaseHas('posts', [
             'id' => $post->getKey(),
             'view_count' => 1,
+            'updated_at' => $originalUpdatedAt->toDateTimeString(),
         ]);
 
         $sessionCookie = $this->sessionCookieFrom($first->headers->getCookies());
@@ -72,11 +80,13 @@ class PublicPostShowTest extends TestCase
             ->withHeader('Client-Type', self::CLIENT_TYPE)
             ->getJson('/api/v1/public/posts/public-detail')
             ->assertOk()
-            ->assertJsonPath('data.view_count', 1);
+            ->assertJsonPath('data.view_count', 1)
+            ->assertJsonPath('data.updated_at', '2026-05-01 09:30:00');
 
         $this->assertDatabaseHas('posts', [
             'id' => $post->getKey(),
             'view_count' => 1,
+            'updated_at' => $originalUpdatedAt->toDateTimeString(),
         ]);
 
         $cookieName = (string) config('session.cookie');
@@ -92,11 +102,13 @@ class PublicPostShowTest extends TestCase
             ->withHeader('Client-Type', self::CLIENT_TYPE)
             ->getJson('/api/v1/public/posts/public-detail')
             ->assertOk()
-            ->assertJsonPath('data.view_count', 2);
+            ->assertJsonPath('data.view_count', 2)
+            ->assertJsonPath('data.updated_at', '2026-05-01 09:30:00');
 
         $this->assertDatabaseHas('posts', [
             'id' => $post->getKey(),
             'view_count' => 2,
+            'updated_at' => $originalUpdatedAt->toDateTimeString(),
         ]);
     }
 
