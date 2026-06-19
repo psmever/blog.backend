@@ -1,0 +1,30 @@
+meta {
+  name: UUID 발급
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/posts/uuid
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+script:post-response {
+  if (res.status === 200 && res.body?.data?.uuid) {
+    bru.setEnvVar("postUuid", res.body.data.uuid);
+  }
+}
+
+docs {
+  게시글 작성과 이미지 업로드에 사용할 UUID를 발급하고 현재 환경에 저장합니다.
+}

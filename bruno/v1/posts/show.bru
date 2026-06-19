@@ -1,0 +1,28 @@
+meta {
+  name: 게시글 상세
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/v1/posts/:postUuid
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  postUuid: {{postUuid}}
+}
+
+docs {
+  UUID로 인증 사용자의 게시글 상세 내용을 조회합니다.
+}

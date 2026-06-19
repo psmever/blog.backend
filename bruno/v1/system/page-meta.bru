@@ -1,0 +1,24 @@
+meta {
+  name: 페이지 메타데이터
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/v1/meta?url=https%3A%2F%2Fexample.com
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+params:query {
+  url: https://example.com
+}
+
+docs {
+  지정한 URL의 페이지 메타데이터를 조회합니다.
+}

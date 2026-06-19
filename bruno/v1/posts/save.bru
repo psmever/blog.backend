@@ -1,0 +1,42 @@
+meta {
+  name: 게시글 임시 저장
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/posts/:postUuid/save
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:path {
+  postUuid: {{postUuid}}
+}
+
+body:json {
+  {
+    "title": "수정한 게시글 제목",
+    "tags": ["Laravel", "Bruno"],
+    "body": "수정한 게시글 본문입니다."
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body?.data?.slug) {
+    bru.setEnvVar("postSlug", res.body.data.slug);
+  }
+}
+
+docs {
+  UUID로 게시글의 제목, 태그, 본문을 임시 저장합니다.
+}

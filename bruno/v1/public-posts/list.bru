@@ -1,0 +1,25 @@
+meta {
+  name: 공개 게시글 목록
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/v1/public/posts?limit=12
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+params:query {
+  limit: 12
+  ~cursor:
+}
+
+docs {
+  게시된 글을 커서 기반으로 조회합니다. 다음 페이지는 응답의 meta.next_cursor를 cursor에 입력합니다.
+}

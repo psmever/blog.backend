@@ -1,0 +1,40 @@
+meta {
+  name: 게시글 생성
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/posts
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "uuid": "{{postUuid}}",
+    "title": "Bruno로 작성한 게시글",
+    "tags": ["Bruno", "API"],
+    "body": "게시글 본문입니다."
+  }
+}
+
+script:post-response {
+  if (res.status === 201 && res.body?.data) {
+    if (res.body.data.uuid) bru.setEnvVar("postUuid", res.body.data.uuid);
+    if (res.body.data.slug) bru.setEnvVar("postSlug", res.body.data.slug);
+  }
+}
+
+docs {
+  새 게시글을 생성합니다. 성공하면 UUID와 공개 슬러그를 현재 환경에 저장합니다.
+}
