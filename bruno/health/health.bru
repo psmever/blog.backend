@@ -1,0 +1,20 @@
+meta {
+  name: 헬스 체크
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/health
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+docs {
+  애플리케이션과 데이터베이스 상태를 확인합니다.
+}

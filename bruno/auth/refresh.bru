@@ -1,0 +1,33 @@
+meta {
+  name: 토큰 갱신
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/auth/refresh
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+body:json {
+  {
+    "refresh_token": "{{refreshToken}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 && res.body?.data) {
+    bru.setEnvVar("accessToken", res.body.data.access_token);
+    bru.setEnvVar("refreshToken", res.body.data.refresh_token);
+  }
+}
+
+docs {
+  리프레시 토큰을 회전시키고 새 토큰 쌍을 현재 환경에 저장합니다.
+}

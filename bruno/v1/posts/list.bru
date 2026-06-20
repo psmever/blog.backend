@@ -1,0 +1,29 @@
+meta {
+  name: 게시글 목록
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/v1/posts?status=draft&limit=20
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Client-Type: {{clientType}}
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+params:query {
+  status: draft
+  limit: 20
+}
+
+docs {
+  인증 사용자의 게시글을 상태별로 조회합니다. status는 draft 또는 published입니다.
+}
